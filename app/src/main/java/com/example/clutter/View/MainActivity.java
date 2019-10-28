@@ -15,7 +15,6 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView navigationView;
     private FragmentManager fm;
     private Fragment fragment;
-//    private ImageButton ibCompose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

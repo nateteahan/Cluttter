@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.clutter.InterfaceMVP.AccountFragmentMVP;
+import com.example.clutter.InterfaceMVP.StoryFragmentMVP;
 import com.example.clutter.Presenter.AccountPresenter;
 import com.example.clutter.Presenter.StoryPresenter;
 import com.example.clutter.R;
@@ -27,7 +28,7 @@ import com.example.clutter.Model.Status;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AccountFragment extends Fragment implements AccountFragmentMVP.View {
+public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
     private StoryAdapter mAdapter;
     private StoryPresenter storyPresenter;
     private ImageView imageView;

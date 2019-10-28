@@ -13,9 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar">
-        <activity android:name=".View.UserActivity"></activity>
+        <activity android:name=".View.FollowActivity"></activity>
+        <activity android:name=".View.UserActivity" />
         <activity android:name=".View.HashtagActivity" />
-        <activity android:name=".View.FollowActivity" />
         <activity android:name=".View.StatusActivity" />
         <activity android:name=".View.ComposeMessageActivity" />
         <activity android:name=".View.CreateAccountActivity" />

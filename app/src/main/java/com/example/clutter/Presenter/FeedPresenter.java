@@ -36,37 +36,37 @@ public class FeedPresenter implements FeedFragmentMVP.Presenter {
 
         status = new Status("Rocky", "@nateteahan", "6:53 p.m.", "My #CS 312 project ruined me today", null, null);
         statuses.add(status);
-//
-//        status = new Status("Justin", "@nateteahan", "8:00 p.m.", "I am going to go to bed early tonight");
-//        statuses.add(status);
-//
-//        status = new Status("Nate", "@nateteahan", "4:20 a.m.", "Man I don't know why I am still awake");
-//        statuses.add(status);
-//
-//        status = new Status("Cayla", "@nateteahan", "6:53 p.m.", "Yesterday, @nateteahan and I went to the grocery store and decided" +
-//                " that I needed some raspberries. I went to the fruit aisle and it turned out they had all gone bad already. Thanks @smiths");
-//        statuses.add(status);
-//
-//        status = new Status("Nate", "@nateteahan", "8:00 p.m.", "I am going to go to bed early tonight");
-//        statuses.add(status);
-//
-//        status = new Status("Nate", "@nateteahan", "4:20 a.m.", "Man I don't know why I am still awake");
-//        statuses.add(status);
-//
-//        status = new Status("Nate", "@nateteahan", "6:53 p.m.", "My CS 312 project ruined me today");
-//        statuses.add(status);
-//
-//        status = new Status("Nate", "@nateteahan", "8:00 p.m.", "I am going to go to bed early tonight");
-//        statuses.add(status);
-//
-//        status = new Status("Nate", "@nateteahan", "4:20 a.m.", "Man I don't know why I am still awake");
-//        statuses.add(status);
-//
-//        status = new Status("Nate", "@nateteahan", "6:53 p.m.", "My CS 312 project ruined me today");
-//        statuses.add(status);
-//
-//        status = new Status("Nate", "@nateteahan", "8:00 p.m.", "I am going to go to bed early tonight");
-//        statuses.add(status);
+
+        status = new Status("Justin", "@nateteahan", "8:00 p.m.", "I am going to go to bed early tonight,", null, null);
+        statuses.add(status);
+
+        status = new Status("Nate", "@nateteahan", "4:20 a.m.", "Man I don't know why I am still awake",null, null);
+        statuses.add(status);
+
+        status = new Status("Cayla", "@nateteahan", "6:53 p.m.", "Yesterday, @nateteahan and I went to the grocery store and decided" +
+                " that I needed some raspberries. I went to the fruit aisle and it turned out they had all gone bad already. Thanks @smiths", null, null);
+        statuses.add(status);
+
+        status = new Status("Nate", "@nateteahan", "8:00 p.m.", "I am going to go to bed early tonight", null, null);
+        statuses.add(status);
+
+        status = new Status("Nate", "@nateteahan", "4:20 a.m.", "Man I don't know why I am still awake", null, null);
+        statuses.add(status);
+
+        status = new Status("Nate", "@nateteahan", "6:53 p.m.", "My CS 312 project ruined me today",null, null);
+        statuses.add(status);
+
+        status = new Status("Nate", "@nateteahan", "8:00 p.m.", "I am going to go to bed early tonight",null, null);
+        statuses.add(status);
+
+        status = new Status("Nate", "@nateteahan", "4:20 a.m.", "Man I don't know why I am still awake",null, null);
+        statuses.add(status);
+
+        status = new Status("Nate", "@nateteahan", "6:53 p.m.", "My CS 312 project ruined me today",null, null);
+        statuses.add(status);
+
+        status = new Status("Nate", "@nateteahan", "8:00 p.m.", "I am going to go to bed early tonight",null, null);
+        statuses.add(status);
 
         feedView.displayStatus(statuses);
     }
