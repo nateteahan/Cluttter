@@ -18,16 +18,18 @@ public class StatusActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status);
 
+        /* FIXME add links */
+        String status = getIntent().getStringExtra("STATUS");
+        String handle = getIntent().getStringExtra("HANDLE");
+
         Drawable drawable = getResources().getDrawable(R.drawable.me);
         imageView = findViewById(R.id.ivStatus1);
         imageView.setImageDrawable(drawable);
         tvHandle = findViewById(R.id.tvHandle1);
         tvStatus = findViewById(R.id.tvStatus1);
 
-        String dummyHandle = "@nateteahan";
-        String dummyStatus = "This is a test of the status activity";
 
-        tvHandle.setText(dummyHandle);
-        tvStatus.setText(dummyStatus);
+        tvHandle.setText(handle);
+        tvStatus.setText(status);
     }
 }

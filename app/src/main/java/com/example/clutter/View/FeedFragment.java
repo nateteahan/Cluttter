@@ -102,6 +102,9 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
                 public void onClick(View v) {
                     // FIXME need to pass a bundle with the current status info to the status activity
                     Intent intent = new Intent(getActivity(), StatusActivity.class);
+                    intent.putExtra("STATUS", status.getText().toString());
+                    intent.putExtra("NAME", name.getText().toString());
+                    intent.putExtra("HANDLE", handle.getText().toString());
                     startActivity(intent);
                 }
             });
