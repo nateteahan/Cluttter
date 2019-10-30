@@ -2,7 +2,6 @@ package com.example.clutter.Presenter;
 
 import com.example.clutter.InterfaceMVP.FollowMvp;
 import com.example.clutter.Model.FollowInfo;
-import com.example.clutter.View.FollowActivity;
 import com.example.clutter.View.FollowerFragment;
 
 import java.util.ArrayList;
@@ -21,10 +20,10 @@ public class FollowerPresenter implements FollowMvp.Presenter {
     public void createDummyFollowers() {
         info.clear();
 
-        FollowInfo follower = new FollowInfo("Justin");
+        FollowInfo follower = new FollowInfo("@JustinHunt");
         info.add(follower);
 
-        follower = new FollowInfo("Rocky");
+        follower = new FollowInfo("@RockyEvans");
         info.add(follower);
 
         view.displayFollowInfo(info);

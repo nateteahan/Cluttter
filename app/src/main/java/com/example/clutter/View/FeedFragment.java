@@ -18,13 +18,12 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.example.clutter.InterfaceMVP.FeedFragmentMVP;
+import com.example.clutter.Model.Status;
 import com.example.clutter.Presenter.FeedPresenter;
 import com.example.clutter.R;
 
 import java.util.List;
 import java.util.regex.Pattern;
-
-import com.example.clutter.Model.Status;
 
 public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
     private RecyclerView mRecyclerView;
@@ -82,7 +81,7 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
 
 
             Pattern usernamePattern = Pattern.compile("@+[a-zA-Z0-9]*");
-            Linkify.addLinks(status, usernamePattern, "https://www.google.com/search?q=cute+dogs&sxsrf=ACYBGNRUBLAZdG893VLA9PYXtmv_ihmvqw:1571980349732&source=lnms&tbm=isch&sa=X&ved=0ahUKEwj2utuS07blAhWVvZ4KHfK4CSgQ_AUIEigB&biw=1440&bih=789");
+            Linkify.addLinks(status, usernamePattern, "input.my.scheme"); //Goto androidmanifest.xml and look at the scheme of the UserActivity
 
             Pattern hashtagPattern = Pattern.compile("#+[a-zA-Z0-9]*");
             Linkify.addLinks(status, hashtagPattern, "https://www.google.com/search?q=cute+dogs&sxsrf=ACYBGNRUBLAZdG893VLA9PYXtmv_ihmvqw:1571980349732&source=lnms&tbm=isch&sa=X&ved=0ahUKEwj2utuS07blAhWVvZ4KHfK4CSgQ_AUIEigB&biw=1440&bih=789");
@@ -105,6 +104,7 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
                     intent.putExtra("STATUS", status.getText().toString());
                     intent.putExtra("NAME", name.getText().toString());
                     intent.putExtra("HANDLE", handle.getText().toString());
+                    intent.putExtra("TIME", time.getText().toString());
                     startActivity(intent);
                 }
             });

@@ -1,6 +1,7 @@
 package com.example.clutter.Model;
 
 public class FollowInfo {
+//    ImageView profilePic;
     String name;
 
     public FollowInfo(String name) {

@@ -8,6 +8,8 @@ public class User {
     private List<Status> userFeed;
     private List<Status> userStory;
     private String userStatus;
+    private List<User> followers;
+    private List<User> following;
 
     public User() {
     }
@@ -55,5 +57,21 @@ public class User {
 
     public void setUserStatus(String userStatus) {
         this.userStatus = userStatus;
+    }
+
+    public List<User> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(List<User> followers) {
+        this.followers = followers;
+    }
+
+    public List<User> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(List<User> following) {
+        this.following = following;
     }
 }

@@ -3,7 +3,9 @@ package com.example.clutter.View;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,19 +18,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.clutter.InterfaceMVP.AccountFragmentMVP;
 import com.example.clutter.InterfaceMVP.StoryFragmentMVP;
+import com.example.clutter.Model.Status;
 import com.example.clutter.Presenter.AccountPresenter;
 import com.example.clutter.Presenter.StoryPresenter;
 import com.example.clutter.R;
 
 import java.util.List;
-import com.example.clutter.Model.Status;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
+    private static final int REQUEST_UPLOAD_IMAGE = 1;
     private StoryAdapter mAdapter;
     private StoryPresenter storyPresenter;
     private ImageView imageView;
@@ -161,13 +165,14 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_account, container, false);
 
         imageView = v.findViewById(R.id.ivUserAccount);
         mFollowers = v.findViewById(R.id.tvNumFollowers);
         mFollowees = v.findViewById(R.id.tvNumFollowing);
-//        mRecyclerView= v.findViewById(R.id.rvFollows);
         btnSignOut = v.findViewById(R.id.button3);
         tvChangePic = v.findViewById(R.id.textView6);
         mRecyclerView= v.findViewById(R.id.rvStory);
@@ -185,6 +190,15 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
             imageView.setImageDrawable(drawable);
 
         }
+
+        tvChangePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent uploadImageIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(uploadImageIntent, REQUEST_UPLOAD_IMAGE);
+
+            }
+        });
 
         mFollowers.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,6 +234,16 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
         });
 
         return v;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_UPLOAD_IMAGE && resultCode == RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+            imageView.setImageURI(selectedImage);
+        }
     }
 
     public void displayStories(List<Status> stories) {

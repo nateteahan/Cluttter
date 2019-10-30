@@ -25,7 +25,14 @@
         <service android:name="org.eclipse.paho.android.service.MqttService" />
 
         <activity android:name=".View.FollowActivity"></activity>
-        <activity android:name=".View.UserActivity" />
+        <activity android:name=".View.UserActivity">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="input.my.scheme" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".View.HashtagActivity" />
         <activity android:name=".View.StatusActivity" />
         <activity android:name=".View.ComposeMessageActivity" />
@@ -35,7 +42,6 @@
         <activity android:name=".View.SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

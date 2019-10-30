@@ -1,0 +1,12 @@
+projects:
+  amplifyAndroid:
+    schemaPath: app/src/graphql/schema.json
+    includes:
+      - app/src/graphql/**/*.graphql
+    excludes:
+      - ./amplify/**
+    extensions:
+      amplify:
+        codeGenTarget: ''
+        generatedFileName: ''
+        docsFilePath: app/src/graphql/com/amazonaws/amplify/generated/graphql

@@ -1,8 +1,8 @@
 package com.example.clutter.View;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -16,7 +16,6 @@ import com.example.clutter.Presenter.CreateAccountPresenter;
 import com.example.clutter.R;
 
 public class CreateAccountActivity extends AppCompatActivity implements CreateAccountMVP.View {
-    private TextView mAddPhoto;
     private EditText mFirstName;
     private EditText mLastName;
     private EditText mEmail;
@@ -30,21 +29,12 @@ public class CreateAccountActivity extends AppCompatActivity implements CreateAc
         setContentView(R.layout.activity_create_account);
 
         presenter = new CreateAccountPresenter(this);
-        mAddPhoto = findViewById(R.id.tvAddPhoto);
         mFirstName = findViewById(R.id.etFirstName);
         mLastName = findViewById(R.id.etLastName);
         mEmail = findViewById(R.id.etEmail);
         btnContinue = findViewById(R.id.btnContinue);
         btnContinue.setEnabled(false);
         tvHasCluttter = findViewById(R.id.tvHasCluttter);
-
-        mAddPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                startActivity(intent);
-            }
-        });
 
         mFirstName.addTextChangedListener(new TextWatcher() {
             @Override
