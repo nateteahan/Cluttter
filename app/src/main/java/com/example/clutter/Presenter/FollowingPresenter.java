@@ -30,26 +30,14 @@ public class FollowingPresenter implements FollowMvp.Presenter {
             List<FollowingListFollowingItem> followingItem = listOfFollowing.getFollowing();
             List<FollowInfo> followingToDisplay = new ArrayList<>();
 
-            // For each of the JSON status items returned from AWS, parse into model Status object
+            // For each of the JSON follow items returned from AWS, parse into model FollowInfo object
             for (int i = 0; i < followingItem.size() ; i++) {
                 FollowingListFollowingItem currentFollowing = followingItem.get(i);
 
                     String userHandle = currentFollowing.getUserHandle();
                     FollowInfo followingObject = new FollowInfo(userHandle);
                     followingToDisplay.add(followingObject);
-//                String firstName = currentStatus.getFirstName();
-//                String userHandle = currentStatus.getUserHandle();
-//                String time = currentStatus.getTime();
-//                String status = currentStatus.getStatus();
-//                String imageAttachment = currentStatus.getImageAttachment();
-//                String videoAttachment = currentStatus.getVideoAttachment();
-
-//                com.example.clutter.Model.Status clientStatus = new com.example.clutter.Model.Status(firstName, userHandle,
-//                        time, status, imageAttachment, videoAttachment);
-//                statusesToPost.add(clientStatus);
             }
-
-//            statuses = statusesToPost;
             return followingToDisplay;
         }
 
