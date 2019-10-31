@@ -15,28 +15,30 @@
 
 package com.example.clutter.sdk.model;
 
-import java.util.List;
 
-public class FollowingList {
-    @com.google.gson.annotations.SerializedName("following")
-    private List<FollowingListFollowingItem> following = null;
+public class Message {
+    /**
+     * Either a ssuccess message or an error message for the user to see
+     */
+    @com.google.gson.annotations.SerializedName("message")
+    private String message = null;
 
     /**
-     * Gets following
+     * Either a ssuccess message or an error message for the user to see
      *
-     * @return following
+     * @return message
      **/
-    public List<FollowingListFollowingItem> getFollowing() {
-        return following;
+    public String getMessage() {
+        return message;
     }
 
     /**
-     * Sets the value of following.
+     * Sets the value of message.
      *
-     * @param following the new value
+     * @param message the new value
      */
-    public void setFollowing(List<FollowingListFollowingItem> following) {
-        this.following = following;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
 }

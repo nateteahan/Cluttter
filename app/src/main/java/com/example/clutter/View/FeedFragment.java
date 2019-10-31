@@ -20,6 +20,7 @@ import com.example.clutter.Model.Status;
 import com.example.clutter.Presenter.FeedPresenter;
 import com.example.clutter.R;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -150,6 +151,10 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
         View v = inflater.inflate(R.layout.fragment_feed, container, false);
         mRecyclerView = v.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        List<Status> list = new ArrayList<>();
+        mAdapter = new FeedAdapter(list);
+        mRecyclerView.setAdapter(mAdapter);
 
         presenter = new FeedPresenter(this);
         presenter.createDummyData();

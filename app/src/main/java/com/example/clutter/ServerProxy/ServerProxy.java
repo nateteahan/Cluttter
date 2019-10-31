@@ -23,7 +23,7 @@ public class ServerProxy {
     private ApiClientFactory factory;
     private CluttterClient client;
 
-//
+    //
     public ServerProxy() {
         this.factory = new ApiClientFactory();
         this.client = factory.build(CluttterClient.class);
@@ -33,5 +33,9 @@ public class ServerProxy {
         StatusList statusList = client.userFeedGet();
 
         return statusList;
+    }
+
+    public StatusList getUserStory() {
+        return client.userUserhandleStoryGet("@nateteahan");
     }
 }

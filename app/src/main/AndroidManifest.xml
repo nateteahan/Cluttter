@@ -33,7 +33,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".View.HashtagActivity" />
+        <activity android:name=".View.HashtagActivity">
+            <!--<category android:name="android.intent.category.DEFAULT" />-->
+            <!--<action android:name="android.intent.action.VIEW" />-->
+            <!--<data android:scheme="input.hashtag.scheme" />-->
+        </activity>
+
         <activity android:name=".View.StatusActivity" />
         <activity android:name=".View.ComposeMessageActivity" />
         <activity android:name=".View.CreateAccountActivity" />

@@ -18,7 +18,7 @@ package com.example.clutter.sdk;
 import com.example.clutter.sdk.model.Empty;
 import com.example.clutter.sdk.model.FollowerList;
 import com.example.clutter.sdk.model.FollowingList;
-import com.example.clutter.sdk.model.Status;
+import com.example.clutter.sdk.model.Message;
 import com.example.clutter.sdk.model.StatusList;
 
 
@@ -76,10 +76,10 @@ public interface CluttterClient {
     /**
      * 
      * 
-     * @return Status
+     * @return Message
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/sendstatus", method = "POST")
-    Status userSendstatusPost();
+    Message userSendstatusPost();
     
     /**
      * 
@@ -150,6 +150,25 @@ public interface CluttterClient {
      * 
      * 
      * @param userhandle 
+     * @return StatusList
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/story", method = "GET")
+    StatusList userUserhandleStoryGet(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")
+                    String userhandle);
+    
+    /**
+     * 
+     * 
+     * @return Empty
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/story", method = "OPTIONS")
+    Empty userUserhandleStoryOptions();
+    
+    /**
+     * 
+     * 
+     * @param userhandle 
      * @return Empty
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/unfollow", method = "POST")
@@ -186,6 +205,25 @@ public interface CluttterClient {
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/{followuser}", method = "OPTIONS")
     Empty userUserhandleFollowuserOptions();
+    
+    /**
+     * 
+     * 
+     * @param hashtag 
+     * @return Empty
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/{hashtag}", method = "GET")
+    Empty hashtagGet(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "hashtag", location = "path")
+                    String hashtag);
+    
+    /**
+     * 
+     * 
+     * @return Empty
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/{hashtag}", method = "OPTIONS")
+    Empty hashtagOptions();
     
 }
 

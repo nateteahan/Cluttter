@@ -1,13 +1,9 @@
 package com.example.clutter.Presenter;
 
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.support.v4.content.res.ResourcesCompat;
-import android.widget.ImageView;
 
 import com.example.clutter.InterfaceMVP.FeedFragmentMVP;
 import com.example.clutter.Model.Status;
-import com.example.clutter.R;
 import com.example.clutter.ServerProxy.ServerProxy;
 import com.example.clutter.View.FeedFragment;
 import com.example.clutter.sdk.model.StatusList;
@@ -33,6 +29,7 @@ public class FeedPresenter implements FeedFragmentMVP.Presenter {
 
             List<StatusListStatusesItem> statusItems = listOfStatuses.getStatuses();
             List<com.example.clutter.Model.Status> statusesToPost = new ArrayList<>();
+
             // For each of the JSON status items returned from AWS, parse into model Status object
             for (int i = 0; i < statusItems.size() ; i++) {
                 StatusListStatusesItem currentStatus = statusItems.get(i);
@@ -45,11 +42,11 @@ public class FeedPresenter implements FeedFragmentMVP.Presenter {
                 String videoAttachment = currentStatus.getVideoAttachment();
 
                 com.example.clutter.Model.Status clientStatus = new com.example.clutter.Model.Status(firstName, userHandle,
-                                                        time, status, imageAttachment, videoAttachment);
+                        time, status, imageAttachment, videoAttachment);
                 statusesToPost.add(clientStatus);
             }
 
-            statuses = statusesToPost;
+//            statuses = statusesToPost;
             return statusesToPost;
         }
 
@@ -73,9 +70,9 @@ public class FeedPresenter implements FeedFragmentMVP.Presenter {
 //        ImageView icon =
 
 //        Drawable drawable = feedView.getResources().getDrawable(R.drawable.camera_logo);
-        Drawable drawable = ResourcesCompat.getDrawable(feedView.getResources(), R.drawable.camera_logo, null);
-        ImageView imageView = new ImageView(feedView.getActivity());
-        imageView.setImageDrawable(drawable);
+//        Drawable drawable = ResourcesCompat.getDrawable(feedView.getResources(), R.drawable.camera_logo, null);
+//        ImageView imageView = new ImageView(feedView.getActivity());
+//        imageView.setImageDrawable(drawable);
 
 //        status = new Status("Nate", "@nateteahan", "4:20 a.m.", "Man I don't know why I am still awake", imageView, null);
 //        statuses.add(status);
