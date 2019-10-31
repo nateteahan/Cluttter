@@ -30,7 +30,6 @@ public class FollowerPresenter implements FollowMvp.Presenter {
             List<FollowerListFollowersItem> followerItem = listOfFollowers.getFollowers();
             List<FollowInfo> followingToDisplay = new ArrayList<>();
 
-            int hell0 = 0;
 
             // For each of the JSON follow items returned from AWS, parse into model FollowInfo object
             for (int i = 0; i < followerItem.size() ; i++) {
