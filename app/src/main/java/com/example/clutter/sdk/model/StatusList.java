@@ -15,7 +15,8 @@
 
 package com.example.clutter.sdk.model;
 
-import java.util.List;
+import java.util.*;
+import com.example.clutter.sdk.model.StatusListStatusesItem;
 
 public class StatusList {
     @com.google.gson.annotations.SerializedName("statuses")

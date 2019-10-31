@@ -15,7 +15,8 @@
 
 package com.example.clutter.sdk.model;
 
-import java.util.List;
+import com.example.clutter.sdk.model.FollowerListFollowersItem;
+import java.util.*;
 
 public class FollowerList {
     @com.google.gson.annotations.SerializedName("followers")
