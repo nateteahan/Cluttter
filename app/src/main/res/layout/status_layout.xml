@@ -115,7 +115,7 @@
         app:layout_constraintVertical_bias="0.038" />
 
     <ImageView
-        android:id="@+id/photoAttach"
+        android:id="@+id/ivPhotoAttach"
         android:layout_width="251dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvStatusMessage"
@@ -125,17 +125,15 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="36dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvStatusMessage"
         tools:srcCompat="@tools:sample/avatars" />
 
     <VideoView
-        android:id="@+id/videoAttach"
+        android:id="@+id/vvVideoAttach"
         android:layout_width="248dp"
         android:layout_height="147dp"
         android:layout_below="@+id/tvStatusMessage"
@@ -145,10 +143,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="212dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"

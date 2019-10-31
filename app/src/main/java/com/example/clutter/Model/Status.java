@@ -1,26 +1,23 @@
 package com.example.clutter.Model;
 
-import android.widget.ImageView;
-import android.widget.VideoView;
-
 public class Status {
 //    private ImageView profilePic;
-    private String userFirstName;
+    private String firstName;
     private String userHandle;
     private String time;
     private String status;
-    private VideoView videoAttachemnt;
-    private ImageView imageAttachment;
+    private String imageAttachment;
+    private String videoAttachment;
 
     //Constructor
-    public Status(String firstName, String handle, String time, String status, ImageView imageView, VideoView videoView) {
+    public Status(String firstName, String handle, String time, String status, String imageURL, String videoURL) {
 //        this.profilePic = icon;
-        this.userFirstName = firstName;
+        this.firstName = firstName;
         this.userHandle = handle;
         this.time = time;
         this.status = status;
-        this.imageAttachment = imageView;
-        this.videoAttachemnt = videoView;
+        this.imageAttachment = imageURL;
+        this.videoAttachment = videoURL;
     }
 
 //    public ImageView getProfilePic() {
@@ -31,12 +28,12 @@ public class Status {
 //        this.profilePic = profilePic;
 //    }
 
-    public String getUserFirstName() {
-        return userFirstName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setUserFirstName(String userFirstName) {
-        this.userFirstName = userFirstName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getUserHandle() {
@@ -63,19 +60,19 @@ public class Status {
         this.status = status;
     }
 
-    public VideoView getVideoAttachemnt() {
-        return videoAttachemnt;
+    public String getVideoAttachment() {
+        return videoAttachment;
     }
 
-    public void setVideoAttachemnt(VideoView videoAttachemnt) {
-        this.videoAttachemnt = videoAttachemnt;
+    public void setVideoAttachment(String videoAttachment) {
+        this.videoAttachment = videoAttachment;
     }
 
-    public ImageView getImageAttachment() {
+    public String getImageAttachment() {
         return imageAttachment;
     }
 
-    public void setImageAttachment(ImageView imageAttachment) {
+    public void setImageAttachment(String imageAttachment) {
         this.imageAttachment = imageAttachment;
     }
 }

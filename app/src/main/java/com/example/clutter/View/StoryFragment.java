@@ -47,7 +47,7 @@
 //        protected void bind(Status currentStatus) {
 //            Drawable drawable = getResources().getDrawable(R.drawable.me);
 //            imageView.setImageDrawable(drawable);
-//            name.setText(currentStatus.getUserFirstName());
+//            name.setText(currentStatus.getFirstName());
 //            handle.setText(currentStatus.getUserHandle());
 //            time.setText(currentStatus.getTime());
 //            status.setText(currentStatus.getStatus());

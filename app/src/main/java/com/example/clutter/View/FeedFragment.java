@@ -2,7 +2,6 @@ package com.example.clutter.View;
 
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.example.clutter.InterfaceMVP.FeedFragmentMVP;
 import com.example.clutter.Model.Status;
@@ -36,8 +34,8 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
         private TextView handle;
         private TextView time;
         private TextView status;
-        private ImageView photoAttachment;
-        private VideoView videoAttachment;
+        private TextView photoAttachment;
+        private TextView videoAttachment;
 
         public FeedResultHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.status_layout, parent, false));
@@ -47,41 +45,41 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
             handle = itemView.findViewById(R.id.tvStatusHandle);
             time = itemView.findViewById(R.id.tvStatusTime);
             status = itemView.findViewById(R.id.tvStatusMessage);
-            photoAttachment = itemView.findViewById(R.id.photoAttach);
-            videoAttachment = itemView.findViewById(R.id.videoAttach);
+//            photoAttachment = itemView.findViewById(R.id.photoAttach);
+//            videoAttachment = itemView.findViewById(R.id.videoAttach);
         }
 
         protected void bind(Status currentStatus) {
-            Drawable drawable = getResources().getDrawable(R.drawable.me);
-            profilePic.setImageDrawable(drawable);
-            name.setText(currentStatus.getUserFirstName());
+            name.setText(currentStatus.getFirstName());
             handle.setText(currentStatus.getUserHandle());
             time.setText(currentStatus.getTime());
             status.setText(currentStatus.getStatus());
+//            photoAttachment.setText(currentStatus.getImageAttachment());
+//            videoAttachment.setText(currentStatus.getImageAttachment());
 
-            //Handle attachments visibility
-            if (currentStatus.getImageAttachment() != null) {
-                Drawable drawable1 = getResources().getDrawable(R.drawable.camera_logo);
-                photoAttachment.setImageDrawable(drawable1);
-//                photoAttachment = currentStatus.getImageAttachment();
-//                photoAttachment.setImageDrawable(currentStatus.getImageAttachment());
-                videoAttachment.setVisibility(View.VISIBLE);
-                photoAttachment.setVisibility(View.GONE);
+//            //Handle attachments visibility
+//            if (currentStatus != null) {
+//                Drawable drawable1 = getResources().getDrawable(R.drawable.camera_logo);
+//                photoAttachment.setImageDrawable(drawable1);
+////                photoAttachment = currentStatus.getImageAttachment();
+////                photoAttachment.setImageDrawable(currentStatus.getImageAttachment());
+//                videoAttachment.setVisibility(View.VISIBLE);
+//                photoAttachment.setVisibility(View.GONE);
+////                videoAttachment.setVisibility(View.GONE);
+//            }
+//            else if (currentStatus.getVideoAttachment() != null) {
+////                videoAttachment = currentStatus.getVideoAttachment();
+//                videoAttachment.setVisibility(View.VISIBLE);
+//                photoAttachment.setVisibility(View.GONE);
+//            }
+//            else {
+//                photoAttachment.setVisibility(View.GONE);
 //                videoAttachment.setVisibility(View.GONE);
-            }
-            else if (currentStatus.getVideoAttachemnt() != null) {
-                videoAttachment = currentStatus.getVideoAttachemnt();
-                videoAttachment.setVisibility(View.VISIBLE);
-                photoAttachment.setVisibility(View.GONE);
-            }
-            else {
-                photoAttachment.setVisibility(View.GONE);
-                videoAttachment.setVisibility(View.GONE);
-            }
+//            }
 
 
             Pattern usernamePattern = Pattern.compile("@+[a-zA-Z0-9]*");
-            Linkify.addLinks(status, usernamePattern, "input.my.scheme"); //Goto androidmanifest.xml and look at the scheme of the UserActivity
+            Linkify.addLinks(status, usernamePattern, "input.my.scheme://"); //Goto androidmanifest.xml and look at the scheme of the UserActivity
 
             Pattern hashtagPattern = Pattern.compile("#+[a-zA-Z0-9]*");
             Linkify.addLinks(status, hashtagPattern, "https://www.google.com/search?q=cute+dogs&sxsrf=ACYBGNRUBLAZdG893VLA9PYXtmv_ihmvqw:1571980349732&source=lnms&tbm=isch&sa=X&ved=0ahUKEwj2utuS07blAhWVvZ4KHfK4CSgQ_AUIEigB&biw=1440&bih=789");
@@ -99,7 +97,6 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
             status.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // FIXME need to pass a bundle with the current status info to the status activity
                     Intent intent = new Intent(getActivity(), StatusActivity.class);
                     intent.putExtra("STATUS", status.getText().toString());
                     intent.putExtra("NAME", name.getText().toString());
