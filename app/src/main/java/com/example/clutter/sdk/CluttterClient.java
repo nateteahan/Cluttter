@@ -190,10 +190,10 @@ public interface CluttterClient {
      * 
      * @param followuser 
      * @param userhandle 
-     * @return Empty
+     * @return Message
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/{followuser}", method = "POST")
-    Empty userUserhandleFollowuserPost(
+    Message userUserhandleFollowuserPost(
             @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "followuser", location = "path")
                     String followuser,
             @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")

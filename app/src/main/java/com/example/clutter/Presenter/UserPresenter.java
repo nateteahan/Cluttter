@@ -7,6 +7,7 @@ import com.example.clutter.Model.Status;
 import com.example.clutter.Model.UserInfo;
 import com.example.clutter.ServerProxy.ServerProxy;
 import com.example.clutter.View.UserActivity;
+import com.example.clutter.sdk.model.Message;
 import com.example.clutter.sdk.model.StatusList;
 import com.example.clutter.sdk.model.StatusListStatusesItem;
 import com.example.clutter.sdk.model.User;
@@ -16,6 +17,44 @@ import java.util.List;
 
 public class UserPresenter implements UserMVP.Presenter {
     private UserActivity view;
+
+    private class UnfollowUserAsync extends AsyncTask<Void, Void, Message> {
+
+        private UnfollowUserAsync() {
+            //Blank constructor
+        }
+
+        @Override
+        protected Message doInBackground(Void... voids) {
+            ServerProxy proxy = new ServerProxy();
+
+            return proxy.followUser();
+        }
+
+        @Override
+        protected void onPostExecute(Message message) {
+            view.followUser(message);
+        }
+    }
+
+    private class FollowUserAsync extends AsyncTask<Void, Void, Message> {
+
+        private FollowUserAsync() {
+            //Blank constructor
+        }
+
+        @Override
+        protected Message doInBackground(Void... voids) {
+            ServerProxy proxy = new ServerProxy();
+
+            return proxy.followUser();
+        }
+
+        @Override
+        protected void onPostExecute(Message message) {
+            view.followUser(message);
+        }
+    }
 
     private class GetUserInfoAsync extends AsyncTask<Void, Void, UserInfo> {
 
@@ -97,5 +136,13 @@ public class UserPresenter implements UserMVP.Presenter {
 
     public void getUserInfo() {
         new GetUserInfoAsync().execute();
+    }
+
+    public void followUser() {
+        new FollowUserAsync().execute();
+    }
+
+    public void unfollowUser() {
+
     }
 }

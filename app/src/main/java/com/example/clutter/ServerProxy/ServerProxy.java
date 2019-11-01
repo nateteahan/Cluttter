@@ -62,4 +62,12 @@ public class ServerProxy {
     public User getUser() {
         return client.userUserhandleGet("@roscoeevans");
     }
+
+    public Message followUser() {
+        return client.userUserhandleFollowuserPost("@roscoeevans", "@nateteahan");
+    }
+
+//    public Message unfollowUser() {
+////        return client.userUserhandleUnfollowPost("@roscoeevans");
+//    }
 }

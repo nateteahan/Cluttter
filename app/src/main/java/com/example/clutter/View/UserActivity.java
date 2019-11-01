@@ -11,8 +11,10 @@ import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.example.clutter.InterfaceMVP.UserMVP;
@@ -20,6 +22,7 @@ import com.example.clutter.Model.Status;
 import com.example.clutter.Model.UserInfo;
 import com.example.clutter.Presenter.UserPresenter;
 import com.example.clutter.R;
+import com.example.clutter.sdk.model.Message;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -35,6 +38,7 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
     private ImageView ivPic;
     private TextView tvFirstName;
     private TextView tvLastName;
+    private Button btnFollow;
 
 
     private class StatusResultHolder extends RecyclerView.ViewHolder {
@@ -192,22 +196,10 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
         ivPic = findViewById(R.id.ivUserAccount);
         tvFirstName = findViewById(R.id.tvFirstName);
         tvLastName = findViewById(R.id.tvLastName);
+        btnFollow = findViewById(R.id.btnFollow);
         mRecyclerView = findViewById(R.id.rvStory);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         presenter = new UserPresenter(this);
-
-//        String userHandle = "";
-
-        //Parse data to determine the userhandle clicked on
-//        Uri data = getIntent().getData();
-//        if (data!=null) {
-//            if (data.toString().contains("input.my.scheme://")){
-//                String[] strip_id = data.toString().split("//");
-//                userHandle = strip_id[1];
-//            }
-//        }
-//        tvHandle.setText(userHandle);
-
 
         presenter.createDummyData();
         presenter.getUserInfo();
@@ -219,6 +211,18 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
                 startActivity(intent);
             }
         });
+
+        btnFollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (btnFollow.getText().toString().equals("FOLLOW")) {
+                    presenter.followUser();
+                }
+                else {
+                    presenter.unfollowUser();
+                }
+            }
+        });
     }
 
 
@@ -228,6 +232,7 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    @Override
     public void assignUserFields(UserInfo info) {
         String profilePicPath = info.getProfilePic();
         Picasso.get().load(profilePicPath)
@@ -238,6 +243,15 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
         tvHandle.setText(info.getUserHandle());
         tvFirstName.setText(info.getFirstName());
         tvLastName.setText(info.getLastName());
+    }
+
+    public void followUser(Message message) {
+        btnFollow.setText(R.string.unfollow);
+        Toast.makeText(this, "Successfully followed user.", Toast.LENGTH_SHORT).show();
+    }
+
+    public void unfollowUser(Message message) {
+
     }
 
 }

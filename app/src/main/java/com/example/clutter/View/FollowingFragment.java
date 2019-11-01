@@ -1,7 +1,6 @@
 package com.example.clutter.View;
 
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -16,9 +15,9 @@ import android.widget.TextView;
 
 import com.example.clutter.InterfaceMVP.FollowMvp;
 import com.example.clutter.Model.FollowInfo;
-import com.example.clutter.Presenter.FollowerPresenter;
 import com.example.clutter.Presenter.FollowingPresenter;
 import com.example.clutter.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -44,8 +43,11 @@ public class FollowingFragment extends Fragment implements FollowMvp.View {
         }
 
         protected void bind (FollowInfo info) {
-            Drawable drawable = getResources().getDrawable(R.drawable.ic_user);
-            image.setImageDrawable(drawable);
+            Picasso.get().load(info.profilePic).centerCrop()
+                    .transform(new RoundedTransformation(24, 24))
+                    .fit()
+                    .into(image);
+            ;
             name.setText(info.getName());
 
             name.setOnClickListener(new View.OnClickListener() {
