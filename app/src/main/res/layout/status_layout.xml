@@ -7,6 +7,7 @@
     android:paddingTop="8dp"
     app:layout_constrainedWidth="true">
 
+
     <ImageView
         android:id="@+id/ivProfilePic"
         android:layout_width="50dp"
@@ -114,24 +115,6 @@
         app:layout_constraintTop_toBottomOf="@+id/ivProfilePic"
         app:layout_constraintVertical_bias="0.038" />
 
-    <ImageView
-        android:id="@+id/ivPhotoAttach"
-        android:layout_width="251dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvStatusMessage"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvStatusMessage"
-        tools:srcCompat="@tools:sample/avatars" />
-
     <VideoView
         android:id="@+id/vvVideoAttach"
         android:layout_width="248dp"
@@ -143,12 +126,38 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="212dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvStatusMessage" />
+
+    <ImageView
+        android:id="@+id/ivPhotoAttach"
+        android:layout_width="272dp"
+        android:layout_height="201dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/vvVideoAttach"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvStatusMessage"
+        app:layout_constraintVertical_bias="0.0"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/background_dark"
+        app:layout_constraintTop_toBottomOf="@+id/vvVideoAttach"
+        tools:layout_editor_absoluteX="0dp" />
+
+
 
 
 </android.support.constraint.ConstraintLayout>

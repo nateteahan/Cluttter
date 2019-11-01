@@ -210,10 +210,10 @@ public interface CluttterClient {
      * 
      * 
      * @param hashtag 
-     * @return Empty
+     * @return StatusList
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/{hashtag}", method = "GET")
-    Empty hashtagGet(
+    StatusList hashtagGet(
             @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "hashtag", location = "path")
                     String hashtag);
     

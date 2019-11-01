@@ -2,6 +2,7 @@ package com.example.clutter.View;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -14,12 +15,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.example.clutter.InterfaceMVP.FeedFragmentMVP;
 import com.example.clutter.Model.Status;
 import com.example.clutter.Presenter.FeedPresenter;
 import com.example.clutter.R;
+import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -35,8 +39,8 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
         private TextView handle;
         private TextView time;
         private TextView status;
-        private TextView photoAttachment;
-        private TextView videoAttachment;
+        private ImageView photoAttachment;
+        private VideoView videoAttachment;
 
         public FeedResultHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.status_layout, parent, false));
@@ -46,15 +50,45 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
             handle = itemView.findViewById(R.id.tvStatusHandle);
             time = itemView.findViewById(R.id.tvStatusTime);
             status = itemView.findViewById(R.id.tvStatusMessage);
-//            photoAttachment = itemView.findViewById(R.id.photoAttach);
-//            videoAttachment = itemView.findViewById(R.id.videoAttach);
+            photoAttachment = itemView.findViewById(R.id.ivPhotoAttach);
+            videoAttachment = itemView.findViewById(R.id.vvVideoAttach);
         }
 
-        protected void bind(Status currentStatus) {
+        protected void bind(Status currentStatus) throws IOException {
             name.setText(currentStatus.getFirstName());
             handle.setText(currentStatus.getUserHandle());
             time.setText(currentStatus.getTime());
             status.setText(currentStatus.getStatus());
+            photoAttachment.setVisibility(View.GONE);
+            videoAttachment.setVisibility(View.GONE);
+//
+            if (currentStatus.getImageAttachment() != null) {
+                photoAttachment.setVisibility(View.VISIBLE);
+                videoAttachment.setVisibility(View.GONE);
+
+                Picasso.get().load(currentStatus.getImageAttachment())
+                                                .centerCrop()
+                                                .fit()
+                                                .into(photoAttachment);
+
+            }
+
+            if (currentStatus.getVideoAttachment() != null) {
+                //inflate photoAttachment
+//                Picasso.get().setLoggingEnabled(true);
+//                Picasso.get().load(currentStatus.getImageAttachment())
+//                                                        .centerCrop()
+//                                                        .fit()
+//                                                        .into(photoAttachment);
+//                Bitmap x = presenter.setImageAttachment();
+                //Drawable pic = presenter.LoadImageFromWebOperations(currentStatus.getImageAttachment());
+                photoAttachment.setVisibility(View.GONE);
+//                photoAttachment.setImageDrawable(pic);
+                videoAttachment.setVisibility(View.VISIBLE);
+                Uri uri = Uri.parse(currentStatus.getVideoAttachment());
+                videoAttachment.setVideoURI(uri);
+                videoAttachment.start();
+            }
 //            photoAttachment.setText(currentStatus.getImageAttachment());
 //            videoAttachment.setText(currentStatus.getImageAttachment());
 
@@ -83,7 +117,7 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
             Linkify.addLinks(status, usernamePattern, "input.my.scheme://"); //Goto androidmanifest.xml and look at the scheme of the UserActivity
 
             Pattern hashtagPattern = Pattern.compile("#+[a-zA-Z0-9]*");
-            Linkify.addLinks(status, hashtagPattern, "https://www.google.com/search?q=cute+dogs&sxsrf=ACYBGNRUBLAZdG893VLA9PYXtmv_ihmvqw:1571980349732&source=lnms&tbm=isch&sa=X&ved=0ahUKEwj2utuS07blAhWVvZ4KHfK4CSgQ_AUIEigB&biw=1440&bih=789");
+            Linkify.addLinks(status, hashtagPattern, "input.hashtag.scheme://");
 
 
             handle.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +143,7 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
 
         }
     }
+
     private class FeedAdapter extends RecyclerView.Adapter<FeedResultHolder> {
         private List<Status> results;
 
@@ -126,8 +161,12 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
 
         @Override
         public void onBindViewHolder(@NonNull FeedResultHolder feedResultHolder, int position) {
-            Status status = results.get(position);
-            feedResultHolder.bind(status);
+            try {
+                Status status = results.get(position);
+                feedResultHolder.bind(status);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -166,5 +205,4 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
         mAdapter = new FeedAdapter(statuses);
         mRecyclerView.setAdapter(mAdapter);
     }
-
 }

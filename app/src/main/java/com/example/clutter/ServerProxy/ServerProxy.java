@@ -48,4 +48,8 @@ public class ServerProxy {
     public FollowerList getFollowers() {
         return client.userUserhandleFollowersGet("@nateteahan");
     }
+
+    public StatusList getHashtagStatuses() {
+        return client.hashtagGet("#CS");
+    }
 }

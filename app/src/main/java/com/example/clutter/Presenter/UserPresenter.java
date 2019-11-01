@@ -2,28 +2,29 @@ package com.example.clutter.Presenter;
 
 import android.os.AsyncTask;
 
+import com.example.clutter.InterfaceMVP.UserMVP;
 import com.example.clutter.Model.Status;
 import com.example.clutter.ServerProxy.ServerProxy;
-import com.example.clutter.View.HashtagActivity;
+import com.example.clutter.View.UserActivity;
 import com.example.clutter.sdk.model.StatusList;
 import com.example.clutter.sdk.model.StatusListStatusesItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HashtagPresenter {
-    private HashtagActivity view;
+public class UserPresenter implements UserMVP.Presenter {
+    private UserActivity view;
 
-    private class GetHashtagAsync extends AsyncTask<Void, Void, List<Status>> {
+    private class GetUserStoryAsync extends AsyncTask<Void, Void, List<Status>> {
 
-        private GetHashtagAsync() {
+        private GetUserStoryAsync() {
             //Blank constructor
         }
 
         @Override
         protected List<com.example.clutter.Model.Status> doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
-            StatusList listOfStatuses = proxy.getHashtagStatuses();
+            StatusList listOfStatuses = proxy.getUserStory();
 
             List<StatusListStatusesItem> statusItems = listOfStatuses.getStatuses();
             List<com.example.clutter.Model.Status> statusesToPost = new ArrayList<>();
@@ -50,16 +51,16 @@ public class HashtagPresenter {
 
         @Override
         protected void onPostExecute(List<com.example.clutter.Model.Status> statuses) {
-            view.displayHashtagStatuses(statuses);
+            view.displayStatuses(statuses);
         }
     }
 
-    public HashtagPresenter(HashtagActivity view) {
+    public UserPresenter(UserActivity view) {
         this.view = view;
     }
 
+    @Override
     public void createDummyData() {
-        new GetHashtagAsync().execute();
-
+        new GetUserStoryAsync().execute();
     }
 }

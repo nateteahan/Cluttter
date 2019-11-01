@@ -34,9 +34,11 @@
         </activity>
 
         <activity android:name=".View.HashtagActivity">
-            <!--<category android:name="android.intent.category.DEFAULT" />-->
-            <!--<action android:name="android.intent.action.VIEW" />-->
-            <!--<data android:scheme="input.hashtag.scheme" />-->
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="input.hashtag.scheme" />
+            </intent-filter>
         </activity>
 
         <activity android:name=".View.StatusActivity" />
