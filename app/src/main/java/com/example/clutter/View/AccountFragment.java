@@ -11,20 +11,24 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.example.clutter.InterfaceMVP.StoryFragmentMVP;
 import com.example.clutter.Model.Status;
 import com.example.clutter.Presenter.AccountPresenter;
 import com.example.clutter.Presenter.StoryPresenter;
 import com.example.clutter.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -109,25 +113,59 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
         private TextView handle;
         private TextView time;
         private TextView status;
+        private ImageView imageAttachment;
+        private VideoView videoAttachment;
 
         public StoryResultHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.story_layout, parent, false));
+            super(inflater.inflate(R.layout.status_layout, parent, false));
 
-            imageView = itemView.findViewById(R.id.ivStory);
-            name = itemView.findViewById(R.id.tvStoryName);
-            handle = itemView.findViewById(R.id.tvStoryHandle);
-            time = itemView.findViewById(R.id.tvStoryTime);
-            status = itemView.findViewById(R.id.tvStory_Status);
+            imageView = itemView.findViewById(R.id.ivProfilePic);
+            name = itemView.findViewById(R.id.tvStatusName);
+            handle = itemView.findViewById(R.id.tvStatusHandle);
+            time = itemView.findViewById(R.id.tvStatusTime);
+            status = itemView.findViewById(R.id.tvStatusMessage);
+            imageAttachment = itemView.findViewById(R.id.ivPhotoAttach);
+            videoAttachment = itemView.findViewById(R.id.vvVideoAttach);
         }
 
         protected void bind(Status currentStatus) {
-            Drawable drawable = getResources().getDrawable(R.drawable.me);
-            imageView.setImageDrawable(drawable);
+            String profilePicPath = currentStatus.getProfilePic();
+            Picasso.get().load(profilePicPath)
+                    .centerCrop()
+                    .transform(new RoundedTransformation(24, 24))
+                    .fit()
+                    .into(imageView);
             name.setText(currentStatus.getFirstName());
             handle.setText(currentStatus.getUserHandle());
             time.setText(currentStatus.getTime());
             status.setText(currentStatus.getStatus());
 
+            // Checks for image and photo attachments
+            if (currentStatus.getImageAttachment() != null) {
+                imageAttachment.setVisibility(View.VISIBLE);
+                videoAttachment.setVisibility(View.GONE);
+
+                Picasso.get().load(currentStatus.getImageAttachment())
+                        .centerCrop()
+                        .transform(new RoundedTransformation(24, 24))
+                        .fit()
+                        .into(imageAttachment);
+
+            }
+
+            if (currentStatus.getVideoAttachment() != null) {
+                imageAttachment.setVisibility(View.GONE);
+                videoAttachment.setVisibility(View.VISIBLE);
+                Uri uri = Uri.parse(currentStatus.getVideoAttachment());
+                videoAttachment.setVideoURI(uri);
+                videoAttachment.start();
+            }
+
+            Pattern usernamePattern = Pattern.compile("@+[a-zA-Z0-9]*");
+            Linkify.addLinks(status, usernamePattern, "input.my.scheme://"); //Goto androidmanifest.xml and look at the scheme of the UserActivity
+
+            Pattern hashtagPattern = Pattern.compile("#+[a-zA-Z0-9]*");
+            Linkify.addLinks(status, hashtagPattern, "input.hashtag.scheme://");
         }
     }
 

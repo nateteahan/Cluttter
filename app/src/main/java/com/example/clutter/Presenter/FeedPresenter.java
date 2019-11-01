@@ -1,9 +1,6 @@
 package com.example.clutter.Presenter;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.example.clutter.InterfaceMVP.FeedFragmentMVP;
 import com.example.clutter.Model.Status;
@@ -12,7 +9,6 @@ import com.example.clutter.View.FeedFragment;
 import com.example.clutter.sdk.model.StatusList;
 import com.example.clutter.sdk.model.StatusListStatusesItem;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,35 +54,6 @@ public class FeedPresenter implements FeedFragmentMVP.Presenter {
         @Override
         protected void onPostExecute(List<com.example.clutter.Model.Status> statuses) {
             feedView.displayStatus(statuses);
-        }
-    }
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-//        ImageView bmImage;
-        String url;
-
-        public DownloadImageTask(String url) {
-//            this.bmImage = bmImage;
-            this.url = url;
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-//            bmImage.setImageBitmap(result);
         }
     }
 

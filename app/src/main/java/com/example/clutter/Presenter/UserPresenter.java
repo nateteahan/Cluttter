@@ -28,12 +28,12 @@ public class UserPresenter implements UserMVP.Presenter {
         protected Message doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
 
-            return proxy.followUser();
+            return proxy.unfollowUser();
         }
 
         @Override
         protected void onPostExecute(Message message) {
-            view.followUser(message);
+            view.unfollowUser(message);
         }
     }
 
@@ -143,6 +143,6 @@ public class UserPresenter implements UserMVP.Presenter {
     }
 
     public void unfollowUser() {
-
+        new UnfollowUserAsync().execute();
     }
 }

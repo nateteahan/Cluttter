@@ -215,7 +215,7 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
         btnFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (btnFollow.getText().toString().equals("FOLLOW")) {
+                if (btnFollow.getText().toString().equals("Follow")) {
                     presenter.followUser();
                 }
                 else {
@@ -251,7 +251,8 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
     }
 
     public void unfollowUser(Message message) {
-
+        btnFollow.setText(R.string.follow);
+        Toast.makeText(this, "Successfully unfollowed user.", Toast.LENGTH_SHORT).show();
     }
 
 }

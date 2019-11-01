@@ -8,21 +8,6 @@ import com.example.clutter.sdk.model.Message;
 import com.example.clutter.sdk.model.StatusList;
 import com.example.clutter.sdk.model.User;
 
-//class Task extends AsyncTask<Void, Void, Void> {
-//    private CluttterClient client;
-//    private ApiClientFactory factory;
-//
-//    @Override
-//    protected Void doInBackground(Void... voids) {
-//        this.factory = new ApiClientFactory();
-//        this.client = factory.build(CluttterClient.class);
-//
-//            StatusList statuses = client.userFeedGet();
-//
-//            return null;
-//    }
-//}
-
 public class ServerProxy {
     private ApiClientFactory factory;
     private CluttterClient client;
@@ -67,7 +52,7 @@ public class ServerProxy {
         return client.userUserhandleFollowuserPost("@roscoeevans", "@nateteahan");
     }
 
-//    public Message unfollowUser() {
-////        return client.userUserhandleUnfollowPost("@roscoeevans");
-//    }
+    public Message unfollowUser() {
+        return client.userUserhandleUnfollowPost("@roscoeevans");
+    }
 }

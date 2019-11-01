@@ -18,6 +18,7 @@ import android.widget.VideoView;
 import com.example.clutter.Model.Status;
 import com.example.clutter.Presenter.HashtagPresenter;
 import com.example.clutter.R;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.List;
@@ -52,6 +53,12 @@ public class HashtagActivity extends AppCompatActivity {
         }
 
         protected void bind(Status currentStatus) throws IOException {
+            String profilePicPath = currentStatus.getProfilePic();
+            Picasso.get().load(profilePicPath)
+                    .centerCrop()
+                    .transform(new RoundedTransformation(24, 24))
+                    .fit()
+                    .into(profilePic);
             name.setText(currentStatus.getFirstName());
             handle.setText(currentStatus.getUserHandle());
             time.setText(currentStatus.getTime());

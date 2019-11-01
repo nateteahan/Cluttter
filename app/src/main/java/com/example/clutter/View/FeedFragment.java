@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.util.Linkify;
@@ -99,9 +98,8 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
             handle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AccountFragment accountFrag = new AccountFragment();
-                    FragmentManager fm = getFragmentManager();
-                    fm.beginTransaction().replace(R.id.fragment_container, accountFrag).addToBackStack(null).commit();
+                    Intent intent = new Intent(getActivity(), UserActivity.class);
+                    startActivity(intent);
                 }
             });
 
