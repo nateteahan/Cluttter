@@ -1,7 +1,7 @@
 package com.example.clutter.Model;
 
 public class Status {
-//    private ImageView profilePic;
+    private String profilePic;
     private String firstName;
     private String userHandle;
     private String time;
@@ -10,8 +10,8 @@ public class Status {
     private String videoAttachment;
 
     //Constructor
-    public Status(String firstName, String handle, String time, String status, String imageURL, String videoURL) {
-//        this.profilePic = icon;
+    public Status(String profilePic, String firstName, String handle, String time, String status, String imageURL, String videoURL) {
+        this.profilePic = profilePic;
         this.firstName = firstName;
         this.userHandle = handle;
         this.time = time;
@@ -20,13 +20,13 @@ public class Status {
         this.videoAttachment = videoURL;
     }
 
-//    public ImageView getProfilePic() {
-//        return profilePic;
-//    }
-//
-//    public void setProfilePic(ImageView profilePic) {
-//        this.profilePic = profilePic;
-//    }
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
+    }
 
     public String getFirstName() {
         return firstName;

@@ -1,12 +1,11 @@
 package com.example.clutter.Presenter;
 
 import com.example.clutter.InterfaceMVP.AccountFragmentMVP;
+import com.example.clutter.Model.FollowInfo;
 import com.example.clutter.View.AccountFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.example.clutter.Model.FollowInfo;
 
 public class AccountPresenter implements AccountFragmentMVP.Presenter {
     private AccountFragment view;
@@ -21,10 +20,10 @@ public class AccountPresenter implements AccountFragmentMVP.Presenter {
     public void createDummyFollowers() {
         info.clear();
 
-        FollowInfo follower = new FollowInfo("Justin");
+        FollowInfo follower = new FollowInfo("https://www.famousbirthdays.com/faces/hunt-director-justin-image.jpg","Justin");
         info.add(follower);
 
-        follower = new FollowInfo("Rocky");
+        follower = new FollowInfo("http://i.imgur.com/bIRGzVO.jpg", "Rocky");
         info.add(follower);
 
 //        view.displayInfo(info);
@@ -34,7 +33,7 @@ public class AccountPresenter implements AccountFragmentMVP.Presenter {
     public void createDummyFollowees() {
         info.clear();
 
-        FollowInfo followee = new FollowInfo("God");
+        FollowInfo followee = new FollowInfo("http://i.imgur.com/bIRGzVO.jpg", "God");
         info.add(followee);
 
 //        view.displayInfo(info);

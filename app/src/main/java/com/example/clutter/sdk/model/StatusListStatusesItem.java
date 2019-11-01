@@ -18,6 +18,11 @@ package com.example.clutter.sdk.model;
 
 public class StatusListStatusesItem {
     /**
+     * URL of profile picture
+     */
+    @com.google.gson.annotations.SerializedName("profilePic")
+    private String profilePic = null;
+    /**
      * The name of the user who posted the status
      */
     @com.google.gson.annotations.SerializedName("firstName")
@@ -47,6 +52,24 @@ public class StatusListStatusesItem {
      */
     @com.google.gson.annotations.SerializedName("videoAttachment")
     private String videoAttachment = null;
+
+    /**
+     * URL of profile picture
+     *
+     * @return profilePic
+     **/
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    /**
+     * Sets the value of profilePic.
+     *
+     * @param profilePic the new value
+     */
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
+    }
 
     /**
      * The name of the user who posted the status

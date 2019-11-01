@@ -4,6 +4,7 @@ import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.example.clutter.sdk.CluttterClient;
 import com.example.clutter.sdk.model.FollowerList;
 import com.example.clutter.sdk.model.FollowingList;
+import com.example.clutter.sdk.model.Message;
 import com.example.clutter.sdk.model.StatusList;
 
 //class Task extends AsyncTask<Void, Void, Void> {
@@ -51,5 +52,9 @@ public class ServerProxy {
 
     public StatusList getHashtagStatuses() {
         return client.hashtagGet("#CS");
+    }
+
+    public Message postStatus() {
+        return client.userSendstatusPost();
     }
 }

@@ -18,10 +18,33 @@ package com.example.clutter.sdk.model;
 
 public class FollowingListFollowingItem {
     /**
+     * URL of profile picture
+     */
+    @com.google.gson.annotations.SerializedName("profilePic")
+    private String profilePic = null;
+    /**
      * The handle of the user who is being followed
      */
     @com.google.gson.annotations.SerializedName("userHandle")
     private String userHandle = null;
+
+    /**
+     * URL of profile picture
+     *
+     * @return profilePic
+     **/
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    /**
+     * Sets the value of profilePic.
+     *
+     * @param profilePic the new value
+     */
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
+    }
 
     /**
      * The handle of the user who is being followed

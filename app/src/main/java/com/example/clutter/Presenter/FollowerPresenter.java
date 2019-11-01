@@ -35,8 +35,9 @@ public class FollowerPresenter implements FollowMvp.Presenter {
             for (int i = 0; i < followerItem.size() ; i++) {
                 FollowerListFollowersItem currentFollowing = followerItem.get(i);
 
+                String profilePic = currentFollowing.getProfilePic();
                 String userHandle = currentFollowing.getUserHandle();
-                FollowInfo followingObject = new FollowInfo(userHandle);
+                FollowInfo followingObject = new FollowInfo(profilePic,userHandle);
                 followingToDisplay.add(followingObject);
             }
             return followingToDisplay;

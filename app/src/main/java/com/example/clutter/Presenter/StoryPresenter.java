@@ -35,6 +35,7 @@ public class StoryPresenter implements StoryFragmentMVP.Presenter {
             for (int i = 0; i < statusItems.size() ; i++) {
                 StatusListStatusesItem currentStatus = statusItems.get(i);
 
+                String profilePic = currentStatus.getProfilePic();
                 String firstName = currentStatus.getFirstName();
                 String userHandle = currentStatus.getUserHandle();
                 String time = currentStatus.getTime();
@@ -42,7 +43,7 @@ public class StoryPresenter implements StoryFragmentMVP.Presenter {
                 String imageAttachment = currentStatus.getImageAttachment();
                 String videoAttachment = currentStatus.getVideoAttachment();
 
-                com.example.clutter.Model.Status clientStatus = new com.example.clutter.Model.Status(firstName, userHandle,
+                com.example.clutter.Model.Status clientStatus = new com.example.clutter.Model.Status(profilePic, firstName, userHandle,
                         time, status, imageAttachment, videoAttachment);
                 statusesToPost.add(clientStatus);
             }

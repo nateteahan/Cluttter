@@ -54,64 +54,40 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
             videoAttachment = itemView.findViewById(R.id.vvVideoAttach);
         }
 
-        protected void bind(Status currentStatus) throws IOException {
+        protected void bind(final Status currentStatus) throws IOException {
+            final String profilePicture = currentStatus.getProfilePic();
+            Picasso.get().load(profilePicture)
+                            .centerCrop()
+                            .transform(new RoundedTransformation(24, 24))
+                            .fit()
+                            .into(profilePic);
             name.setText(currentStatus.getFirstName());
             handle.setText(currentStatus.getUserHandle());
             time.setText(currentStatus.getTime());
             status.setText(currentStatus.getStatus());
             photoAttachment.setVisibility(View.GONE);
             videoAttachment.setVisibility(View.GONE);
-//
+
+            // Checks for image and photo attachments
             if (currentStatus.getImageAttachment() != null) {
                 photoAttachment.setVisibility(View.VISIBLE);
                 videoAttachment.setVisibility(View.GONE);
 
                 Picasso.get().load(currentStatus.getImageAttachment())
-                                                .centerCrop()
-                                                .fit()
-                                                .into(photoAttachment);
+                        .centerCrop()
+                        .transform(new RoundedTransformation(24, 24))
+                        .fit()
+                        .into(photoAttachment);
 
             }
 
             if (currentStatus.getVideoAttachment() != null) {
-                //inflate photoAttachment
-//                Picasso.get().setLoggingEnabled(true);
-//                Picasso.get().load(currentStatus.getImageAttachment())
-//                                                        .centerCrop()
-//                                                        .fit()
-//                                                        .into(photoAttachment);
-//                Bitmap x = presenter.setImageAttachment();
-                //Drawable pic = presenter.LoadImageFromWebOperations(currentStatus.getImageAttachment());
                 photoAttachment.setVisibility(View.GONE);
-//                photoAttachment.setImageDrawable(pic);
                 videoAttachment.setVisibility(View.VISIBLE);
                 Uri uri = Uri.parse(currentStatus.getVideoAttachment());
                 videoAttachment.setVideoURI(uri);
                 videoAttachment.start();
             }
-//            photoAttachment.setText(currentStatus.getImageAttachment());
-//            videoAttachment.setText(currentStatus.getImageAttachment());
-
-//            //Handle attachments visibility
-//            if (currentStatus != null) {
-//                Drawable drawable1 = getResources().getDrawable(R.drawable.camera_logo);
-//                photoAttachment.setImageDrawable(drawable1);
-////                photoAttachment = currentStatus.getImageAttachment();
-////                photoAttachment.setImageDrawable(currentStatus.getImageAttachment());
-//                videoAttachment.setVisibility(View.VISIBLE);
-//                photoAttachment.setVisibility(View.GONE);
-////                videoAttachment.setVisibility(View.GONE);
-//            }
-//            else if (currentStatus.getVideoAttachment() != null) {
-////                videoAttachment = currentStatus.getVideoAttachment();
-//                videoAttachment.setVisibility(View.VISIBLE);
-//                photoAttachment.setVisibility(View.GONE);
-//            }
-//            else {
-//                photoAttachment.setVisibility(View.GONE);
-//                videoAttachment.setVisibility(View.GONE);
-//            }
-
 
             Pattern usernamePattern = Pattern.compile("@+[a-zA-Z0-9]*");
             Linkify.addLinks(status, usernamePattern, "input.my.scheme://"); //Goto androidmanifest.xml and look at the scheme of the UserActivity
@@ -133,6 +109,7 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), StatusActivity.class);
+                    intent.putExtra("PIC", profilePicture);
                     intent.putExtra("STATUS", status.getText().toString());
                     intent.putExtra("NAME", name.getText().toString());
                     intent.putExtra("HANDLE", handle.getText().toString());
@@ -205,4 +182,39 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
         mAdapter = new FeedAdapter(statuses);
         mRecyclerView.setAdapter(mAdapter);
     }
+
+//    // Class to stylize the view of the imageAttachments
+//    public class RoundedTransformation implements com.squareup.picasso.Transformation {
+//        private final int radius;
+//        private final int margin;  // dp
+//
+//        // radius is corner radii in dp
+//        // margin is the board in dp
+//        public RoundedTransformation(final int radius, final int margin) {
+//            this.radius = radius;
+//            this.margin = margin;
+//        }
+//
+//        @Override
+//        public Bitmap transform(final Bitmap source) {
+//            final Paint paint = new Paint();
+//            paint.setAntiAlias(true);
+//            paint.setShader(new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
+//
+//            Bitmap output = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
+//            Canvas canvas = new Canvas(output);
+//            canvas.drawRoundRect(new RectF(margin, margin, source.getWidth() - margin, source.getHeight() - margin), radius, radius, paint);
+//
+//            if (source != output) {
+//                source.recycle();
+//            }
+//
+//            return output;
+//        }
+//
+//        @Override
+//        public String key() {
+//            return "rounded";
+//        }
+//    }
 }

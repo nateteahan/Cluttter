@@ -1,12 +1,12 @@
 package com.example.clutter.View;
 
-import android.graphics.drawable.Drawable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.clutter.R;
+import com.squareup.picasso.Picasso;
 
 public class StatusActivity extends AppCompatActivity {
     private ImageView imageView;
@@ -21,14 +21,19 @@ public class StatusActivity extends AppCompatActivity {
         setContentView(R.layout.activity_status);
 
         /* FIXME add links */
+        String profilePic = getIntent().getStringExtra("PIC");
         String status = getIntent().getStringExtra("STATUS");
         String handle = getIntent().getStringExtra("HANDLE");
         String time = getIntent().getStringExtra("TIME");
         String name = getIntent().getStringExtra("NAME");
 
-        Drawable drawable = getResources().getDrawable(R.drawable.me);
+//        Drawable drawable = getResources().getDrawable(R.drawable.me);
         imageView = findViewById(R.id.ivStatus1);
-        imageView.setImageDrawable(drawable);
+//        imageView.setImageDrawable(drawable);
+        Picasso.get().load(profilePic).centerCrop()
+                .transform(new RoundedTransformation(24, 24))
+                .fit()
+                .into(imageView);
         tvHandle = findViewById(R.id.tvHandle1);
         tvStatus = findViewById(R.id.tvStatus1);
         tvName = findViewById(R.id.tvName);
