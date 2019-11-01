@@ -4,16 +4,46 @@ import android.os.AsyncTask;
 
 import com.example.clutter.InterfaceMVP.UserMVP;
 import com.example.clutter.Model.Status;
+import com.example.clutter.Model.UserInfo;
 import com.example.clutter.ServerProxy.ServerProxy;
 import com.example.clutter.View.UserActivity;
 import com.example.clutter.sdk.model.StatusList;
 import com.example.clutter.sdk.model.StatusListStatusesItem;
+import com.example.clutter.sdk.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserPresenter implements UserMVP.Presenter {
     private UserActivity view;
+
+    private class GetUserInfoAsync extends AsyncTask<Void, Void, UserInfo> {
+
+        private GetUserInfoAsync() {
+            //Blank constructor
+        }
+
+        @Override
+        protected UserInfo doInBackground(Void... voids) {
+            ServerProxy proxy = new ServerProxy();
+            User user = proxy.getUser();
+
+
+            String profilePic = user.getProfilePic();
+            String userHandle = user.getUserHandle();
+            String firstName = user.getFirstName();
+            String lastName = user.getLastName();
+
+            UserInfo userInfo = new UserInfo(profilePic, userHandle, firstName, lastName);
+
+            return userInfo;
+        }
+
+        @Override
+        protected void onPostExecute(UserInfo userInfo) {
+            view.assignUserFields(userInfo);
+        }
+    }
 
     private class GetUserStoryAsync extends AsyncTask<Void, Void, List<Status>> {
 
@@ -63,5 +93,9 @@ public class UserPresenter implements UserMVP.Presenter {
     @Override
     public void createDummyData() {
         new GetUserStoryAsync().execute();
+    }
+
+    public void getUserInfo() {
+        new GetUserInfoAsync().execute();
     }
 }

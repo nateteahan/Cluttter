@@ -20,6 +20,7 @@ import com.example.clutter.sdk.model.FollowerList;
 import com.example.clutter.sdk.model.FollowingList;
 import com.example.clutter.sdk.model.Message;
 import com.example.clutter.sdk.model.StatusList;
+import com.example.clutter.sdk.model.User;
 
 
 @com.amazonaws.mobileconnectors.apigateway.annotation.Service(endpoint = "https://kogspst9ee.execute-api.us-west-2.amazonaws.com/Dev")
@@ -93,10 +94,10 @@ public interface CluttterClient {
      * 
      * 
      * @param userhandle 
-     * @return Empty
+     * @return User
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}", method = "GET")
-    Empty userUserhandleGet(
+    User userUserhandleGet(
             @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")
                     String userhandle);
     

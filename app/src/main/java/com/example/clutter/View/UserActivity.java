@@ -17,6 +17,7 @@ import android.widget.VideoView;
 
 import com.example.clutter.InterfaceMVP.UserMVP;
 import com.example.clutter.Model.Status;
+import com.example.clutter.Model.UserInfo;
 import com.example.clutter.Presenter.UserPresenter;
 import com.example.clutter.R;
 import com.squareup.picasso.Picasso;
@@ -31,6 +32,9 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
     private StatusAdapter mAdapter;
     private RecyclerView mRecyclerView;
     private UserPresenter presenter;
+    private ImageView ivPic;
+    private TextView tvFirstName;
+    private TextView tvLastName;
 
 
     private class StatusResultHolder extends RecyclerView.ViewHolder {
@@ -185,24 +189,36 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
 
         tvFollowers = findViewById(R.id.tvNumFollowers);
         tvHandle = findViewById(R.id.tvUser);
+        ivPic = findViewById(R.id.ivUserAccount);
+        tvFirstName = findViewById(R.id.tvFirstName);
+        tvLastName = findViewById(R.id.tvLastName);
         mRecyclerView = findViewById(R.id.rvStory);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         presenter = new UserPresenter(this);
 
-        String userHandle = "";
+//        String userHandle = "";
 
         //Parse data to determine the userhandle clicked on
-        Uri data = getIntent().getData();
-        if (data!=null) {
-            if (data.toString().contains("input.my.scheme://")){
-                String[] strip_id = data.toString().split("//");
-                userHandle = strip_id[1];
-            }
-        }
-        tvHandle.setText(userHandle);
+//        Uri data = getIntent().getData();
+//        if (data!=null) {
+//            if (data.toString().contains("input.my.scheme://")){
+//                String[] strip_id = data.toString().split("//");
+//                userHandle = strip_id[1];
+//            }
+//        }
+//        tvHandle.setText(userHandle);
 
 
         presenter.createDummyData();
+        presenter.getUserInfo();
+
+        tvFollowers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserActivity.this, FollowActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 
@@ -210,6 +226,18 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
     public void displayStatuses(List<Status> statuses) {
         mAdapter = new StatusAdapter(statuses);
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    public void assignUserFields(UserInfo info) {
+        String profilePicPath = info.getProfilePic();
+        Picasso.get().load(profilePicPath)
+                    .centerCrop()
+                    .transform(new RoundedTransformation(24, 24))
+                    .fit()
+                    .into(ivPic);
+        tvHandle.setText(info.getUserHandle());
+        tvFirstName.setText(info.getFirstName());
+        tvLastName.setText(info.getLastName());
     }
 
 }

@@ -6,6 +6,7 @@ import com.example.clutter.sdk.model.FollowerList;
 import com.example.clutter.sdk.model.FollowingList;
 import com.example.clutter.sdk.model.Message;
 import com.example.clutter.sdk.model.StatusList;
+import com.example.clutter.sdk.model.User;
 
 //class Task extends AsyncTask<Void, Void, Void> {
 //    private CluttterClient client;
@@ -56,5 +57,9 @@ public class ServerProxy {
 
     public Message postStatus() {
         return client.userSendstatusPost();
+    }
+
+    public User getUser() {
+        return client.userUserhandleGet("@roscoeevans");
     }
 }
