@@ -27,9 +27,7 @@ public class StatusActivity extends AppCompatActivity {
         String time = getIntent().getStringExtra("TIME");
         String name = getIntent().getStringExtra("NAME");
 
-//        Drawable drawable = getResources().getDrawable(R.drawable.me);
         imageView = findViewById(R.id.ivStatus1);
-//        imageView.setImageDrawable(drawable);
         Picasso.get().load(profilePic).centerCrop()
                 .transform(new RoundedTransformation(24, 24))
                 .fit()

@@ -29,14 +29,6 @@ public class MainActivity extends AppCompatActivity {
         fragment = new FeedFragment();
         fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
 
-//        ibCompose.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(UserActivity.this, ComposeMessageActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-
         navigationView = findViewById(R.id.bottomNavigationView);
         navigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -49,19 +41,14 @@ public class MainActivity extends AppCompatActivity {
                 if (menuItem.getItemId() == R.id.navigation_home) {
                     fragment = new FeedFragment();
                     fm.beginTransaction().replace(R.id.fragment_container, fragment).commit();
-//                    transaction.replace(R.id.fragment_container, new FeedFragment());
                 }
 
                 else if (menuItem.getItemId() == R.id.compose) {
-                    // Story feedFragment
-//                    fragment = new StoryFragment();
-//                    fm.beginTransaction().replace(R.id.fragment_container, fragment).commit();
                     Intent intent = new Intent(MainActivity.this, ComposeMessageActivity.class);
                     startActivity(intent);
                 }
 
                 else if (menuItem.getItemId() == R.id.account) {
-                    // Following frag
                     fragment = new AccountFragment();
                     fm.beginTransaction().replace(R.id.fragment_container, fragment).commit();
                 }

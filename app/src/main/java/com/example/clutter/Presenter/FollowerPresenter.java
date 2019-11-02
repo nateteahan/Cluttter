@@ -57,15 +57,6 @@ public class FollowerPresenter implements FollowMvp.Presenter {
     @Override
     public void createDummyFollowers() {
         new GetFollowersAsync().execute();
-//        info.clear();
-//
-//        FollowInfo follower = new FollowInfo("@JustinHunt");
-//        info.add(follower);
-//
-//        follower = new FollowInfo("@RockyEvans");
-//        info.add(follower);
-//
-//        view.displayFollowInfo(info);
     }
 
     @Override

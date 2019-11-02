@@ -52,12 +52,6 @@ public class ComposeMessagePresenter implements ComposeMessageMVP.Presenter {
     }
 
     public void checkValidInput(String message) {
-//        if (message.length() > 250) {
-//            view.displayMessage("Unsuccessful upload");
-//        }
-//        else {
-//            view.displayMessage("Successful Upload");
-//        }
         new GetSuccessMessageAsync().execute();
     }
 }

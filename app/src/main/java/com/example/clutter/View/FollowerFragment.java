@@ -44,8 +44,6 @@ public class FollowerFragment extends Fragment implements FollowMvp.View {
         }
 
         protected void bind (FollowInfo info) {
-//            Drawable drawable = getResources().getDrawable(R.drawable.ic_user);
-//            image.setImageDrawable(drawable);
             Picasso.get().load(info.profilePic).centerCrop()
                     .transform(new RoundedTransformation(24, 24))
                     .fit()

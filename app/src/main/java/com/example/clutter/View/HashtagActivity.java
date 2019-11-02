@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.example.clutter.InterfaceMVP.HashtagMVP;
 import com.example.clutter.Model.Status;
 import com.example.clutter.Presenter.HashtagPresenter;
 import com.example.clutter.R;
@@ -24,7 +25,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class HashtagActivity extends AppCompatActivity {
+public class HashtagActivity extends AppCompatActivity implements HashtagMVP.View {
     private RecyclerView mRecyclerView;
     private TextView mHashtag;
     private HashtagPresenter presenter;
@@ -198,6 +199,7 @@ public class HashtagActivity extends AppCompatActivity {
 
     }
 
+    @Override
     public void displayHashtagStatuses(List<Status> statuses) {
         mAdapter = new HashtagAdapter(statuses);
         mRecyclerView.setAdapter(mAdapter);

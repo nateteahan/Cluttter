@@ -26,7 +26,6 @@ public class AccountPresenter implements AccountFragmentMVP.Presenter {
         follower = new FollowInfo("http://i.imgur.com/bIRGzVO.jpg", "Rocky");
         info.add(follower);
 
-//        view.displayInfo(info);
     }
 
     @Override
@@ -36,6 +35,5 @@ public class AccountPresenter implements AccountFragmentMVP.Presenter {
         FollowInfo followee = new FollowInfo("http://i.imgur.com/bIRGzVO.jpg", "God");
         info.add(followee);
 
-//        view.displayInfo(info);
     }
 }

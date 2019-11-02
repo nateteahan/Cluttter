@@ -2,6 +2,7 @@ package com.example.clutter.Presenter;
 
 import android.os.AsyncTask;
 
+import com.example.clutter.InterfaceMVP.HashtagMVP;
 import com.example.clutter.Model.Status;
 import com.example.clutter.ServerProxy.ServerProxy;
 import com.example.clutter.View.HashtagActivity;
@@ -11,7 +12,7 @@ import com.example.clutter.sdk.model.StatusListStatusesItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HashtagPresenter {
+public class HashtagPresenter implements HashtagMVP.Presenter {
     private HashtagActivity view;
 
     private class GetHashtagAsync extends AsyncTask<Void, Void, List<Status>> {
@@ -59,6 +60,7 @@ public class HashtagPresenter {
         this.view = view;
     }
 
+    @Override
     public void createDummyData() {
         new GetHashtagAsync().execute();
 
