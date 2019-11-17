@@ -22,6 +22,7 @@ import com.example.clutter.Model.Status;
 import com.example.clutter.Model.UserInfo;
 import com.example.clutter.Presenter.UserPresenter;
 import com.example.clutter.R;
+import com.example.clutter.Transformations.RoundedTransformation;
 import com.example.clutter.sdk.model.Message;
 import com.squareup.picasso.Picasso;
 

@@ -17,6 +17,8 @@ import com.example.clutter.InterfaceMVP.SignUpMVP;
 import com.example.clutter.Model.ModelSingleton;
 import com.example.clutter.Presenter.SignUpPresenter;
 import com.example.clutter.R;
+import com.example.clutter.Transformations.RoundedTransformation;
+import com.squareup.picasso.Picasso;
 
 public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View {
     private static final int RESULT_LOAD_IMAGE = 1;
@@ -95,7 +97,11 @@ public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View 
 
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
             Uri selectedImage = data.getData();
-            userImage.setImageURI(selectedImage);
+            Picasso.get().load(selectedImage)
+                        .fit()
+                        .centerCrop()
+                        .transform(new RoundedTransformation(90, 90))
+                        .into(userImage);
         }
     }
 

@@ -20,6 +20,7 @@ import com.example.clutter.InterfaceMVP.FeedFragmentMVP;
 import com.example.clutter.Model.Status;
 import com.example.clutter.Presenter.FeedPresenter;
 import com.example.clutter.R;
+import com.example.clutter.Transformations.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;

@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.clutter.R;
+import com.example.clutter.Transformations.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
 public class StatusActivity extends AppCompatActivity {

@@ -25,6 +25,7 @@ import com.example.clutter.Model.Status;
 import com.example.clutter.Presenter.AccountPresenter;
 import com.example.clutter.Presenter.StoryPresenter;
 import com.example.clutter.R;
+import com.example.clutter.Transformations.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

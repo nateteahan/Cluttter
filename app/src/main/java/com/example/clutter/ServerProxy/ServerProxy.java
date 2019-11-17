@@ -45,7 +45,7 @@ public class ServerProxy {
     }
 
     public User getUser() {
-        return client.userUserhandleGet("@roscoeevans");
+        return client.userUserhandleGet("@roscoe_evans");
     }
 
     public Message followUser() {

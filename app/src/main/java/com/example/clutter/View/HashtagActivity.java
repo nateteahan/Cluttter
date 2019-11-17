@@ -19,6 +19,7 @@ import com.example.clutter.InterfaceMVP.HashtagMVP;
 import com.example.clutter.Model.Status;
 import com.example.clutter.Presenter.HashtagPresenter;
 import com.example.clutter.R;
+import com.example.clutter.Transformations.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;

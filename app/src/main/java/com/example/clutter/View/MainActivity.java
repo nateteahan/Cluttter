@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import com.example.clutter.R;
 
 public class MainActivity extends AppCompatActivity {
-    private BottomNavigationView navigationView;
     private FragmentManager fm;
     private Fragment fragment;
 
@@ -29,14 +28,14 @@ public class MainActivity extends AppCompatActivity {
         fragment = new FeedFragment();
         fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
 
-        navigationView = findViewById(R.id.bottomNavigationView);
+        BottomNavigationView navigationView = findViewById(R.id.bottomNavigationView);
         navigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-                if (fragment != null) {
-                    fm.beginTransaction().remove(fragment).commit();
-                }
+//                if (fragment != null) {
+//                    fm.beginTransaction().remove(fragment).commit();
+//                }
 
                 if (menuItem.getItemId() == R.id.navigation_home) {
                     fragment = new FeedFragment();

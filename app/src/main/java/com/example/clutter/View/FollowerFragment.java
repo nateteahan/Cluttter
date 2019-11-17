@@ -17,6 +17,7 @@ import com.example.clutter.InterfaceMVP.FollowMvp;
 import com.example.clutter.Model.FollowInfo;
 import com.example.clutter.Presenter.FollowerPresenter;
 import com.example.clutter.R;
+import com.example.clutter.Transformations.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
