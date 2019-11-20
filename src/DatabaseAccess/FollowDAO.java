@@ -15,8 +15,6 @@ public class FollowDAO {
 
     private static final String FollowerHandleAttr = "followerHandle";
     private static final String FolloweeHandleAttr = "followeeHandle";
-    private static final String FollowerNameAttr = "followerName";
-    private static final String FolloweeNameAttr = "followeeName";
 
     // DynamoDB client
     private static AmazonDynamoDB client = AmazonDynamoDBClientBuilder
@@ -32,12 +30,14 @@ public class FollowDAO {
     public String followUser(FollowUserRequest request) {
         Table table = dynamoDB.getTable(TableName);
         Item item = new Item().withPrimaryKey(FollowerHandleAttr, request.getFollowerHandle(), FolloweeHandleAttr, request.getFolloweeHandle());
-//                    .withString(FollowerNameAttr, request.getFollowerName())
-//                    .withString(FolloweeNameAttr, request.getFolloweeName());
 
-        table.putItem(item);
-
-        return "Successfully followed user";
+        try {
+            table.putItem(item);
+            return "Successfully followed @" +request.getFolloweeHandle();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Follow unsuccessful";
+        }
     }
 
     public String unfollowUser(UnfollowUserRequest request) {
@@ -45,15 +45,12 @@ public class FollowDAO {
         DeleteItemSpec item = new DeleteItemSpec().withPrimaryKey(FollowerHandleAttr, request.getFollowerHandle(),
                                                                   FolloweeHandleAttr, request.getFolloweeHandle());
 
-        String message;
         try {
             table.deleteItem(item);
-            message = "You have now unfollowed " + request.getFolloweeHandle();
-            return message;
+            return "You have now unfollowed @" + request.getFolloweeHandle();
         } catch (Exception e) {
-            message = "Unfollow unsuccessful";
             e.printStackTrace();
-            return message;
+            return "Unfollow unsuccessful";
         }
     }
 }
