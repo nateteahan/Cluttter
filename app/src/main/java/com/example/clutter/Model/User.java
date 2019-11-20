@@ -1,22 +1,21 @@
 package com.example.clutter.Model;
 
-import java.util.List;
-
 public class User {
     private String userHandle;
-    private String userPassword;
-    private List<Status> userFeed;
-    private List<Status> userStory;
-    private String userStatus;
-    private List<User> followers;
-    private List<User> following;
+    private String firstName;
+    private String lastName;
+    private String email;
+//    private String profilePic;
 
-    public User() {
+    public User(String userHandle, String firstName, String lastName, String email) {
+        this.userHandle = userHandle;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
     }
 
-    public User(String userHandle, String userPassword) {
+    public User(String userHandle) {
         this.userHandle = userHandle;
-        this.userPassword = userPassword;
     }
 
     public String getUserHandle() {
@@ -27,51 +26,35 @@ public class User {
         this.userHandle = userHandle;
     }
 
-    public String getUserPassword() {
-        return userPassword;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public List<Status> getUserFeed() {
-        return userFeed;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setUserFeed(List<Status> userFeed) {
-        this.userFeed = userFeed;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public List<Status> getUserStory() {
-        return userStory;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUserStory(List<Status> userStory) {
-        this.userStory = userStory;
+    public void setEmail(String email) {
+        this.email = email;
     }
-
-    public String getUserStatus() {
-        return userStatus;
-    }
-
-    public void setUserStatus(String userStatus) {
-        this.userStatus = userStatus;
-    }
-
-    public List<User> getFollowers() {
-        return followers;
-    }
-
-    public void setFollowers(List<User> followers) {
-        this.followers = followers;
-    }
-
-    public List<User> getFollowing() {
-        return following;
-    }
-
-    public void setFollowing(List<User> following) {
-        this.following = following;
-    }
+//
+//    public String getProfilePic() {
+//        return profilePic;
+//    }
+//
+//    public void setProfilePic(String profilePic) {
+//        this.profilePic = profilePic;
+//    }
 }

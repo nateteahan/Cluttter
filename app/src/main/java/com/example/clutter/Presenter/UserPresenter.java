@@ -3,6 +3,7 @@ package com.example.clutter.Presenter;
 import android.os.AsyncTask;
 
 import com.example.clutter.InterfaceMVP.UserMVP;
+import com.example.clutter.Model.ModelSingleton;
 import com.example.clutter.Model.Status;
 import com.example.clutter.Model.UserInfo;
 import com.example.clutter.ServerProxy.ServerProxy;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserPresenter implements UserMVP.Presenter {
+    protected String followeeHandle;
+    protected String followerHandle;
     private UserActivity view;
 
     private class UnfollowUserAsync extends AsyncTask<Void, Void, Message> {
@@ -28,12 +31,12 @@ public class UserPresenter implements UserMVP.Presenter {
         protected Message doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
 
-            return proxy.unfollowUser();
+            return proxy.unfollowUser(followerHandle, followeeHandle);
         }
 
         @Override
         protected void onPostExecute(Message message) {
-            view.unfollowUser(message);
+            view.unfollowUser(message.getMessage());
         }
     }
 
@@ -47,29 +50,30 @@ public class UserPresenter implements UserMVP.Presenter {
         protected Message doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
 
-            return proxy.followUser();
+            return proxy.followUser(followerHandle, followeeHandle);
         }
 
         @Override
         protected void onPostExecute(Message message) {
-            view.followUser(message);
+
+            view.followUser(message.getMessage());
         }
     }
 
     private class GetUserInfoAsync extends AsyncTask<Void, Void, UserInfo> {
 
         private GetUserInfoAsync() {
-            //Blank constructor
+//            Blank constructor
         }
 
         @Override
         protected UserInfo doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
-            User user = proxy.getUser();
 
+            User user = proxy.getUser(followeeHandle);
 
             String profilePic = user.getProfilePic();
-            String userHandle = user.getUserHandle();
+            String userHandle = "@" + user.getUserHandle();
             String firstName = user.getFirstName();
             String lastName = user.getLastName();
 
@@ -80,7 +84,7 @@ public class UserPresenter implements UserMVP.Presenter {
 
         @Override
         protected void onPostExecute(UserInfo userInfo) {
-            view.assignUserFields(userInfo);
+                view.assignUserFields(userInfo);
         }
     }
 
@@ -125,7 +129,10 @@ public class UserPresenter implements UserMVP.Presenter {
         }
     }
 
-    public UserPresenter(UserActivity view) {
+    public UserPresenter(UserActivity view, String userHandle) {
+        // Bug fix for the URL encoding of the "@" symbol
+        this.followerHandle = ModelSingleton.getmUser().getUserHandle().replace("@", "");
+        this.followeeHandle = userHandle.replace("@", "");
         this.view = view;
     }
 

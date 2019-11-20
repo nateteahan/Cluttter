@@ -23,7 +23,6 @@ import com.example.clutter.Model.UserInfo;
 import com.example.clutter.Presenter.UserPresenter;
 import com.example.clutter.R;
 import com.example.clutter.Transformations.RoundedTransformation;
-import com.example.clutter.sdk.model.Message;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -40,6 +39,7 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
     private TextView tvFirstName;
     private TextView tvLastName;
     private Button btnFollow;
+    private String userHandle;
 
 
     private class StatusResultHolder extends RecyclerView.ViewHolder {
@@ -192,6 +192,8 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
+        userHandle = getIntent().getStringExtra("userHandle");
+
         tvFollowers = findViewById(R.id.tvNumFollowers);
         tvHandle = findViewById(R.id.tvUser);
         ivPic = findViewById(R.id.ivUserAccount);
@@ -200,7 +202,7 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
         btnFollow = findViewById(R.id.btnFollow);
         mRecyclerView = findViewById(R.id.rvStory);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        presenter = new UserPresenter(this);
+        presenter = new UserPresenter(this, userHandle);
 
         presenter.createDummyData();
         presenter.getUserInfo();
@@ -246,14 +248,14 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
         tvLastName.setText(info.getLastName());
     }
 
-    public void followUser(Message message) {
+    public void followUser(String message) {
         btnFollow.setText(R.string.unfollow);
-        Toast.makeText(this, "Successfully followed user.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    public void unfollowUser(Message message) {
+    public void unfollowUser(String message) {
         btnFollow.setText(R.string.follow);
-        Toast.makeText(this, "Successfully unfollowed user.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
 }

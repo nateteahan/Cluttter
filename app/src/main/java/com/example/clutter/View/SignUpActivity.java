@@ -15,9 +15,10 @@ import android.widget.TextView;
 
 import com.example.clutter.InterfaceMVP.SignUpMVP;
 import com.example.clutter.Model.ModelSingleton;
+import com.example.clutter.Model.User;
 import com.example.clutter.Presenter.SignUpPresenter;
 import com.example.clutter.R;
-import com.example.clutter.Transformations.RoundedTransformation;
+import com.example.clutter.Transformations.CircleTransform;
 import com.squareup.picasso.Picasso;
 
 public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View {
@@ -29,12 +30,15 @@ public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View 
     private EditText mNewHandle;
     private EditText mNewUserPassword;
     private SignUpPresenter presenter;
-    private ModelSingleton singleton = ModelSingleton.getINSTANCE();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        final String firstName = getIntent().getStringExtra("First name");
+        final String lastName = getIntent().getStringExtra("Last name");
+        final String email = getIntent().getStringExtra("Email");
 
         presenter = new SignUpPresenter(this);
         btnSignUp = (Button)findViewById(R.id.btnSignup);
@@ -85,6 +89,9 @@ public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View 
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                User rootUser = new User(mNewHandle.getText().toString(), firstName, lastName, email);
+                ModelSingleton.setmUser(rootUser);
+
                 Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -100,7 +107,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View 
             Picasso.get().load(selectedImage)
                         .fit()
                         .centerCrop()
-                        .transform(new RoundedTransformation(90, 90))
+                        .transform(new CircleTransform())
                         .into(userImage);
         }
     }

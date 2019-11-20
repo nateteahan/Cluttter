@@ -25,6 +25,7 @@ import com.example.clutter.Model.Status;
 import com.example.clutter.Presenter.AccountPresenter;
 import com.example.clutter.Presenter.StoryPresenter;
 import com.example.clutter.R;
+import com.example.clutter.Transformations.CircleTransform;
 import com.example.clutter.Transformations.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
@@ -42,7 +43,6 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
     private StoryPresenter storyPresenter;
     private ImageView imageView;
     private TextView mFollowers;
-    private TextView mFollowees;
     private RecyclerView mRecyclerView;
     private Button btnSignOut;
     private TextView tvChangePic;
@@ -133,7 +133,7 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
             String profilePicPath = currentStatus.getProfilePic();
             Picasso.get().load(profilePicPath)
                     .centerCrop()
-                    .transform(new RoundedTransformation(24, 24))
+                    .transform(new CircleTransform())
                     .fit()
                     .into(imageView);
             name.setText(currentStatus.getFirstName());
@@ -210,8 +210,7 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
         View v = inflater.inflate(R.layout.fragment_account, container, false);
 
         imageView = v.findViewById(R.id.ivUserAccount);
-        mFollowers = v.findViewById(R.id.tvNumFollowers);
-        mFollowees = v.findViewById(R.id.tvNumFollowing);
+        mFollowers = v.findViewById(R.id.tvFollowers);
         btnSignOut = v.findViewById(R.id.button3);
         tvChangePic = v.findViewById(R.id.textView6);
         mRecyclerView= v.findViewById(R.id.rvStory);
@@ -242,20 +241,9 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
         mFollowers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Display followers
-//                presenter.createDummyFollowers();
                 /* LAUNCH TO NEW ACTIVITY */
                 Intent intent = new Intent(getActivity(), FollowActivity.class);
                 startActivity(intent);
-            }
-        });
-
-        mFollowees.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Display followees
-//                presenter.createDummyFollowees();
-                /* LAUNCH TO NEW ACTIVITY */
             }
         });
 

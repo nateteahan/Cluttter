@@ -113,6 +113,42 @@ public interface CluttterClient {
      * 
      * 
      * @param userhandle 
+     * @param secondaryUser 
+     * @return Message
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/follow/{secondaryUser}", method = "POST")
+    Message userUserhandleFollowSecondaryUserPost(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")
+                    String userhandle,
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "secondaryUser", location = "path")
+                    String secondaryUser);
+    
+    /**
+     * 
+     * 
+     * @param userhandle 
+     * @param secondaryUser 
+     * @return Message
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/follow/{secondaryUser}", method = "DELETE")
+    Message userUserhandleFollowSecondaryUserDelete(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")
+                    String userhandle,
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "secondaryUser", location = "path")
+                    String secondaryUser);
+    
+    /**
+     * 
+     * 
+     * @return Empty
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/follow/{secondaryUser}", method = "OPTIONS")
+    Empty userUserhandleFollowSecondaryUserOptions();
+    
+    /**
+     * 
+     * 
+     * @param userhandle 
      * @return FollowerList
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/followers", method = "GET")
@@ -165,47 +201,6 @@ public interface CluttterClient {
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/story", method = "OPTIONS")
     Empty userUserhandleStoryOptions();
-    
-    /**
-     * 
-     * 
-     * @param userhandle 
-     * @return Message
-     */
-    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/unfollow", method = "POST")
-    Message userUserhandleUnfollowPost(
-            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")
-                    String userhandle);
-    
-    /**
-     * 
-     * 
-     * @return Empty
-     */
-    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/unfollow", method = "OPTIONS")
-    Empty userUserhandleUnfollowOptions();
-    
-    /**
-     * 
-     * 
-     * @param followuser 
-     * @param userhandle 
-     * @return Message
-     */
-    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/{followuser}", method = "POST")
-    Message userUserhandleFollowuserPost(
-            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "followuser", location = "path")
-                    String followuser,
-            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")
-                    String userhandle);
-    
-    /**
-     * 
-     * 
-     * @return Empty
-     */
-    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/{followuser}", method = "OPTIONS")
-    Empty userUserhandleFollowuserOptions();
     
     /**
      * 

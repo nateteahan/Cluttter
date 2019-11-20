@@ -15,7 +15,7 @@ public interface MainMVP {
     interface Presenter {
         void enableLogin(String handle, String password);
         void signInButtonClicked(String handle, String password);
-        void updateUserHandle(String handle);
-        void updateUserPassword(String password);
+//        void updateUserHandle(String handle);
+//        void updateUserPassword(String password);
     }
 }

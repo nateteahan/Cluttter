@@ -85,6 +85,9 @@ public class CreateAccountActivity extends AppCompatActivity implements CreateAc
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CreateAccountActivity.this, SignUpActivity.class);
+                intent.putExtra("First name", mFirstName.getText().toString());
+                intent.putExtra("Last name", mLastName.getText().toString());
+                intent.putExtra("Email", mEmail.getText().toString());
                 startActivity(intent);
             }
         });

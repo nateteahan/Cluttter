@@ -44,15 +44,15 @@ public class ServerProxy {
         return client.userSendstatusPost();
     }
 
-    public User getUser() {
-        return client.userUserhandleGet("@roscoe_evans");
+    public User getUser(String userHandle) {
+        return client.userUserhandleGet(userHandle);
     }
 
-    public Message followUser() {
-        return client.userUserhandleFollowuserPost("@roscoeevans", "@nateteahan");
+    public Message followUser(String followerHandle, String followeeHandle) {
+        return client.userUserhandleFollowSecondaryUserPost(followerHandle, followeeHandle);
     }
 
-    public Message unfollowUser() {
-        return client.userUserhandleUnfollowPost("@roscoeevans");
+    public Message unfollowUser(String followerHandle, String followeeHandle) {
+        return client.userUserhandleFollowSecondaryUserDelete(followerHandle, followeeHandle);
     }
 }

@@ -37,6 +37,11 @@ public class User {
      */
     @com.google.gson.annotations.SerializedName("lastName")
     private String lastName = null;
+    /**
+     * The email of the user
+     */
+    @com.google.gson.annotations.SerializedName("email")
+    private String email = null;
 
     /**
      * The URL of the profile picture of the users
@@ -108,6 +113,24 @@ public class User {
      */
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    /**
+     * The email of the user
+     *
+     * @return email
+     **/
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * Sets the value of email.
+     *
+     * @param email the new value
+     */
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 }

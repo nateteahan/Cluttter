@@ -19,7 +19,7 @@ import com.example.clutter.InterfaceMVP.HashtagMVP;
 import com.example.clutter.Model.Status;
 import com.example.clutter.Presenter.HashtagPresenter;
 import com.example.clutter.R;
-import com.example.clutter.Transformations.RoundedTransformation;
+import com.example.clutter.Transformations.CircleTransform;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -58,7 +58,7 @@ public class HashtagActivity extends AppCompatActivity implements HashtagMVP.Vie
             String profilePicPath = currentStatus.getProfilePic();
             Picasso.get().load(profilePicPath)
                     .centerCrop()
-                    .transform(new RoundedTransformation(24, 24))
+                    .transform(new CircleTransform())
                     .fit()
                     .into(profilePic);
             name.setText(currentStatus.getFirstName());

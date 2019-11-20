@@ -42,7 +42,6 @@ public class SignInActivity extends AppCompatActivity implements MainMVP.View {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                presenter.updateUserHandle(s.toString());
                 presenter.enableLogin(s.toString(), mPassword.getText().toString());
             }
 
@@ -58,7 +57,7 @@ public class SignInActivity extends AppCompatActivity implements MainMVP.View {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                presenter.updateUserPassword(s.toString());
+//                presenter.updateUserPassword(s.toString());
                 presenter.enableLogin(mUserHandle.getText().toString(), s.toString());
             }
 
@@ -70,7 +69,8 @@ public class SignInActivity extends AppCompatActivity implements MainMVP.View {
         mSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.signInButtonClicked(mUserHandle.getText().toString(), mPassword.getText().toString());
+                verifyUser(mUserHandle.getText().toString());
+//                    presenter.signInButtonClicked(mUserHandle.getText().toString(), mPassword.getText().toString());
             }
         });
 
@@ -115,4 +115,10 @@ public class SignInActivity extends AppCompatActivity implements MainMVP.View {
     public void displayButton(boolean isClickable) {
         mSignIn.setEnabled(isClickable);
     }
+
+    public void verifyUser(String handle) {
+        presenter.checkUser(handle);
+    }
+
+
 }

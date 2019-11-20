@@ -17,7 +17,7 @@ import com.example.clutter.InterfaceMVP.FollowMvp;
 import com.example.clutter.Model.FollowInfo;
 import com.example.clutter.Presenter.FollowerPresenter;
 import com.example.clutter.R;
-import com.example.clutter.Transformations.RoundedTransformation;
+import com.example.clutter.Transformations.CircleTransform;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -46,7 +46,7 @@ public class FollowerFragment extends Fragment implements FollowMvp.View {
 
         protected void bind (FollowInfo info) {
             Picasso.get().load(info.profilePic).centerCrop()
-                    .transform(new RoundedTransformation(24, 24))
+                    .transform(new CircleTransform())
                     .fit()
                     .into(image);
             ;
