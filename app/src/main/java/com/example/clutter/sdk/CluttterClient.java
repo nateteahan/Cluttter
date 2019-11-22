@@ -77,22 +77,6 @@ public interface CluttterClient {
     /**
      * 
      * 
-     * @return Message
-     */
-    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/sendstatus", method = "POST")
-    Message userSendstatusPost();
-    
-    /**
-     * 
-     * 
-     * @return Empty
-     */
-    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/sendstatus", method = "OPTIONS")
-    Empty userSendstatusOptions();
-    
-    /**
-     * 
-     * 
      * @param userhandle 
      * @return User
      */
@@ -182,6 +166,25 @@ public interface CluttterClient {
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/following", method = "OPTIONS")
     Empty userUserhandleFollowingOptions();
+    
+    /**
+     * 
+     * 
+     * @param userhandle 
+     * @return Message
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/poststatus", method = "POST")
+    Message userUserhandlePoststatusPost(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")
+                    String userhandle);
+    
+    /**
+     * 
+     * 
+     * @return Empty
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/poststatus", method = "OPTIONS")
+    Empty userUserhandlePoststatusOptions();
     
     /**
      * 

@@ -21,8 +21,11 @@ import com.example.clutter.R;
 import com.example.clutter.Transformations.CircleTransform;
 import com.squareup.picasso.Picasso;
 
+/* AMPLIFY */
+
 public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View {
     private static final int RESULT_LOAD_IMAGE = 1;
+    private static final String TAG = SignUpActivity.class.getName();
 
     private ImageView userImage;
     private TextView mAddPhoto;
@@ -35,6 +38,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
 
         final String firstName = getIntent().getStringExtra("First name");
         final String lastName = getIntent().getStringExtra("Last name");

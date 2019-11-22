@@ -40,8 +40,8 @@ public class ServerProxy {
         return client.hashtagGet("#CS");
     }
 
-    public Message postStatus() {
-        return client.userSendstatusPost();
+    public Message postStatus(String userHandle) {
+        return client.userUserhandlePoststatusPost(userHandle);
     }
 
     public User getUser(String userHandle) {

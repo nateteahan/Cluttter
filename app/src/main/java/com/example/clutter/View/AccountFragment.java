@@ -2,7 +2,6 @@ package com.example.clutter.View;
 
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -223,9 +222,9 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            int image = bundle.getInt("picture");
-            Drawable drawable = getResources().getDrawable(image);
-            imageView.setImageDrawable(drawable);
+//            int image = bundle.getInt("picture");
+//            Drawable drawable = getResources().getDrawable(image);
+//            imageView.setImageDrawable(drawable);
 
         }
 

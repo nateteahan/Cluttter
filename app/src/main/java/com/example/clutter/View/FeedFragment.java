@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -85,8 +86,13 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
             if (currentStatus.getVideoAttachment() != null) {
                 photoAttachment.setVisibility(View.GONE);
                 videoAttachment.setVisibility(View.VISIBLE);
-                Uri uri = Uri.parse(currentStatus.getVideoAttachment());
-                videoAttachment.setVideoURI(uri);
+
+                //MediaController
+                MediaController mediaController = new MediaController(getContext());
+                mediaController.setVisibility(View.GONE);
+                mediaController.setAnchorView(videoAttachment);
+                Uri video = Uri.parse(currentStatus.getVideoAttachment());
+                videoAttachment.setVideoURI(video);
                 videoAttachment.start();
             }
 

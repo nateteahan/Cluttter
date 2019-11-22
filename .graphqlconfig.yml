@@ -1,12 +1,15 @@
 projects:
-  amplifyAndroid:
-    schemaPath: app/src/graphql/schema.json
+  cluttterAPI:
+    schemaPath: app/src/main/graphql/schema.json
     includes:
-      - app/src/graphql/**/*.graphql
+      - ''
     excludes:
       - ./amplify/**
     extensions:
       amplify:
         codeGenTarget: ''
         generatedFileName: ''
-        docsFilePath: app/src/graphql/com/amazonaws/amplify/generated/graphql
+        docsFilePath: app/src/main/graphql/com/amazonaws/amplify/generated/graphql
+extensions:
+  amplify:
+    version: 3

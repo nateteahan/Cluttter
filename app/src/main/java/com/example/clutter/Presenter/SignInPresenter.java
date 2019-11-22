@@ -15,6 +15,7 @@ public class SignInPresenter implements MainMVP.Presenter {
         private VerifyUserAsync(String handle) {
             userHandle = handle;
         }
+        private com.example.clutter.Model.User user1;
 
         @Override
         protected Boolean doInBackground(Void... voids) {
@@ -23,6 +24,11 @@ public class SignInPresenter implements MainMVP.Presenter {
             // Bug fix for the URL encoding of the "@" symbol
             userHandle = userHandle.replace("@", "");
             User user = proxy.getUser(userHandle);
+
+            user1 = new com.example.clutter.Model.User(user.getUserHandle(),
+                                                                                    user.getFirstName(),
+                                                                                    user.getLastName(),
+                                                                                    user.getEmail());
 
             if (user.getUserHandle() != null) {
                 return true;
@@ -35,6 +41,7 @@ public class SignInPresenter implements MainMVP.Presenter {
         @Override
         protected void onPostExecute(Boolean bool) {
             if (bool) {
+                view.setSingletonUser(user1);
                 view.successfulLogin();
             }
             else {

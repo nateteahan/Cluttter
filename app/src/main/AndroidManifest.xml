@@ -6,12 +6,12 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -24,23 +24,25 @@
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
 
-        <activity android:name=".View.FollowActivity"></activity>
+        <activity android:name=".View.FollowActivity" />
         <activity android:name=".View.UserActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <action android:name="android.intent.action.VIEW" />
+
                 <data android:scheme="input.my.scheme" />
             </intent-filter>
         </activity>
-
         <activity android:name=".View.HashtagActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <action android:name="android.intent.action.VIEW" />
+
                 <data android:scheme="input.hashtag.scheme" />
             </intent-filter>
         </activity>
-
         <activity android:name=".View.StatusActivity" />
         <activity android:name=".View.ComposeMessageActivity" />
         <activity android:name=".View.CreateAccountActivity" />
@@ -48,8 +50,8 @@
         <activity android:name=".View.MainActivity" />
         <activity android:name=".View.SignInActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
     </application>

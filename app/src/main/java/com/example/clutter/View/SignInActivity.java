@@ -12,6 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.clutter.InterfaceMVP.MainMVP;
+import com.example.clutter.Model.ModelSingleton;
+import com.example.clutter.Model.User;
 import com.example.clutter.Presenter.SignInPresenter;
 import com.example.clutter.R;
 
@@ -22,6 +24,7 @@ public class SignInActivity extends AppCompatActivity implements MainMVP.View {
     private TextView mSignUp;
     private Button mSignIn;
     private SignInPresenter presenter;
+    private static final String TAG = SignInActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +60,6 @@ public class SignInActivity extends AppCompatActivity implements MainMVP.View {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                presenter.updateUserPassword(s.toString());
                 presenter.enableLogin(mUserHandle.getText().toString(), s.toString());
             }
 
@@ -82,26 +84,11 @@ public class SignInActivity extends AppCompatActivity implements MainMVP.View {
             }
         });
 
-//        // AWS Mobile Client
-//        AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
-//
-//                    @Override
-//                    public void onResult(UserStateDetails userStateDetails) {
-//                        Log.i("INIT", "onResult: " + userStateDetails.getUserState());
-//                    }
-//
-//                    @Override
-//                    public void onError(Exception e) {
-//                        Log.e("INIT", "Initialization error.", e);
-//                    }
-//                }
-//        );
     }
 
     @Override
     public void displayError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        return;
     }
 
     @Override
@@ -118,6 +105,10 @@ public class SignInActivity extends AppCompatActivity implements MainMVP.View {
 
     public void verifyUser(String handle) {
         presenter.checkUser(handle);
+    }
+
+    public void setSingletonUser(User user) {
+        ModelSingleton.setmUser(user);
     }
 
 

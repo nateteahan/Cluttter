@@ -3,6 +3,7 @@ package com.example.clutter.Presenter;
 import android.os.AsyncTask;
 
 import com.example.clutter.InterfaceMVP.ComposeMessageMVP;
+import com.example.clutter.Model.ModelSingleton;
 import com.example.clutter.ServerProxy.ServerProxy;
 import com.example.clutter.View.ComposeMessageActivity;
 import com.example.clutter.sdk.model.Message;
@@ -21,7 +22,8 @@ public class ComposeMessagePresenter implements ComposeMessageMVP.Presenter {
             // Call aws post status function
             // Parse JSON
             ServerProxy proxy = new ServerProxy();
-            Message statusResult = proxy.postStatus();
+            String handle = ModelSingleton.getmUser().getUserHandle();
+            Message statusResult = proxy.postStatus(handle);
 
             return statusResult.getMessage();
         }
