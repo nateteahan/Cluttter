@@ -12,8 +12,10 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import request.FollowUserRequest;
 import request.GetFollowersRequest;
+import request.GetFollowingRequest;
 import request.UnfollowUserRequest;
 import response.GetFollowersResponse;
+import response.GetFollowingResponse;
 
 import java.util.*;
 
@@ -62,28 +64,20 @@ public class FollowDAO {
         }
     }
 
-    public GetFollowersResponse getFollowers(GetFollowersRequest request, Context context) {
+    public GetFollowersResponse getFollowers(GetFollowersRequest request) {
         GetFollowersResponse result;
         List<FollowInfo> followers = new ArrayList<>();
 
-        LambdaLogger logger = context.getLogger();
-
         Table table = dynamoDB.getTable(TableName);
 
-        logger.log("Indexing table\n");
         Index index = table.getIndex("followeeHandle-followerHandle-index");
-        logger.log("Indexing table success\n");
 
-        logger.log("Creating query\n");
         QuerySpec spec = new QuerySpec()
                 .withKeyConditionExpression("followeeHandle = :followee")
                 .withValueMap(new ValueMap()
-                        .withString(":followee",request.getUserhandle()));
-        logger.log("Creating query success\n");
+                        .withString(":followee", request.getUserhandle()));
 
-        logger.log("Querying table\n");
         ItemCollection<QueryOutcome> items = index.query(spec);
-        logger.log("Querying table success\n");
 
         Iterator<Item> iter = items.iterator();
         while (iter.hasNext()) {
@@ -101,6 +95,39 @@ public class FollowDAO {
             result = new GetFollowersResponse(null, "This user has no followers");
         }
 
+
+        return result;
+    }
+
+    public GetFollowingResponse getFollowing(GetFollowingRequest request) {
+        GetFollowingResponse result;
+        List<FollowInfo> following = new ArrayList<>();
+
+        Table table = dynamoDB.getTable(TableName);
+
+        QuerySpec spec = new QuerySpec()
+                .withKeyConditionExpression("followerHandle = :follower")
+                .withValueMap(new ValueMap()
+                    .withString(":follower", request.getUserhandle()));
+
+        ItemCollection<QueryOutcome> items = table.query(spec);
+
+        Iterator<Item> iter = items.iterator();
+        while (iter.hasNext()) {
+            Item item = iter.next();
+            FollowInfo info = new FollowInfo(item.getString(FolloweeHandleAttr));
+            following.add(info);
+
+            /* FIXME --> I want to have the profile pic in the item as well.
+             *   If that is too much work, add in the name of the follower AND follower in the Feed table */
+        }
+
+        if (following.size() > 0) {
+            result = new GetFollowingResponse(following, null);
+        }
+        else {
+            result = new GetFollowingResponse(null, "This user isn't following anyone");
+        }
 
         return result;
     }

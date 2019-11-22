@@ -5,6 +5,10 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
+
+import java.util.List;
 
 public class StatusDAO {
     // CRUD operations
@@ -30,23 +34,31 @@ public class StatusDAO {
         return (value != null && value.length() > 0);
     }
 
-    public String postStatus(String profilePic, String firstName, String userHandle, String time, String status, String imageAttachment, String videoAttachment) {
+    public String postStatus(String profilePic, String firstName, String userHandle, String time, String status, String imageAttachment, String videoAttachment, List<String> followers) {
+        String message = "Successfully posted status!";
 
-        /* Add the status to the Feed table */
-        Table feedTable = dynamoDB.getTable(FeedTableName);
+        // If the user has followers, post the status to the feed table
+        if (followers.size() > 0) {
+            /* Add the status to the Feed table */
+            Table feedTable = dynamoDB.getTable(FeedTableName);
 
-        Item feedItem = new Item().withPrimaryKey(UserHandleAttr, userHandle)
-                .withString(TimeAttr, time)
-                .withString(FirstNameAttr, firstName)
-                .withString(ProfilePicAttr, profilePic)
-                .withString(StatusAttr, status)
-                .withString(ImageAttr, imageAttachment)
-                .withString(VideoAttr, videoAttachment);
+            try {
+                // For every follower, insert the status into their feed
+                for (int i = 0; i < followers.size() ; i++) {
+                    Item feedItem = new Item().withPrimaryKey(UserHandleAttr, followers.get(i))
+                            .withString(TimeAttr, time)
+                            .withString(FirstNameAttr, firstName)
+                            .withString(ProfilePicAttr, profilePic)
+                            .withString(StatusAttr, status)
+                            .withString(ImageAttr, imageAttachment)
+                            .withString(VideoAttr, videoAttachment);
 
-        try {
-            feedTable.putItem(feedItem);
-        } catch (Exception e) {
-            e.printStackTrace();
+                    feedTable.putItem(feedItem);
+                }
+            } catch (Exception e) {
+                message = "Could not post status to feed.";
+                e.printStackTrace();
+            }
         }
 
         /* Add the status to the Story table */
@@ -63,9 +75,10 @@ public class StatusDAO {
         try {
             storyTable.putItem(storyItem);
         } catch (Exception f) {
+            message = "Could not post status to story";
             f.printStackTrace();
         }
 
-        return "FIXME";
+        return message;
     }
 }

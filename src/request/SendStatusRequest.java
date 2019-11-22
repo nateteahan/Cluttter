@@ -3,7 +3,7 @@ package request;
 public class SendStatusRequest {
     public String profilePic;
     public String firstName;
-    public String userHandle;
+    public String userhandle;
     public String status;
     public String pictureAttachment;
     public String videoAttachment;
@@ -25,12 +25,12 @@ public class SendStatusRequest {
         this.firstName = firstName;
     }
 
-    public String getUserHandle() {
-        return userHandle;
+    public String getUserhandle() {
+        return userhandle;
     }
 
-    public void setUserHandle(String userHandle) {
-        this.userHandle = userHandle;
+    public void setUserhandle(String userhandle) {
+        this.userhandle = userhandle;
     }
 
     public String getStatus() {

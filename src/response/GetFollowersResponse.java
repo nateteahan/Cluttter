@@ -12,4 +12,8 @@ public class GetFollowersResponse {
         this.followers = followers;
         this.message = message;
     }
+
+    public List<FollowInfo> getFollowers() {
+        return followers;
+    }
 }
