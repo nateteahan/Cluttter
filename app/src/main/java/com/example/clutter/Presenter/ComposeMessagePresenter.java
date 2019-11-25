@@ -3,27 +3,28 @@ package com.example.clutter.Presenter;
 import android.os.AsyncTask;
 
 import com.example.clutter.InterfaceMVP.ComposeMessageMVP;
-import com.example.clutter.Model.ModelSingleton;
 import com.example.clutter.ServerProxy.ServerProxy;
 import com.example.clutter.View.ComposeMessageActivity;
 import com.example.clutter.sdk.model.Message;
+import com.example.clutter.sdk.model.SendStatusRequest;
 
 public class ComposeMessagePresenter implements ComposeMessageMVP.Presenter {
     private ComposeMessageActivity view;
+    private SendStatusRequest status;
 
     private class GetSuccessMessageAsync extends AsyncTask<Void, Void, String> {
 
-        public GetSuccessMessageAsync() {
-            //Blank constructor
+        public GetSuccessMessageAsync(SendStatusRequest currentStatus) {
+            status = currentStatus;
         }
 
         @Override
         protected String doInBackground(Void... voids) {
             // Call aws post status function
             // Parse JSON
+            /* FIXME --> parse status message to see if there exists hashtags, if so, call proxy.addHashtags to Hashtag table for each one */
             ServerProxy proxy = new ServerProxy();
-            String handle = ModelSingleton.getmUser().getUserHandle();
-            Message statusResult = proxy.postStatus(handle);
+            Message statusResult = proxy.postStatus(status.getUserHandle(), status);
 
             return statusResult.getMessage();
         }
@@ -53,7 +54,7 @@ public class ComposeMessagePresenter implements ComposeMessageMVP.Presenter {
         }
     }
 
-    public void checkValidInput(String message) {
-        new GetSuccessMessageAsync().execute();
+    public void checkValidInput(SendStatusRequest status) {
+        new GetSuccessMessageAsync(status).execute();
     }
 }

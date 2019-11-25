@@ -15,17 +15,18 @@ import java.util.List;
 public class FollowingPresenter implements FollowMvp.Presenter {
     private FollowingFragment view;
     private List<FollowInfo> info;
+    private String userHandle;
 
     private class GetFollowingAsync extends AsyncTask<Void, Void, List<FollowInfo>> {
 
-        private GetFollowingAsync() {
-            //Blank constructor
+        private GetFollowingAsync(String handle) {
+            userHandle = handle.replaceAll("@", "");
         }
 
         @Override
         protected List<FollowInfo> doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
-            FollowingList listOfFollowing = proxy.getFollowing();
+            FollowingList listOfFollowing = proxy.getFollowing(userHandle);
 
             List<FollowingListFollowingItem> followingItem = listOfFollowing.getFollowing();
             List<FollowInfo> followingToDisplay = new ArrayList<>();
@@ -34,8 +35,8 @@ public class FollowingPresenter implements FollowMvp.Presenter {
             for (int i = 0; i < followingItem.size() ; i++) {
                 FollowingListFollowingItem currentFollowing = followingItem.get(i);
 
-                    String profilePic = currentFollowing.getProfilePic();
-                    String userHandle = currentFollowing.getUserHandle();
+                    String profilePic = proxy.getUser(currentFollowing.getUserHandle()).getProfilePic();
+                    String userHandle = "@" + currentFollowing.getUserHandle();
                     FollowInfo followingObject = new FollowInfo(profilePic, userHandle);
                     followingToDisplay.add(followingObject);
             }
@@ -54,12 +55,12 @@ public class FollowingPresenter implements FollowMvp.Presenter {
     }
 
     @Override
-    public void createDummyFollowers() {
+    public void getFollowers(String handle) {
         //
     }
 
     @Override
-    public void createDummyFollowees() {
-        new GetFollowingAsync().execute();
+    public void getFollowees(String handle) {
+        new GetFollowingAsync(handle).execute();
     }
 }

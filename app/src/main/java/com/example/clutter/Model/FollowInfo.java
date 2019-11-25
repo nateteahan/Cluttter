@@ -2,11 +2,11 @@ package com.example.clutter.Model;
 
 public class FollowInfo {
     public String profilePic;
-    public String name;
+    public String handle;
 
     public FollowInfo(String profilePic, String name) {
         this.profilePic = profilePic;
-        this.name = name;
+        this.handle = name;
     }
 
     public String getProfilePic() {
@@ -18,10 +18,11 @@ public class FollowInfo {
     }
 
     public String getName() {
-        return name;
+        return handle;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.handle = name;
     }
 }
+

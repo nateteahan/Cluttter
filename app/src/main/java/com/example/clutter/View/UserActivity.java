@@ -211,6 +211,7 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(UserActivity.this, FollowActivity.class);
+                intent.putExtra("user", userHandle);
                 startActivity(intent);
             }
         });

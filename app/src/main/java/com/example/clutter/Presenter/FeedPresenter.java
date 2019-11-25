@@ -3,6 +3,7 @@ package com.example.clutter.Presenter;
 import android.os.AsyncTask;
 
 import com.example.clutter.InterfaceMVP.FeedFragmentMVP;
+import com.example.clutter.Model.ModelSingleton;
 import com.example.clutter.Model.Status;
 import com.example.clutter.ServerProxy.ServerProxy;
 import com.example.clutter.View.FeedFragment;
@@ -24,7 +25,7 @@ public class FeedPresenter implements FeedFragmentMVP.Presenter {
         @Override
         protected List<com.example.clutter.Model.Status> doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
-            StatusList listOfStatuses = proxy.getFeed();
+            StatusList listOfStatuses = proxy.getFeed(ModelSingleton.getmUser().getUserHandle());
 
             List<StatusListStatusesItem> statusItems = listOfStatuses.getStatuses();
             List<com.example.clutter.Model.Status> statusesToPost = new ArrayList<>();

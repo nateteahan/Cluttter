@@ -15,10 +15,14 @@
 
 package com.example.clutter.sdk;
 
+import com.example.clutter.sdk.model.Authorization;
 import com.example.clutter.sdk.model.Empty;
 import com.example.clutter.sdk.model.FollowerList;
 import com.example.clutter.sdk.model.FollowingList;
 import com.example.clutter.sdk.model.Message;
+import com.example.clutter.sdk.model.RegisterUser;
+import com.example.clutter.sdk.model.SendStatusRequest;
+import com.example.clutter.sdk.model.SignInUser;
 import com.example.clutter.sdk.model.StatusList;
 import com.example.clutter.sdk.model.User;
 
@@ -41,22 +45,6 @@ public interface CluttterClient {
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user", method = "OPTIONS")
     Empty userOptions();
-    
-    /**
-     * 
-     * 
-     * @return StatusList
-     */
-    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/feed", method = "GET")
-    StatusList userFeedGet();
-    
-    /**
-     * 
-     * 
-     * @return Empty
-     */
-    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/feed", method = "OPTIONS")
-    Empty userFeedOptions();
     
     /**
      * 
@@ -88,10 +76,42 @@ public interface CluttterClient {
     /**
      * 
      * 
+     * @param userhandle 
+     * @param body 
+     * @return Message
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}", method = "POST")
+    Message userUserhandlePost(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")
+                    String userhandle,
+            RegisterUser body);
+    
+    /**
+     * 
+     * 
      * @return Empty
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}", method = "OPTIONS")
     Empty userUserhandleOptions();
+    
+    /**
+     * 
+     * 
+     * @param userhandle 
+     * @return StatusList
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/feed", method = "GET")
+    StatusList userUserhandleFeedGet(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")
+                    String userhandle);
+    
+    /**
+     * 
+     * 
+     * @return Empty
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/feed", method = "OPTIONS")
+    Empty userUserhandleFeedOptions();
     
     /**
      * 
@@ -171,12 +191,14 @@ public interface CluttterClient {
      * 
      * 
      * @param userhandle 
+     * @param body 
      * @return Message
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/poststatus", method = "POST")
     Message userUserhandlePoststatusPost(
             @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")
-                    String userhandle);
+                    String userhandle,
+            SendStatusRequest body);
     
     /**
      * 
@@ -185,6 +207,27 @@ public interface CluttterClient {
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/poststatus", method = "OPTIONS")
     Empty userUserhandlePoststatusOptions();
+    
+    /**
+     * 
+     * 
+     * @param userhandle 
+     * @param body 
+     * @return Authorization
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/signin", method = "POST")
+    Authorization userUserhandleSigninPost(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")
+                    String userhandle,
+            SignInUser body);
+    
+    /**
+     * 
+     * 
+     * @return Empty
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/signin", method = "OPTIONS")
+    Empty userUserhandleSigninOptions();
     
     /**
      * 

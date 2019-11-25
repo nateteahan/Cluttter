@@ -5,7 +5,8 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
-//    private String profilePic;
+    private String profilePic;
+    private String authToken;
 
     public User(String userHandle, String firstName, String lastName, String email) {
         this.userHandle = userHandle;
@@ -49,12 +50,20 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-//
-//    public String getProfilePic() {
-//        return profilePic;
-//    }
-//
-//    public void setProfilePic(String profilePic) {
-//        this.profilePic = profilePic;
-//    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
+    }
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
+    }
 }

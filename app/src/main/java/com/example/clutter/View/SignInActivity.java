@@ -11,13 +11,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.clutter.InterfaceMVP.MainMVP;
+import com.example.clutter.InterfaceMVP.SignInMVP;
 import com.example.clutter.Model.ModelSingleton;
 import com.example.clutter.Model.User;
 import com.example.clutter.Presenter.SignInPresenter;
 import com.example.clutter.R;
+import com.example.clutter.sdk.model.SignInUser;
 
-public class SignInActivity extends AppCompatActivity implements MainMVP.View {
+public class SignInActivity extends AppCompatActivity implements SignInMVP.View {
 
     private EditText mUserHandle;
     private EditText mPassword;
@@ -71,8 +72,11 @@ public class SignInActivity extends AppCompatActivity implements MainMVP.View {
         mSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                verifyUser(mUserHandle.getText().toString());
-//                    presenter.signInButtonClicked(mUserHandle.getText().toString(), mPassword.getText().toString());
+                SignInUser user = new SignInUser();
+                user.setUserhandle(mUserHandle.getText().toString());
+                user.setPassword(mPassword.getText().toString());
+
+                signIn(user);
             }
         });
 
@@ -103,13 +107,12 @@ public class SignInActivity extends AppCompatActivity implements MainMVP.View {
         mSignIn.setEnabled(isClickable);
     }
 
-    public void verifyUser(String handle) {
-        presenter.checkUser(handle);
-    }
-
     public void setSingletonUser(User user) {
         ModelSingleton.setmUser(user);
     }
 
-
+    @Override
+    public void signIn(SignInUser user) {
+        presenter.signIn(user);
+    }
 }

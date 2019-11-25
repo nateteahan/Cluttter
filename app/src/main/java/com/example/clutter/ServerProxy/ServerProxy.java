@@ -2,9 +2,13 @@ package com.example.clutter.ServerProxy;
 
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.example.clutter.sdk.CluttterClient;
+import com.example.clutter.sdk.model.Authorization;
 import com.example.clutter.sdk.model.FollowerList;
 import com.example.clutter.sdk.model.FollowingList;
 import com.example.clutter.sdk.model.Message;
+import com.example.clutter.sdk.model.RegisterUser;
+import com.example.clutter.sdk.model.SendStatusRequest;
+import com.example.clutter.sdk.model.SignInUser;
 import com.example.clutter.sdk.model.StatusList;
 import com.example.clutter.sdk.model.User;
 
@@ -18,8 +22,16 @@ public class ServerProxy {
         this.client = factory.build(CluttterClient.class);
     }
 
-    public StatusList getFeed() {
-        StatusList statusList = client.userFeedGet();
+    public Message registerUser(RegisterUser user) {
+        return client.userUserhandlePost(user.getUserhandle(), user);
+    }
+
+    public Authorization signIn(SignInUser user) {
+        return client.userUserhandleSigninPost(user.getUserhandle(), user);
+    }
+
+    public StatusList getFeed(String userhandle) {
+        StatusList statusList = client.userUserhandleFeedGet(userhandle);
 
         return statusList;
     }
@@ -28,20 +40,20 @@ public class ServerProxy {
         return client.userUserhandleStoryGet("@nateteahan");
     }
 
-    public FollowingList getFollowing() {
-        return client.userUserhandleFollowingGet("@nateteahan");
+    public FollowingList getFollowing(String userhandle) {
+        return client.userUserhandleFollowingGet(userhandle);
     }
 
-    public FollowerList getFollowers() {
-        return client.userUserhandleFollowersGet("@nateteahan");
+    public FollowerList getFollowers(String userhandle) {
+        return client.userUserhandleFollowersGet(userhandle);
     }
 
     public StatusList getHashtagStatuses() {
         return client.hashtagGet("#CS");
     }
 
-    public Message postStatus(String userHandle) {
-        return client.userUserhandlePoststatusPost(userHandle);
+    public Message postStatus(String userHandle, SendStatusRequest status) {
+        return client.userUserhandlePoststatusPost(userHandle, status);
     }
 
     public User getUser(String userHandle) {

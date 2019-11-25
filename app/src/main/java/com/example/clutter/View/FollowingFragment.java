@@ -31,6 +31,7 @@ public class FollowingFragment extends Fragment implements FollowMvp.View {
     private RecyclerView recyclerView;
     private FollowingAdapter mAdapter;
     private RecyclerView mRecyclerView;
+    private String handle;
 
     private class FollowingHolder extends RecyclerView.ViewHolder {
         private ImageView image;
@@ -103,11 +104,13 @@ public class FollowingFragment extends Fragment implements FollowMvp.View {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_following, container, false);
+        handle = getArguments().getString("handle");
+
         mRecyclerView = v.findViewById(R.id.rvFollowing);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
         presenter = new FollowingPresenter(this);
-        presenter.createDummyFollowees();
+        presenter.getFollowees(handle);
         return v;
     }
 

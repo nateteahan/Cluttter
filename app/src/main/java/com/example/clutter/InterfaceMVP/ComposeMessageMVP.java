@@ -1,5 +1,7 @@
 package com.example.clutter.InterfaceMVP;
 
+import com.example.clutter.sdk.model.SendStatusRequest;
+
 public interface ComposeMessageMVP {
     interface Model {
 
@@ -12,6 +14,6 @@ public interface ComposeMessageMVP {
 
     interface Presenter {
         void checkCharacterCount(String message);
-        void checkValidInput(String message);
+        void checkValidInput(SendStatusRequest status);
     }
 }

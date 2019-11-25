@@ -15,30 +15,34 @@ import java.util.List;
 public class FollowerPresenter implements FollowMvp.Presenter {
     private FollowerFragment view;
     private List<FollowInfo> info;
+    private String userHandle;
 
     private class GetFollowersAsync extends AsyncTask<Void, Void, List<FollowInfo>> {
 
-        private GetFollowersAsync() {
-            //Blank constructor
+        private GetFollowersAsync(String handle) {
+            userHandle = handle;
         }
 
         @Override
         protected List<FollowInfo> doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
-            FollowerList listOfFollowers = proxy.getFollowers();
+            FollowerList listOfFollowers = proxy.getFollowers(userHandle);
 
             List<FollowerListFollowersItem> followerItem = listOfFollowers.getFollowers();
             List<FollowInfo> followingToDisplay = new ArrayList<>();
 
-
+            // FIXME --> if no followers are found, return a message or inflate a TextView
             // For each of the JSON follow items returned from AWS, parse into model FollowInfo object
-            for (int i = 0; i < followerItem.size() ; i++) {
-                FollowerListFollowersItem currentFollowing = followerItem.get(i);
+            if (followerItem != null) {
+                for (int i = 0; i < followerItem.size() ; i++) {
+                    FollowerListFollowersItem currentFollowing = followerItem.get(i);
 
-                String profilePic = currentFollowing.getProfilePic();
-                String userHandle = currentFollowing.getUserHandle();
-                FollowInfo followingObject = new FollowInfo(profilePic,userHandle);
-                followingToDisplay.add(followingObject);
+//                    String profilePic = currentFollowing.getProfilePic();
+                    String profilePic = proxy.getUser(currentFollowing.getUserHandle()).getProfilePic();
+                    String userHandle = "@" + currentFollowing.getUserHandle();
+                    FollowInfo followingObject = new FollowInfo(profilePic,userHandle);
+                    followingToDisplay.add(followingObject);
+                }
             }
             return followingToDisplay;
         }
@@ -55,12 +59,12 @@ public class FollowerPresenter implements FollowMvp.Presenter {
     }
 
     @Override
-    public void createDummyFollowers() {
-        new GetFollowersAsync().execute();
+    public void getFollowers(String handle) {
+        new GetFollowersAsync(handle).execute();
     }
 
     @Override
-    public void createDummyFollowees() {
+    public void getFollowees(String handle) {
         // Leave blank for FollowingPresenter
     }
 }

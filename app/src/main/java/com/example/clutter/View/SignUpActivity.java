@@ -1,17 +1,21 @@
 package com.example.clutter.View;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.clutter.InterfaceMVP.SignUpMVP;
 import com.example.clutter.Model.ModelSingleton;
@@ -19,7 +23,10 @@ import com.example.clutter.Model.User;
 import com.example.clutter.Presenter.SignUpPresenter;
 import com.example.clutter.R;
 import com.example.clutter.Transformations.CircleTransform;
+import com.example.clutter.sdk.model.RegisterUser;
 import com.squareup.picasso.Picasso;
+
+import java.io.ByteArrayOutputStream;
 
 /* AMPLIFY */
 
@@ -33,6 +40,10 @@ public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View 
     private EditText mNewHandle;
     private EditText mNewUserPassword;
     private SignUpPresenter presenter;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String profilePic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +51,9 @@ public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View 
         setContentView(R.layout.activity_sign_up);
 
 
-        final String firstName = getIntent().getStringExtra("First name");
-        final String lastName = getIntent().getStringExtra("Last name");
-        final String email = getIntent().getStringExtra("Email");
+        firstName = getIntent().getStringExtra("First name");
+        lastName = getIntent().getStringExtra("Last name");
+        email = getIntent().getStringExtra("Email");
 
         presenter = new SignUpPresenter(this);
         btnSignUp = (Button)findViewById(R.id.btnSignup);
@@ -93,11 +104,15 @@ public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View 
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User rootUser = new User(mNewHandle.getText().toString(), firstName, lastName, email);
-                ModelSingleton.setmUser(rootUser);
+                RegisterUser user = new RegisterUser();
+                user.setUserhandle(mNewHandle.getText().toString());
+                user.setFirstName(firstName);
+                user.setLastName(lastName);
+                user.setEmail(email);
+                user.setPassword(mNewUserPassword.getText().toString());
+                user.setProfilePic(profilePic);
 
-                Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-                startActivity(intent);
+                presenter.signUp(user);
             }
         });
     }
@@ -107,12 +122,25 @@ public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View 
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
+            /* Using Picasso and URI to display in image view immediately */
             Uri selectedImage = data.getData();
+            profilePic = selectedImage.toString();
             Picasso.get().load(selectedImage)
                         .fit()
                         .centerCrop()
                         .transform(new CircleTransform())
                         .into(userImage);
+
+            /* Encode to Base64 and upload to S3 bucket */
+            String encodedPicture = Base64.encodeToString(profilePic.getBytes(), Base64.DEFAULT);
+//            AmazonS3 s3 = AmazonS3ClientBuilder
+//                    .standard()
+//                    .withRegion("us-west-2")
+//                    .build();
+//
+//            File file = new File(encodedPicture);
+
+//            s3.putObject("cluttter", encodedPicture, file);
         }
     }
 
@@ -123,6 +151,27 @@ public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View 
 
     @Override
     public void displayError(String message) {
-
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void signUpSuccessful(String message) {
+        User rootUser = new User(mNewHandle.getText().toString(), firstName, lastName, email);
+        ModelSingleton.setmUser(rootUser);
+
+        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    public static String encodeTobase64(Bitmap image) {
+        Bitmap immagex=image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        immagex.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String imageEncoded = Base64.encodeToString(b,Base64.DEFAULT);
+
+        Log.e("LOOK", imageEncoded);
+        return imageEncoded;
+    }
+
 }

@@ -32,6 +32,7 @@ public class FollowerFragment extends Fragment implements FollowMvp.View {
         private RecyclerView recyclerView;
         private FollowAdapter mAdapter;
         private RecyclerView mRecyclerView;
+        private String userHandle;
 
     private class FollowerHolder extends RecyclerView.ViewHolder {
         private ImageView image;
@@ -105,10 +106,12 @@ public class FollowerFragment extends Fragment implements FollowMvp.View {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_follow, container, false);
+        userHandle = getArguments().getString("handle");
+        userHandle = userHandle.replaceAll("@", "");
         mRecyclerView = v.findViewById(R.id.rvFollowInfo);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         presenter = new FollowerPresenter(this);
-        presenter.createDummyFollowers();
+        presenter.getFollowers(userHandle);
 
         return v;
     }

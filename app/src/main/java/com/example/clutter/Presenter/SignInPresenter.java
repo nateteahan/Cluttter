@@ -2,50 +2,52 @@ package com.example.clutter.Presenter;
 
 import android.os.AsyncTask;
 
-import com.example.clutter.InterfaceMVP.MainMVP;
+import com.example.clutter.InterfaceMVP.SignInMVP;
 import com.example.clutter.ServerProxy.ServerProxy;
 import com.example.clutter.View.SignInActivity;
+import com.example.clutter.sdk.model.Authorization;
+import com.example.clutter.sdk.model.SignInUser;
 import com.example.clutter.sdk.model.User;
 
-public class SignInPresenter implements MainMVP.Presenter {
+public class SignInPresenter implements SignInMVP.Presenter {
     private SignInActivity view;
-    protected String userHandle;
+    private com.example.clutter.Model.User rootUser;
 
-    private class VerifyUserAsync extends AsyncTask<Void, Void, Boolean> {
-        private VerifyUserAsync(String handle) {
-            userHandle = handle;
+    private class SignInAsync extends AsyncTask<Void, Void, Authorization> {
+        private SignInUser user = new SignInUser();
+
+        private SignInAsync(SignInUser user) {
+            this.user = user;
         }
-        private com.example.clutter.Model.User user1;
 
         @Override
-        protected Boolean doInBackground(Void... voids) {
+        protected Authorization doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
+            Authorization authorization = proxy.signIn(user);
 
-            // Bug fix for the URL encoding of the "@" symbol
-            userHandle = userHandle.replace("@", "");
-            User user = proxy.getUser(userHandle);
+            // Sign-in successful, get the user to set to the Singleton
+            if (authorization.getMessage() == null) {
+                User user1 = proxy.getUser(user.getUserhandle());
 
-            user1 = new com.example.clutter.Model.User(user.getUserHandle(),
-                                                                                    user.getFirstName(),
-                                                                                    user.getLastName(),
-                                                                                    user.getEmail());
+                //GetUserFeed
 
-            if (user.getUserHandle() != null) {
-                return true;
+                rootUser = new com.example.clutter.Model.User(user1.getUserHandle(), user1.getFirstName(), user1.getLastName(), user1.getEmail());
+                rootUser.setProfilePic(user1.getProfilePic());
+                rootUser.setAuthToken(authorization.getAuthToken());
             }
-            else {
-                return false;
-            }
+
+            return authorization;
         }
 
         @Override
-        protected void onPostExecute(Boolean bool) {
-            if (bool) {
-                view.setSingletonUser(user1);
+        protected void onPostExecute(Authorization authorization) {
+            //Correct credentials given
+            if (authorization.getMessage() == null) {
+                view.setSingletonUser(rootUser);
                 view.successfulLogin();
             }
             else {
-                view.displayError("This userHandle does not exist.");
+                view.displayError("Incorrect credentials. Try again.");
             }
         }
     }
@@ -78,7 +80,9 @@ public class SignInPresenter implements MainMVP.Presenter {
         }
     }
 
-    public void checkUser(String handle) {
-        new VerifyUserAsync(handle).execute();
+    @Override
+    public void signIn(SignInUser user) {
+        new SignInAsync(user).execute();
     }
+
 }
