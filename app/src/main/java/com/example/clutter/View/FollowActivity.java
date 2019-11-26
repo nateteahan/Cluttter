@@ -22,7 +22,7 @@ public class FollowActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_follow);
 
-        handle = getIntent().getStringExtra("user");
+        handle = getIntent().getStringExtra("handle");
         args = new Bundle();
         args.putString("handle", handle);
 

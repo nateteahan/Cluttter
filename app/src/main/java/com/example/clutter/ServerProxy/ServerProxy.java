@@ -6,6 +6,7 @@ import com.example.clutter.sdk.model.Authorization;
 import com.example.clutter.sdk.model.FollowerList;
 import com.example.clutter.sdk.model.FollowingList;
 import com.example.clutter.sdk.model.Message;
+import com.example.clutter.sdk.model.PostPicture;
 import com.example.clutter.sdk.model.RegisterUser;
 import com.example.clutter.sdk.model.SendStatusRequest;
 import com.example.clutter.sdk.model.SignInUser;
@@ -26,6 +27,10 @@ public class ServerProxy {
         return client.userUserhandlePost(user.getUserhandle(), user);
     }
 
+    public Message updateUserProfile(PostPicture profilePic) {
+        return client.userUserhandleProfilepicPost(profilePic.getUserhandle(), profilePic);
+    }
+
     public Authorization signIn(SignInUser user) {
         return client.userUserhandleSigninPost(user.getUserhandle(), user);
     }
@@ -36,8 +41,8 @@ public class ServerProxy {
         return statusList;
     }
 
-    public StatusList getUserStory() {
-        return client.userUserhandleStoryGet("@nateteahan");
+    public StatusList getUserStory(String handle) {
+        return client.userUserhandleStoryGet(handle);
     }
 
     public FollowingList getFollowing(String userhandle) {

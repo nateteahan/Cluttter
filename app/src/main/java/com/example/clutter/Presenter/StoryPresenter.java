@@ -18,45 +18,54 @@ public class StoryPresenter implements StoryFragmentMVP.Presenter {
     private AccountFragment view;
 
     private class GetStoryAsync extends AsyncTask<Void, Void, List<Status>> {
-
-        public GetStoryAsync() {
-            // Blank Constructor
+        private String handle;
+        public GetStoryAsync(String handle) {
+            this.handle = handle;
         }
 
         @Override
         protected List<com.example.clutter.Model.Status> doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
-            StatusList storyStatuses = proxy.getUserStory();
+            StatusList storyStatuses = proxy.getUserStory(handle);
 
             List<StatusListStatusesItem> statusItems = storyStatuses.getStatuses();
             List<com.example.clutter.Model.Status> statusesToPost = new ArrayList<>();
 
-            // For each of the JSON status items returned from AWS, parse into model Status object
-            for (int i = 0; i < statusItems.size() ; i++) {
-                StatusListStatusesItem currentStatus = statusItems.get(i);
-
-                String profilePic = currentStatus.getProfilePic();
-                String firstName = currentStatus.getFirstName();
-                String userHandle = currentStatus.getUserHandle();
-                String time = currentStatus.getTime();
-                String status = currentStatus.getStatus();
-                String imageAttachment = currentStatus.getImageAttachment();
-                String videoAttachment = currentStatus.getVideoAttachment();
-
-                com.example.clutter.Model.Status clientStatus = new com.example.clutter.Model.Status(profilePic, firstName, userHandle,
-                        time, status, imageAttachment, videoAttachment);
-                statusesToPost.add(clientStatus);
+            if (statusItems == null) {
+                return null;
             }
+            else {
+                // For each of the JSON status items returned from AWS, parse into model Status object
+                for (int i = 0; i < statusItems.size() ; i++) {
+                    StatusListStatusesItem currentStatus = statusItems.get(i);
+
+                    String profilePic = currentStatus.getProfilePic();
+                    String firstName = currentStatus.getFirstName();
+                    String userHandle = currentStatus.getUserHandle();
+                    String time = currentStatus.getTime();
+                    String status = currentStatus.getStatus();
+                    String imageAttachment = currentStatus.getImageAttachment();
+                    String videoAttachment = currentStatus.getVideoAttachment();
+
+                    com.example.clutter.Model.Status clientStatus = new com.example.clutter.Model.Status(profilePic, firstName, userHandle,
+                            time, status, imageAttachment, videoAttachment);
+                    statusesToPost.add(clientStatus);
+                }
 
 //            statuses = statusesToPost;
-            return statusesToPost;
-
+                return statusesToPost;
+            }
         }
 
         @Override
         protected void onPostExecute(List<com.example.clutter.Model.Status> statuses) {
 //            super.onPostExecute(aVoid);
-            view.displayStories(statuses);
+            if (statuses == null) {
+                view.emptyStories();
+            }
+            else {
+                view.displayStories(statuses);
+            }
         }
     }
 
@@ -64,7 +73,7 @@ public class StoryPresenter implements StoryFragmentMVP.Presenter {
         this.view = view;
     }
 
-    public void createDummyData() {
-        new GetStoryAsync().execute();
+    public void createDummyData(String handle) {
+        new GetStoryAsync(handle).execute();
     }
 }

@@ -31,28 +31,40 @@ public class FeedPresenter implements FeedFragmentMVP.Presenter {
             List<com.example.clutter.Model.Status> statusesToPost = new ArrayList<>();
 
             // For each of the JSON status items returned from AWS, parse into model Status object
-            for (int i = 0; i < statusItems.size() ; i++) {
-                StatusListStatusesItem currentStatus = statusItems.get(i);
-
-                String profilePic = currentStatus.getProfilePic();
-                String firstName = currentStatus.getFirstName();
-                String userHandle = currentStatus.getUserHandle();
-                String time = currentStatus.getTime();
-                String status = currentStatus.getStatus();
-                String imageAttachment = currentStatus.getImageAttachment();
-                String videoAttachment = currentStatus.getVideoAttachment();
-
-                com.example.clutter.Model.Status clientStatus = new com.example.clutter.Model.Status(profilePic, firstName, userHandle,
-                        time, status, imageAttachment, videoAttachment);
-                statusesToPost.add(clientStatus);
+            // If there is no feed to see, detect it so we don't call null object reference on statusItems
+            if (listOfStatuses.getStatuses() == null) {
+                return null;
             }
 
-            return statusesToPost;
+            else {
+                for (int i = 0; i < statusItems.size() ; i++) {
+                    StatusListStatusesItem currentStatus = statusItems.get(i);
+
+                    String profilePic = currentStatus.getProfilePic();
+                    String firstName = currentStatus.getFirstName();
+                    String userHandle = currentStatus.getUserHandle();
+                    String time = currentStatus.getTime();
+                    String status = currentStatus.getStatus();
+                    String imageAttachment = currentStatus.getImageAttachment();
+                    String videoAttachment = currentStatus.getVideoAttachment();
+
+                    com.example.clutter.Model.Status clientStatus = new com.example.clutter.Model.Status(profilePic, firstName, userHandle,
+                            time, status, imageAttachment, videoAttachment);
+                    statusesToPost.add(clientStatus);
+                }
+
+                return statusesToPost;
+            }
         }
 
         @Override
         protected void onPostExecute(List<com.example.clutter.Model.Status> statuses) {
-            feedView.displayStatus(statuses);
+            if (statuses == null) {
+                feedView.emptyFeed();
+            }
+            else {
+                feedView.displayStatus(statuses);
+            }
         }
     }
 

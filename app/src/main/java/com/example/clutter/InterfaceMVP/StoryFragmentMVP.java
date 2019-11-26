@@ -1,7 +1,7 @@
 package com.example.clutter.InterfaceMVP;
-import java.util.List;
-
 import com.example.clutter.Model.Status;
+
+import java.util.List;
 
 public interface StoryFragmentMVP {
     interface Model {
@@ -13,6 +13,6 @@ public interface StoryFragmentMVP {
     }
 
     interface Presenter {
-        void createDummyData();
+        void createDummyData(String handle);
     }
 }

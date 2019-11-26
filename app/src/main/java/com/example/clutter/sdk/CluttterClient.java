@@ -20,6 +20,7 @@ import com.example.clutter.sdk.model.Empty;
 import com.example.clutter.sdk.model.FollowerList;
 import com.example.clutter.sdk.model.FollowingList;
 import com.example.clutter.sdk.model.Message;
+import com.example.clutter.sdk.model.PostPicture;
 import com.example.clutter.sdk.model.RegisterUser;
 import com.example.clutter.sdk.model.SendStatusRequest;
 import com.example.clutter.sdk.model.SignInUser;
@@ -45,22 +46,6 @@ public interface CluttterClient {
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user", method = "OPTIONS")
     Empty userOptions();
-    
-    /**
-     * 
-     * 
-     * @return Empty
-     */
-    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/profilepic", method = "POST")
-    Empty userProfilepicPost();
-    
-    /**
-     * 
-     * 
-     * @return Empty
-     */
-    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/profilepic", method = "OPTIONS")
-    Empty userProfilepicOptions();
     
     /**
      * 
@@ -207,6 +192,27 @@ public interface CluttterClient {
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/poststatus", method = "OPTIONS")
     Empty userUserhandlePoststatusOptions();
+    
+    /**
+     * 
+     * 
+     * @param userhandle 
+     * @param body 
+     * @return Message
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/profilepic", method = "POST")
+    Message userUserhandleProfilepicPost(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")
+                    String userhandle,
+            PostPicture body);
+    
+    /**
+     * 
+     * 
+     * @return Empty
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/profilepic", method = "OPTIONS")
+    Empty userUserhandleProfilepicOptions();
     
     /**
      * 

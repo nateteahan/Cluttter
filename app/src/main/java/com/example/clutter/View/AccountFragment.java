@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,7 +21,9 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.example.clutter.InterfaceMVP.StoryFragmentMVP;
+import com.example.clutter.Model.ModelSingleton;
 import com.example.clutter.Model.Status;
+import com.example.clutter.Model.User;
 import com.example.clutter.Presenter.AccountPresenter;
 import com.example.clutter.Presenter.StoryPresenter;
 import com.example.clutter.R;
@@ -45,6 +48,9 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
     private RecyclerView mRecyclerView;
     private Button btnSignOut;
     private TextView tvChangePic;
+    private TextView tvHandle;
+    private TextView tvName;
+    private ConstraintLayout mConstraintLayout;
 //    private FollowAdapter mAdapter;
     private AccountPresenter presenter;
     private FragmentManager fragmentManager;
@@ -125,7 +131,9 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
             time = itemView.findViewById(R.id.tvStatusTime);
             status = itemView.findViewById(R.id.tvStatusMessage);
             imageAttachment = itemView.findViewById(R.id.ivPhotoAttach);
+            imageAttachment.setVisibility(View.GONE);
             videoAttachment = itemView.findViewById(R.id.vvVideoAttach);
+            videoAttachment.setVisibility(View.GONE);
         }
 
         protected void bind(Status currentStatus) {
@@ -139,6 +147,7 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
             handle.setText(currentStatus.getUserHandle());
             time.setText(currentStatus.getTime());
             status.setText(currentStatus.getStatus());
+
 
             // Checks for image and photo attachments
             if (currentStatus.getImageAttachment() != null) {
@@ -208,17 +217,33 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_account, container, false);
 
+        User user = ModelSingleton.getmUser();
+        final String name = user.getFirstName() + " " + user.getLastName();
+        final String handle = user.getUserHandle();
+        final String profilePic = user.getProfilePic();
+
+        tvHandle = v.findViewById(R.id.tvHandle);
+        tvName = v.findViewById(R.id.tvName);
+        tvHandle.setText("@" + handle);
+        tvName.setText(name);
         imageView = v.findViewById(R.id.ivUserAccount);
+        Picasso.get().load(profilePic)
+                .centerCrop()
+                .transform(new CircleTransform())
+                .fit()
+                .into(imageView);
+
         mFollowers = v.findViewById(R.id.tvFollowers);
         btnSignOut = v.findViewById(R.id.button3);
         tvChangePic = v.findViewById(R.id.textView6);
+        mConstraintLayout = v.findViewById(R.id.constraintID);
         mRecyclerView= v.findViewById(R.id.rvStory);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
         presenter = new AccountPresenter(this);
 
         storyPresenter = new StoryPresenter(this);
-        storyPresenter.createDummyData();
+        storyPresenter.createDummyData(handle);
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -242,6 +267,7 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
             public void onClick(View v) {
                 /* LAUNCH TO NEW ACTIVITY */
                 Intent intent = new Intent(getActivity(), FollowActivity.class);
+                intent.putExtra("handle", handle);
                 startActivity(intent);
             }
         });
@@ -273,9 +299,16 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
     }
 
     public void displayStories(List<Status> stories) {
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mConstraintLayout.setVisibility(View.GONE);
         //RecyclerView
         mAdapter = new StoryAdapter(stories);
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    public void emptyStories() {
+        mRecyclerView.setVisibility(View.GONE);
+        mConstraintLayout.setVisibility(View.VISIBLE);
     }
 
 }

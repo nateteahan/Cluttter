@@ -1,15 +1,12 @@
 package com.example.clutter.View;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +24,8 @@ import com.example.clutter.sdk.model.RegisterUser;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /* AMPLIFY */
 
@@ -131,16 +130,24 @@ public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View 
                         .transform(new CircleTransform())
                         .into(userImage);
 
-            /* Encode to Base64 and upload to S3 bucket */
-            String encodedPicture = Base64.encodeToString(profilePic.getBytes(), Base64.DEFAULT);
-//            AmazonS3 s3 = AmazonS3ClientBuilder
-//                    .standard()
-//                    .withRegion("us-west-2")
-//                    .build();
-//
-//            File file = new File(encodedPicture);
+            /* Encode to Base64 */
+//            profilePic = Base64.encodeToString(profilePic.getBytes(), Base64.DEFAULT);
+            InputStream inputStream;
+            try {
+                inputStream = getContentResolver().openInputStream(selectedImage);
+                byte[] inputData = getBytes(inputStream);
+                profilePic = java.util.Base64.getEncoder().encodeToString(inputData);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-//            s3.putObject("cluttter", encodedPicture, file);
+//            try {
+//                final InputStream is = getContentResolver().openInputStream(selectedImage);
+//                Bitmap bit = BitmapFactory.decodeStream(is);
+//                profilePic = BitMapToString(bit);
+//            } catch (FileNotFoundException f) {
+//                f.printStackTrace();
+//            }
         }
     }
 
@@ -163,15 +170,26 @@ public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View 
         startActivity(intent);
     }
 
-    public static String encodeTobase64(Bitmap image) {
-        Bitmap immagex=image;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        immagex.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] b = baos.toByteArray();
-        String imageEncoded = Base64.encodeToString(b,Base64.DEFAULT);
+    public byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
 
-        Log.e("LOOK", imageEncoded);
-        return imageEncoded;
+        int length = 0;
+        while ((length = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, length);
+        }
+
+        return byteBuffer.toByteArray();
     }
 
+//    public String BitMapToString(Bitmap bitmap) {
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//
+//
+//        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
+//        byte[] b = baos.toByteArray();
+//        String temp = Base64.encodeToString(b, Base64.DEFAULT);
+//        return temp;
+//    }
 }

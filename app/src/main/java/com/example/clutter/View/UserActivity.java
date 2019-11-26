@@ -22,6 +22,7 @@ import com.example.clutter.Model.Status;
 import com.example.clutter.Model.UserInfo;
 import com.example.clutter.Presenter.UserPresenter;
 import com.example.clutter.R;
+import com.example.clutter.Transformations.CircleTransform;
 import com.example.clutter.Transformations.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
@@ -64,6 +65,12 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
         }
 
         protected void bind(Status currentStatus) throws IOException {
+            String profilePicPath = currentStatus.getProfilePic();
+            Picasso.get().load(profilePicPath)
+                    .centerCrop()
+                    .transform(new CircleTransform())
+                    .fit()
+                    .into(profilePic);
             name.setText(currentStatus.getFirstName());
             handle.setText(currentStatus.getUserHandle());
             time.setText(currentStatus.getTime());
@@ -83,14 +90,7 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
             }
 
             if (currentStatus.getVideoAttachment() != null) {
-                //inflate photoAttachment
-//                Picasso.get().setLoggingEnabled(true);
-//                Picasso.get().load(currentStatus.getImageAttachment())
-//                                                        .centerCrop()
-//                                                        .fit()
-//                                                        .into(photoAttachment);
-//                Bitmap x = presenter.setImageAttachment();
-                //Drawable pic = presenter.LoadImageFromWebOperations(currentStatus.getImageAttachment());
+
                 photoAttachment.setVisibility(View.GONE);
 //                photoAttachment.setImageDrawable(pic);
                 videoAttachment.setVisibility(View.VISIBLE);
@@ -98,29 +98,6 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
                 videoAttachment.setVideoURI(uri);
                 videoAttachment.start();
             }
-//            photoAttachment.setText(currentStatus.getImageAttachment());
-//            videoAttachment.setText(currentStatus.getImageAttachment());
-
-//            //Handle attachments visibility
-//            if (currentStatus != null) {
-//                Drawable drawable1 = getResources().getDrawable(R.drawable.camera_logo);
-//                photoAttachment.setImageDrawable(drawable1);
-////                photoAttachment = currentStatus.getImageAttachment();
-////                photoAttachment.setImageDrawable(currentStatus.getImageAttachment());
-//                videoAttachment.setVisibility(View.VISIBLE);
-//                photoAttachment.setVisibility(View.GONE);
-////                videoAttachment.setVisibility(View.GONE);
-//            }
-//            else if (currentStatus.getVideoAttachment() != null) {
-////                videoAttachment = currentStatus.getVideoAttachment();
-//                videoAttachment.setVisibility(View.VISIBLE);
-//                photoAttachment.setVisibility(View.GONE);
-//            }
-//            else {
-//                photoAttachment.setVisibility(View.GONE);
-//                videoAttachment.setVisibility(View.GONE);
-//            }
-
 
             Pattern usernamePattern = Pattern.compile("@+[a-zA-Z0-9]*");
             Linkify.addLinks(status, usernamePattern, "input.my.scheme://"); //Goto androidmanifest.xml and look at the scheme of the UserActivity
@@ -149,7 +126,6 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
                     startActivity(intent);
                 }
             });
-
         }
     }
 
@@ -192,9 +168,19 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
-        userHandle = getIntent().getStringExtra("userHandle");
+        Uri data = getIntent().getData();
 
-        tvFollowers = findViewById(R.id.tvNumFollowers);
+        // UserActivity was launched from a status link click
+        if (data != null) {
+            String[] strip_scheme = data.toString().split("//");
+            userHandle = strip_scheme[1].replace("@", "");
+        }
+        //UserActivity was launched from a handle click in a view/fragment
+        else {
+            userHandle = getIntent().getStringExtra("userHandle");
+        }
+
+        tvFollowers = findViewById(R.id.tvFollowers);
         tvHandle = findViewById(R.id.tvUser);
         ivPic = findViewById(R.id.ivUserAccount);
         tvFirstName = findViewById(R.id.tvFirstName);
@@ -211,7 +197,7 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(UserActivity.this, FollowActivity.class);
-                intent.putExtra("user", userHandle);
+                intent.putExtra("handle", userHandle);
                 startActivity(intent);
             }
         });

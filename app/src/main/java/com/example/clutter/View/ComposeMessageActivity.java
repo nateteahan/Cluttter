@@ -1,5 +1,6 @@
 package com.example.clutter.View;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -17,8 +18,9 @@ import com.example.clutter.Presenter.ComposeMessagePresenter;
 import com.example.clutter.R;
 import com.example.clutter.sdk.model.SendStatusRequest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 public class ComposeMessageActivity extends AppCompatActivity implements ComposeMessageMVP.View {
     private ComposeMessagePresenter presenter;
@@ -68,12 +70,20 @@ public class ComposeMessageActivity extends AppCompatActivity implements Compose
         mSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Date date = new Date();
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(date);
-                int hours = calendar.get(Calendar.HOUR);
-                int minutes = calendar.get(Calendar.MINUTE);
-                time = Integer.toString(hours) + ":" + Integer.toString(minutes);
+//                Date date = new Date();
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.setTime(date);
+//                int hours = calendar.get(Calendar.HOUR);
+//                int minutes = calendar.get(Calendar.MINUTE);
+//                time = Integer.toString(hours) + ":" + Integer.toString(minutes);
+//                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+//                Date date = new Date();
+//                System.out.println(dateFormat.format(date));
+//                time = dateFormat.format(date);
+//                time = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+                @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+                Calendar calobj = Calendar.getInstance();
+                time = df.format(calobj.getTime());
 
                 /* Make SDK Status object */
                 SendStatusRequest statusRequest = new SendStatusRequest();

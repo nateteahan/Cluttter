@@ -2,6 +2,7 @@ package com.example.clutter.Model;
 
 public class ModelSingleton {
     private static User mUser;
+
     private static final ModelSingleton INSTANCE = new ModelSingleton();
 
     public static User getmUser() {

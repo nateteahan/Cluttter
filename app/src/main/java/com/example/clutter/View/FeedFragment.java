@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,6 +35,7 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
     private RecyclerView mRecyclerView;
     private FeedPresenter presenter;
     private FeedAdapter mAdapter;
+    private ConstraintLayout mLayout;
 
     private class FeedResultHolder extends RecyclerView.ViewHolder {
         private ImageView profilePic;
@@ -64,7 +66,7 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
                             .fit()
                             .into(profilePic);
             name.setText(currentStatus.getFirstName());
-            handle.setText(currentStatus.getUserHandle());
+            handle.setText("@" + currentStatus.getUserHandle());
             time.setText(currentStatus.getTime());
             status.setText(currentStatus.getStatus());
             photoAttachment.setVisibility(View.GONE);
@@ -172,6 +174,7 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_feed, container, false);
+        mLayout = v.findViewById(R.id.feed_layout);
         mRecyclerView = v.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -186,7 +189,15 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
     }
 
     public void displayStatus(List<Status> statuses) {
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mLayout.setVisibility(View.GONE);
+
         mAdapter = new FeedAdapter(statuses);
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    public void emptyFeed() {
+        mRecyclerView.setVisibility(View.GONE);
+        mLayout.setVisibility(View.VISIBLE);
     }
 }

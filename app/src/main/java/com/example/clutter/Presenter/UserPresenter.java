@@ -97,7 +97,7 @@ public class UserPresenter implements UserMVP.Presenter {
         @Override
         protected List<com.example.clutter.Model.Status> doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
-            StatusList listOfStatuses = proxy.getUserStory();
+            StatusList listOfStatuses = proxy.getUserStory(followeeHandle);
 
             List<StatusListStatusesItem> statusItems = listOfStatuses.getStatuses();
             List<com.example.clutter.Model.Status> statusesToPost = new ArrayList<>();

@@ -6,10 +6,12 @@ import com.example.clutter.InterfaceMVP.SignUpMVP;
 import com.example.clutter.ServerProxy.ServerProxy;
 import com.example.clutter.View.SignUpActivity;
 import com.example.clutter.sdk.model.Message;
+import com.example.clutter.sdk.model.PostPicture;
 import com.example.clutter.sdk.model.RegisterUser;
 
 public class SignUpPresenter implements SignUpMVP.Presenter {
     private SignUpActivity view;
+    private PostPicture picture;
 
     public SignUpPresenter(SignUpActivity view) {
         this.view = view;
@@ -25,7 +27,17 @@ public class SignUpPresenter implements SignUpMVP.Presenter {
         @Override
         protected Message doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
+            System.out.println(user.getProfilePic());
             Message message = proxy.registerUser(user);
+
+//            // FIXME --> Call update picture first
+//            if (message.getMessage().equals("Successfully created user!")) {
+//                picture = new PostPicture();
+//                picture.setUserhandle(user.getUserhandle());
+//                picture.setProfilePic(user.getProfilePic());
+//
+//                Message newMessage = proxy.updateUserProfile(picture);
+//            }
 
             return message;
         }
@@ -39,7 +51,7 @@ public class SignUpPresenter implements SignUpMVP.Presenter {
                 view.signUpSuccessful("Welcome to Cluttter!");
             }
             else {
-                view.displayError("@" + user.getUserhandle() + " is already signed up.");
+                view.displayError(message.getMessage());
             }
         }
     }
