@@ -14,5 +14,4 @@ public class GetUserFeedResponse {
         this.message = message;
     }
 
-
 }

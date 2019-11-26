@@ -5,7 +5,7 @@ public class SendStatusRequest {
     public String firstName;
     public String userhandle;
     public String status;
-    public String pictureAttachment;
+    public String imageAttachment;
     public String videoAttachment;
     public String time;
 
@@ -41,12 +41,12 @@ public class SendStatusRequest {
         this.status = status;
     }
 
-    public String getPictureAttachment() {
-        return pictureAttachment;
+    public String getImageAttachment() {
+        return imageAttachment;
     }
 
-    public void setPictureAttachment(String pictureAttachment) {
-        this.pictureAttachment = pictureAttachment;
+    public void setImageAttachment(String imageAttachment) {
+        this.imageAttachment = imageAttachment;
     }
 
     public String getVideoAttachment() {

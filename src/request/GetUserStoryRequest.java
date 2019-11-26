@@ -1,13 +1,13 @@
 package request;
 
 public class GetUserStoryRequest {
-    public String userHandle;
+    public String userhandle;
 
     public String getUserHandle() {
-        return userHandle;
+        return userhandle;
     }
 
     public void setUserHandle(String userHandle) {
-        this.userHandle = userHandle;
+        this.userhandle = userHandle;
     }
 }

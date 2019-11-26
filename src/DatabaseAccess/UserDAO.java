@@ -1,25 +1,50 @@
 package DatabaseAccess;
 
+import Model.FollowInfo;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.dynamodbv2.document.UpdateItemOutcome;
+import com.amazonaws.services.dynamodbv2.document.*;
+import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
+import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
+import com.amazonaws.services.dynamodbv2.model.GetItemResult;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
+import com.amazonaws.services.dynamodbv2.xspec.B;
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import response.GetUserResponse;
+import response.SignInResponse;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.util.Base64;
+import java.util.InputMismatchException;
+import java.util.Iterator;
+import java.util.UUID;
 
 public class UserDAO {
     // CRUD operations
     private static final String TableName = "User";
 
-    private static final String UserHandleAttr = "userHandle";
     private static final String FirstNameAttr = "firstName";
     private static final String LastNameAttr = "lastName";
+    private static final String EmailAttr = "email";
+    private static final String UserHandleAttr = "userHandle";
+    private static final String PasswordAttr = "password";
     private static final String ProfilePicAttr = "profilePic";
+    private static final String SaltAttr = "salt";
+    private static final String Bucket = "cluttter";
 
     // DynamoDB client
     private static AmazonDynamoDB client = AmazonDynamoDBClientBuilder
@@ -40,14 +65,59 @@ public class UserDAO {
      * @param lastName
      * @param profilePic
      */
-    public void createUser(String userHandle, String firstName, String lastName, String profilePic) {
+    public String createUser(String firstName, String lastName, String email, String userHandle, String password, String profilePic, Context context) throws NoSuchAlgorithmException, InvalidKeySpecException {
         Table table = dynamoDB.getTable(TableName);
+        LambdaLogger logger = context.getLogger();
 
-        Item item = new Item().withPrimaryKey(UserHandleAttr, userHandle)
-                                .withString(FirstNameAttr, firstName)
-                                .withString(LastNameAttr, lastName)
-                                .withString(ProfilePicAttr, profilePic);
-        table.putItem(item);
+        String salt = UUID.randomUUID().toString();
+        logger.log("salt = " + salt + "\n");
+        logger.log("password = " + password + "\n");
+        password = hash(password, salt);
+
+        AmazonS3 s3 = AmazonS3ClientBuilder
+                .standard()
+                .withRegion("us-west-2")
+                .build();
+
+        byte[] decodedPicture = Base64.getDecoder().decode(profilePic);
+        InputStream inputStream = new ByteArrayInputStream(decodedPicture);
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(decodedPicture.length);
+
+        String url = null;
+        try {
+            s3.putObject(new PutObjectRequest(Bucket, userHandle, inputStream, metadata));
+            url = s3.getUrl(Bucket, userHandle).toExternalForm();
+
+            Item item = new Item().withPrimaryKey(UserHandleAttr, userHandle)
+                    .withString(FirstNameAttr, firstName)
+                    .withString(LastNameAttr, lastName)
+                    .withString(EmailAttr, email)
+                    .withString(PasswordAttr, password)
+                    .withString(ProfilePicAttr, url)
+                    .withString(SaltAttr, salt);
+
+            table.putItem(item);
+            return "Successfully created user!";
+        } catch (AmazonS3Exception e) {
+            e.printStackTrace();
+            return e.toString();
+        }
+
+//        Item item = new Item().withPrimaryKey(UserHandleAttr, userHandle)
+//                                .withString(FirstNameAttr, firstName)
+//                                .withString(LastNameAttr, lastName)
+//                                .withString(EmailAttr, email)
+//                                .withString(PasswordAttr, password)
+//                                .withString(ProfilePicAttr, "profilePic")
+//                                .withString(SaltAttr, salt);
+//        try {
+//            table.putItem(item);
+//            return "Successfully created user!";
+//        } catch (Exception e) {
+////            e.printStackTrace()
+//            return e.toString();
+//        }
     }
 
     /**
@@ -55,12 +125,11 @@ public class UserDAO {
      *
      * @param userHandle
      */
-    public GetUserResponse getUser(String userHandle, Context context) {
+    public GetUserResponse getUserInfo(String userHandle, Context context) {
         Table table = dynamoDB.getTable("User");
         GetUserResponse response;
 
         try {
-            context.getLogger().log("userHandle is: " + userHandle);
             Item item = table.getItem("userHandle", userHandle);
 
             String handle = item.get("userHandle").toString();
@@ -73,7 +142,7 @@ public class UserDAO {
 
             return response;
         } catch (Exception e) {
-            System.out.println("Something went wrong with getUser function");
+            System.out.println("User doesnt' exist");
             e.printStackTrace();
 
             response = new GetUserResponse(null, null, null, null, null, "User not found!");
@@ -81,19 +150,75 @@ public class UserDAO {
         }
     }
 
+    /**
+     * Signs a user in
+     *
+     * @param userHandle is the handle of user trying to sign in
+     * @param userPassword is the password without the salt
+     */
+    public SignInResponse signInUser(String userHandle, String userPassword) {
+        Table table = dynamoDB.getTable(TableName);
+
+        // Query the table to see if the userHandle already exists
+        try {
+            GetItemSpec itemSpec = new GetItemSpec()
+                    .withPrimaryKey(UserHandleAttr, userHandle);
+
+            // Get the Salt from the table to be able to compare passwords
+            Item item = table.getItem(itemSpec);
+            String salt = item.getString(SaltAttr);
+            String correctPassword = item.getString(PasswordAttr);
+
+            userPassword = hash(userPassword, salt);
+            if (userPassword.equals(correctPassword)) {
+                //Correct sign in attempt
+                // Generate authToken
+                String authToken = UUID.randomUUID().toString();
+
+                return new SignInResponse(null, userHandle, authToken);
+            }
+            else {
+                // Invalid userHandle or password.
+                return new SignInResponse("Invalid", null,null);
+            }
+
+        } catch (NullPointerException | InvalidKeySpecException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return new SignInResponse("Invalid", null,null);
+
+        }
+    }
 
     /**
      * Updates a user profile picture in the "User" table
      *
-     * @param userHandle
-     * @param newPicture
+     * @param userHandle is name of user
+     * @param newPicture uri of the new picture to be uploaded
      */
     public String updateUser(String userHandle, String newPicture) {
         String message;
         Table table = dynamoDB.getTable(TableName);
+        AmazonS3 s3 = AmazonS3ClientBuilder
+                .standard()
+                .withRegion("us-west-2")
+                .build();
+
+        byte[] decodedPicture = Base64.getDecoder().decode(newPicture);
+        InputStream inputStream = new ByteArrayInputStream(decodedPicture);
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(decodedPicture.length);
+
+        String url = null;
+        try {
+            s3.putObject(new PutObjectRequest(Bucket, userHandle, inputStream, metadata));
+            url = s3.getUrl(Bucket, userHandle).toExternalForm();
+        } catch (AmazonS3Exception e) {
+            e.printStackTrace();
+        }
+
         UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("userHandle", userHandle)
                                                             .withUpdateExpression("set profilePic=:p")
-                                                            .withValueMap(new ValueMap().withString(":p", newPicture))
+                                                            .withValueMap(new ValueMap().withString(":p", url))
                                                             .withReturnValues(ReturnValue.UPDATED_NEW);
 
         try {
@@ -109,5 +234,12 @@ public class UserDAO {
         }
 
         return message;
+    }
+
+    private String hash(String password, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), 65536, 128);
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        byte[] hash = factory.generateSecret(spec).getEncoded();
+        return Base64.getEncoder().encodeToString(hash);
     }
 }

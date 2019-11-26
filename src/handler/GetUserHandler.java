@@ -12,7 +12,7 @@ public class GetUserHandler {
         LambdaLogger logger = context.getLogger();
         logger.log("Request handle is: " + request.getUserhandle());
 
-        GetUserResponse response = userDAO.getUser(request.getUserhandle(), context);
+        GetUserResponse response = userDAO.getUserInfo(request.getUserhandle(), context);
 
         if (response.message != null) {
             return new GetUserResponse(null, null, null, null, null, "User not found");

@@ -28,14 +28,21 @@ public class SendStatusHandler {
             List<FollowInfo> followInfo = followersResponse.getFollowers();
             List<String> followers = new ArrayList<>();
 
-            for (int i = 0; i < followInfo.size(); i++) {
-                followers.add(followInfo.get(i).getUserHandle());
-                logger.log(followInfo.get(i).getUserHandle());
+            logger.log("\n\n");
+            logger.log("SendStatusHandler imageAttachment = " + request.getImageAttachment());
+            logger.log("\n");
+            logger.log("SendStatusHandler videoAttachment = " + request.getVideoAttachment());
+            logger.log("\n\n");
+
+            if (followInfo != null && followInfo.size() > 0) {
+                for (FollowInfo info : followInfo) {
+                    followers.add(info.getUserHandle());
+                }
             }
 
             StatusDAO statusDAO = new StatusDAO();
             String message = statusDAO.postStatus(request.getProfilePic(), request.getFirstName(), request.getUserhandle(),
-                                                    request.getTime(), request.getStatus(), request.getPictureAttachment(), request.getVideoAttachment(), followers);
+                                                    request.getTime(), request.getStatus(), request.getImageAttachment(), request.getVideoAttachment(), followers, context);
 
             return new SendStatusResponse(message);
         }
