@@ -98,26 +98,11 @@ public class UserDAO {
                     .withString(SaltAttr, salt);
 
             table.putItem(item);
-            return "Successfully created user!";
+            return url;
         } catch (AmazonS3Exception e) {
             e.printStackTrace();
             return e.toString();
         }
-
-//        Item item = new Item().withPrimaryKey(UserHandleAttr, userHandle)
-//                                .withString(FirstNameAttr, firstName)
-//                                .withString(LastNameAttr, lastName)
-//                                .withString(EmailAttr, email)
-//                                .withString(PasswordAttr, password)
-//                                .withString(ProfilePicAttr, "profilePic")
-//                                .withString(SaltAttr, salt);
-//        try {
-//            table.putItem(item);
-//            return "Successfully created user!";
-//        } catch (Exception e) {
-////            e.printStackTrace()
-//            return e.toString();
-//        }
     }
 
     /**
