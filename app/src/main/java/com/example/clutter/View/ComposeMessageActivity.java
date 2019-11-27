@@ -93,6 +93,7 @@ public class ComposeMessageActivity extends AppCompatActivity implements Compose
                 statusRequest.setImageAttachment(imageAttachment);
                 statusRequest.setVideoAttachment(videoAttachment);
 
+
                 presenter.checkValidInput(statusRequest);
             }
         });
