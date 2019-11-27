@@ -14,6 +14,6 @@ public interface HashtagMVP {
     }
 
     interface Presenter {
-        void createDummyData();
+        void createDummyData(String hashtag);
     }
 }

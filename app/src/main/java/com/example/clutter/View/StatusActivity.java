@@ -2,11 +2,14 @@ package com.example.clutter.View;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.clutter.R;
 import com.example.clutter.Transformations.CircleTransform;
+import com.example.clutter.Transformations.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
 public class StatusActivity extends AppCompatActivity {
@@ -15,6 +18,7 @@ public class StatusActivity extends AppCompatActivity {
     private TextView tvStatus;
     private TextView tvName;
     private TextView tvTime;
+    private ImageView ivAttachment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +31,8 @@ public class StatusActivity extends AppCompatActivity {
         String handle = getIntent().getStringExtra("HANDLE");
         String time = getIntent().getStringExtra("TIME");
         String name = getIntent().getStringExtra("NAME");
+        String image = getIntent().getStringExtra("IMAGE");
+        String video = getIntent().getStringExtra("VIDEO");
 
         imageView = findViewById(R.id.ivStatus1);
         Picasso.get().load(profilePic).centerCrop()
@@ -37,11 +43,29 @@ public class StatusActivity extends AppCompatActivity {
         tvStatus = findViewById(R.id.tvStatus1);
         tvName = findViewById(R.id.tvName);
         tvTime = findViewById(R.id.tvTime);
+        ivAttachment = findViewById(R.id.ivAttach);
 
 
         tvHandle.setText(handle);
         tvStatus.setText(status);
         tvTime.setText(time);
         tvName.setText(name);
+
+        if (image != null) {
+            ivAttachment.setVisibility(View.VISIBLE);
+
+            Picasso.get().load(image)
+                    .centerCrop()
+                    .transform(new RoundedTransformation(24, 24))
+                    .fit()
+                    .into(ivAttachment);
+        }
+        else if (video != null) {
+            ivAttachment.setVisibility(View.VISIBLE);
+
+            Glide.with(getApplicationContext())
+                    .load(video)
+                    .into(ivAttachment);
+        }
     }
 }

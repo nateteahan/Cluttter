@@ -13,13 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
 import com.example.clutter.InterfaceMVP.HashtagMVP;
 import com.example.clutter.Model.Status;
 import com.example.clutter.Presenter.HashtagPresenter;
 import com.example.clutter.R;
 import com.example.clutter.Transformations.CircleTransform;
+import com.example.clutter.Transformations.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -40,7 +41,7 @@ public class HashtagActivity extends AppCompatActivity implements HashtagMVP.Vie
         private TextView time;
         private TextView status;
         private ImageView photoAttachment;
-        private VideoView videoAttachment;
+//        private VideoView videoAttachment;
 
         public HashtagResultHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.status_layout, parent, false));
@@ -51,7 +52,7 @@ public class HashtagActivity extends AppCompatActivity implements HashtagMVP.Vie
             time = itemView.findViewById(R.id.tvStatusTime);
             status = itemView.findViewById(R.id.tvStatusMessage);
             photoAttachment = itemView.findViewById(R.id.ivPhotoAttach);
-            videoAttachment = itemView.findViewById(R.id.vvVideoAttach);
+//            videoAttachment = itemView.findViewById(R.id.vvVideoAttach);
         }
 
         protected void bind(Status currentStatus) throws IOException {
@@ -62,51 +63,39 @@ public class HashtagActivity extends AppCompatActivity implements HashtagMVP.Vie
                     .fit()
                     .into(profilePic);
             name.setText(currentStatus.getFirstName());
-            handle.setText(currentStatus.getUserHandle());
+            handle.setText("@" + currentStatus.getUserHandle());
             time.setText(currentStatus.getTime());
             status.setText(currentStatus.getStatus());
             photoAttachment.setVisibility(View.GONE);
-            videoAttachment.setVisibility(View.GONE);
-//
-            if (currentStatus.getVideoAttachment() != null) {
-                //inflate photoAttachment
-//                Picasso.get().setLoggingEnabled(true);
-//                Picasso.get().load(currentStatus.getImageAttachment())
-//                                                        .centerCrop()
-//                                                        .fit()
-//                                                        .into(photoAttachment);
-//                Bitmap x = presenter.setImageAttachment();
-                //Drawable pic = presenter.LoadImageFromWebOperations(currentStatus.getImageAttachment());
-                photoAttachment.setVisibility(View.GONE);
-//                photoAttachment.setImageDrawable(pic);
-                videoAttachment.setVisibility(View.VISIBLE);
-                Uri uri = Uri.parse(currentStatus.getVideoAttachment());
-                videoAttachment.setVideoURI(uri);
-                videoAttachment.start();
-            }
-//            photoAttachment.setText(currentStatus.getImageAttachment());
-//            videoAttachment.setText(currentStatus.getImageAttachment());
+//            videoAttachment.setVisibility(View.GONE);
 
-//            //Handle attachments visibility
-//            if (currentStatus != null) {
-//                Drawable drawable1 = getResources().getDrawable(R.drawable.camera_logo);
-//                photoAttachment.setImageDrawable(drawable1);
-////                photoAttachment = currentStatus.getImageAttachment();
-////                photoAttachment.setImageDrawable(currentStatus.getImageAttachment());
-//                videoAttachment.setVisibility(View.VISIBLE);
-//                photoAttachment.setVisibility(View.GONE);
-////                videoAttachment.setVisibility(View.GONE);
-//            }
-//            else if (currentStatus.getVideoAttachment() != null) {
-////                videoAttachment = currentStatus.getVideoAttachment();
-//                videoAttachment.setVisibility(View.VISIBLE);
-//                photoAttachment.setVisibility(View.GONE);
-//            }
-//            else {
-//                photoAttachment.setVisibility(View.GONE);
+            if (currentStatus.getImageAttachment() != null) {
+                photoAttachment.setVisibility(View.VISIBLE);
 //                videoAttachment.setVisibility(View.GONE);
-//            }
 
+                Picasso.get().load(currentStatus.getImageAttachment())
+                        .centerCrop()
+                        .transform(new RoundedTransformation(12, 12))
+                        .fit()
+                        .into(photoAttachment);
+
+            }
+            else if (currentStatus.getVideoAttachment() != null) {
+                photoAttachment.setVisibility(View.VISIBLE);
+
+                Glide.with(getApplicationContext())
+                        .load(currentStatus.getVideoAttachment())
+                        .into(photoAttachment);
+//                videoAttachment.setVisibility(View.VISIBLE);
+
+                //MediaController
+//                MediaController mediaController = new MediaController(getApplicationContext());
+//                mediaController.setVisibility(View.GONE);
+//                mediaController.setAnchorView(videoAttachment);
+//                Uri video = Uri.parse(currentStatus.getVideoAttachment());
+//                videoAttachment.setVideoURI(video);
+//                videoAttachment.start();
+            }
 
             Pattern usernamePattern = Pattern.compile("@+[a-zA-Z0-9]*");
             Linkify.addLinks(status, usernamePattern, "input.my.scheme://"); //Goto androidmanifest.xml and look at the scheme of the UserActivity
@@ -118,9 +107,10 @@ public class HashtagActivity extends AppCompatActivity implements HashtagMVP.Vie
             handle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    AccountFragment accountFrag = new AccountFragment();
-//                    FragmentManager fm = getFragmentManager();
-//                    fm.beginTransaction().replace(R.id.fragment_container, accountFrag).addToBackStack(null).commit();
+                    //Start UserActivity
+                    Intent intent = new Intent(HashtagActivity.this, UserActivity.class);
+                    intent.putExtra("userHandle", handle.getText().toString());
+                    startActivity(intent);
                 }
             });
 
@@ -186,7 +176,7 @@ public class HashtagActivity extends AppCompatActivity implements HashtagMVP.Vie
         if (data!=null) {
             if (data.toString().contains("input.hashtag.scheme://")){
                 String[] strip_id = data.toString().split("//");
-                hashtag = strip_id[1];
+                hashtag = strip_id[1].replace("#", "");
             }
         }
 
@@ -195,7 +185,7 @@ public class HashtagActivity extends AppCompatActivity implements HashtagMVP.Vie
         mRecyclerView = findViewById(R.id.rvHashtag);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         presenter = new HashtagPresenter(this);
-        presenter.createDummyData();
+        presenter.createDummyData(mHashtag.getText().toString());
 
 
     }

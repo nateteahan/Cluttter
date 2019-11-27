@@ -18,8 +18,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
 import com.example.clutter.InterfaceMVP.StoryFragmentMVP;
 import com.example.clutter.Model.ModelSingleton;
 import com.example.clutter.Model.Status;
@@ -120,7 +120,7 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
         private TextView time;
         private TextView status;
         private ImageView imageAttachment;
-        private VideoView videoAttachment;
+//        private VideoView videoAttachment;
 
         public StoryResultHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.status_layout, parent, false));
@@ -132,8 +132,8 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
             status = itemView.findViewById(R.id.tvStatusMessage);
             imageAttachment = itemView.findViewById(R.id.ivPhotoAttach);
             imageAttachment.setVisibility(View.GONE);
-            videoAttachment = itemView.findViewById(R.id.vvVideoAttach);
-            videoAttachment.setVisibility(View.GONE);
+//            videoAttachment = itemView.findViewById(R.id.vvVideoAttach);
+//            videoAttachment.setVisibility(View.GONE);
         }
 
         protected void bind(Status currentStatus) {
@@ -152,7 +152,7 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
             // Checks for image and photo attachments
             if (currentStatus.getImageAttachment() != null) {
                 imageAttachment.setVisibility(View.VISIBLE);
-                videoAttachment.setVisibility(View.GONE);
+//                videoAttachment.setVisibility(View.GONE);
 
                 Picasso.get().load(currentStatus.getImageAttachment())
                         .centerCrop()
@@ -163,11 +163,15 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
             }
 
             if (currentStatus.getVideoAttachment() != null) {
-                imageAttachment.setVisibility(View.GONE);
-                videoAttachment.setVisibility(View.VISIBLE);
-                Uri uri = Uri.parse(currentStatus.getVideoAttachment());
-                videoAttachment.setVideoURI(uri);
-                videoAttachment.start();
+                imageAttachment.setVisibility(View.VISIBLE);
+
+                Glide.with(getContext())
+                        .load(currentStatus.getVideoAttachment())
+                        .into(imageAttachment);
+//                videoAttachment.setVisibility(View.VISIBLE);
+//                Uri uri = Uri.parse(currentStatus.getVideoAttachment());
+//                videoAttachment.setVideoURI(uri);
+//                videoAttachment.start();
             }
 
             Pattern usernamePattern = Pattern.compile("@+[a-zA-Z0-9]*");

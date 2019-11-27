@@ -27,7 +27,6 @@ public class SignUpPresenter implements SignUpMVP.Presenter {
         @Override
         protected Message doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
-            System.out.println(user.getProfilePic());
             Message message = proxy.registerUser(user);
 
 //            // FIXME --> Call update picture first
@@ -47,11 +46,11 @@ public class SignUpPresenter implements SignUpMVP.Presenter {
             if (message.getMessage() == null) {
                 view.displayError("Please provide a profile picture.");
             }
-            else if (message.getMessage().equals("Successfully created user!")) {
-                view.signUpSuccessful("Welcome to Cluttter!");
+            else if (message.getMessage().equals("User already exists")) {
+                view.displayError(message.getMessage());
             }
             else {
-                view.displayError(message.getMessage());
+                view.signUpSuccessful(message.getMessage());
             }
         }
     }

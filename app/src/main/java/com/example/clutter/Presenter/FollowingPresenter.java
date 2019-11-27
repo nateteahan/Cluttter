@@ -32,13 +32,15 @@ public class FollowingPresenter implements FollowMvp.Presenter {
             List<FollowInfo> followingToDisplay = new ArrayList<>();
 
             // For each of the JSON follow items returned from AWS, parse into model FollowInfo object
-            for (int i = 0; i < followingItem.size() ; i++) {
-                FollowingListFollowingItem currentFollowing = followingItem.get(i);
+            if (followingItem != null) {
+                for (int i = 0; i < followingItem.size() ; i++) {
+                    FollowingListFollowingItem currentFollowing = followingItem.get(i);
 
                     String profilePic = proxy.getUser(currentFollowing.getUserHandle()).getProfilePic();
                     String userHandle = "@" + currentFollowing.getUserHandle();
                     FollowInfo followingObject = new FollowInfo(profilePic, userHandle);
                     followingToDisplay.add(followingObject);
+                }
             }
             return followingToDisplay;
         }

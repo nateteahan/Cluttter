@@ -3,8 +3,10 @@ package com.example.clutter.ServerProxy;
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.example.clutter.sdk.CluttterClient;
 import com.example.clutter.sdk.model.Authorization;
+import com.example.clutter.sdk.model.Empty;
 import com.example.clutter.sdk.model.FollowerList;
 import com.example.clutter.sdk.model.FollowingList;
+import com.example.clutter.sdk.model.Hashtag;
 import com.example.clutter.sdk.model.Message;
 import com.example.clutter.sdk.model.PostPicture;
 import com.example.clutter.sdk.model.RegisterUser;
@@ -53,8 +55,8 @@ public class ServerProxy {
         return client.userUserhandleFollowersGet(userhandle);
     }
 
-    public StatusList getHashtagStatuses() {
-        return client.hashtagGet("#CS");
+    public StatusList getHashtagStatuses(String hashtag) {
+        return client.hashtagGet(hashtag);
     }
 
     public Message postStatus(String userHandle, SendStatusRequest status) {
@@ -71,5 +73,9 @@ public class ServerProxy {
 
     public Message unfollowUser(String followerHandle, String followeeHandle) {
         return client.userUserhandleFollowSecondaryUserDelete(followerHandle, followeeHandle);
+    }
+
+    public Empty postHashtag(String hashtag, Hashtag request) {
+        return client.hashtagPost(hashtag, request);
     }
 }

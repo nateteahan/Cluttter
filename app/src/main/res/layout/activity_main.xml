@@ -7,75 +7,27 @@
     android:background="@android:color/white"
     tools:context=".View.MainActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar4"
-        android:layout_width="395dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:background="@color/colorPrimaryDark"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Nate"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar4"
-        app:layout_constraintEnd_toEndOf="@+id/toolbar4"
-        app:layout_constraintHorizontal_bias="0.183"
-        app:layout_constraintStart_toStartOf="@+id/toolbar4"
-        app:layout_constraintTop_toTopOf="@+id/toolbar4"
-        app:layout_constraintVertical_bias="0.486" />
-
 
     <FrameLayout
         android:id="@+id/fragment_container"
-        android:visibility="visible"
         android:layout_width="match_parent"
-        android:layout_height="473dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="603dp"
         android:background="@android:color/white"
-        android:paddingBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar4" />
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="397dp"
-        android:layout_height="47dp"
+        android:layout_height="66dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
+        android:paddingTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/navigation" />
-
-    <SearchView
-        android:id="@+id/searchView"
-        android:layout_width="48dp"
-        android:layout_height="29dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/fragment_container"
-        app:layout_constraintEnd_toEndOf="@+id/toolbar4"
-        app:layout_constraintTop_toTopOf="@+id/toolbar4"
-        app:layout_constraintVertical_bias="0.375" />
 
     <!--<ImageButton-->
         <!--android:id="@+id/compose"-->
@@ -96,33 +48,17 @@
         <!--app:layout_constraintTop_toTopOf="parent"-->
         <!--app:layout_constraintVertical_bias="0.98" />-->
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="45dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/fragment_container"
-        app:layout_constraintEnd_toEndOf="@+id/toolbar4"
-        app:layout_constraintHorizontal_bias="0.022"
-        app:layout_constraintStart_toStartOf="@+id/toolbar4"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.148"
-        app:srcCompat="@drawable/me" />
-
     <TextView
         android:id="@+id/ivEmptyFeed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:visibility="gone"
         android:text="@string/emptyFeed"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar4" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

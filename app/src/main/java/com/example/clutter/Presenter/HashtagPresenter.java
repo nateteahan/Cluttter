@@ -16,21 +16,22 @@ public class HashtagPresenter implements HashtagMVP.Presenter {
     private HashtagActivity view;
 
     private class GetHashtagAsync extends AsyncTask<Void, Void, List<Status>> {
+        private String hashtag;
 
-        private GetHashtagAsync() {
-            //Blank constructor
+        private GetHashtagAsync(String hashtag) {
+            this.hashtag = hashtag;
         }
 
         @Override
         protected List<com.example.clutter.Model.Status> doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
-            StatusList listOfStatuses = proxy.getHashtagStatuses();
+            StatusList listOfStatuses = proxy.getHashtagStatuses(hashtag);
 
             List<StatusListStatusesItem> statusItems = listOfStatuses.getStatuses();
             List<com.example.clutter.Model.Status> statusesToPost = new ArrayList<>();
 
             // For each of the JSON status items returned from AWS, parse into model Status object
-            for (int i = 0; i < statusItems.size() ; i++) {
+            for (int i = 0; i < statusItems.size(); i++) {
                 StatusListStatusesItem currentStatus = statusItems.get(i);
 
                 String profilePic = currentStatus.getProfilePic();
@@ -46,7 +47,6 @@ public class HashtagPresenter implements HashtagMVP.Presenter {
                 statusesToPost.add(clientStatus);
             }
 
-//            statuses = statusesToPost;
             return statusesToPost;
         }
 
@@ -61,8 +61,8 @@ public class HashtagPresenter implements HashtagMVP.Presenter {
     }
 
     @Override
-    public void createDummyData() {
-        new GetHashtagAsync().execute();
+    public void createDummyData(String hashtag) {
+        new GetHashtagAsync(hashtag).execute();
 
     }
 }

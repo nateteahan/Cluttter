@@ -2,7 +2,6 @@ package com.example.clutter.View;
 
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -14,10 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.TextView;
-import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
 import com.example.clutter.InterfaceMVP.FeedFragmentMVP;
 import com.example.clutter.Model.Status;
 import com.example.clutter.Presenter.FeedPresenter;
@@ -44,7 +42,6 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
         private TextView time;
         private TextView status;
         private ImageView photoAttachment;
-        private VideoView videoAttachment;
 
         public FeedResultHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.status_layout, parent, false));
@@ -55,7 +52,7 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
             time = itemView.findViewById(R.id.tvStatusTime);
             status = itemView.findViewById(R.id.tvStatusMessage);
             photoAttachment = itemView.findViewById(R.id.ivPhotoAttach);
-            videoAttachment = itemView.findViewById(R.id.vvVideoAttach);
+//            videoAttachment = itemView.findViewById(R.id.vvVideoAttach);
         }
 
         protected void bind(final Status currentStatus) throws IOException {
@@ -70,12 +67,12 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
             time.setText(currentStatus.getTime());
             status.setText(currentStatus.getStatus());
             photoAttachment.setVisibility(View.GONE);
-            videoAttachment.setVisibility(View.GONE);
+//            videoAttachment.setVisibility(View.GONE);
 
             // Checks for image and photo attachments
             if (currentStatus.getImageAttachment() != null) {
                 photoAttachment.setVisibility(View.VISIBLE);
-                videoAttachment.setVisibility(View.GONE);
+//                videoAttachment.setVisibility(View.GONE);
 
                 Picasso.get().load(currentStatus.getImageAttachment())
                         .centerCrop()
@@ -86,16 +83,19 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
             }
 
             if (currentStatus.getVideoAttachment() != null) {
-                photoAttachment.setVisibility(View.GONE);
-                videoAttachment.setVisibility(View.VISIBLE);
+                photoAttachment.setVisibility(View.VISIBLE);
+//                videoAttachment.setVisibility(View.GONE);
 
-                //MediaController
-                MediaController mediaController = new MediaController(getContext());
-                mediaController.setVisibility(View.GONE);
-                mediaController.setAnchorView(videoAttachment);
-                Uri video = Uri.parse(currentStatus.getVideoAttachment());
-                videoAttachment.setVideoURI(video);
-                videoAttachment.start();
+                Glide.with(getContext())
+                        .load(currentStatus.getVideoAttachment())
+                        .into(photoAttachment);
+//                //MediaController
+//                MediaController mediaController = new MediaController(getContext());
+//                mediaController.setVisibility(View.GONE);
+//                mediaController.setAnchorView(videoAttachment);
+//                Uri video = Uri.parse(currentStatus.getVideoAttachment());
+//                videoAttachment.setVideoURI(video);
+//                videoAttachment.start();
             }
 
             Pattern usernamePattern = Pattern.compile("@+[a-zA-Z0-9]*");
@@ -123,6 +123,8 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
                     intent.putExtra("NAME", name.getText().toString());
                     intent.putExtra("HANDLE", handle.getText().toString());
                     intent.putExtra("TIME", time.getText().toString());
+                    intent.putExtra("IMAGE", currentStatus.getImageAttachment());
+                    intent.putExtra("VIDEO", currentStatus.getVideoAttachment());
                     startActivity(intent);
                 }
             });

@@ -1,6 +1,7 @@
 package com.example.clutter.View;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -35,7 +36,7 @@ public class ComposeMessageActivity extends AppCompatActivity implements Compose
     private String videoAttachment;
     private String time;
     private String firstName;
-
+    private static final int REQUEST_CODE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,20 +68,17 @@ public class ComposeMessageActivity extends AppCompatActivity implements Compose
             }
         });
 
+        mAddAttachment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ComposeMessageActivity.this, PopUpActivity.class);
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        });
+
         mSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Date date = new Date();
-//                Calendar calendar = Calendar.getInstance();
-//                calendar.setTime(date);
-//                int hours = calendar.get(Calendar.HOUR);
-//                int minutes = calendar.get(Calendar.MINUTE);
-//                time = Integer.toString(hours) + ":" + Integer.toString(minutes);
-//                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-//                Date date = new Date();
-//                System.out.println(dateFormat.format(date));
-//                time = dateFormat.format(date);
-//                time = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
                 @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
                 Calendar calobj = Calendar.getInstance();
                 time = df.format(calobj.getTime());
@@ -102,6 +100,18 @@ public class ComposeMessageActivity extends AppCompatActivity implements Compose
 
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            if(resultCode == 0) {
+                imageAttachment = data.getStringExtra("imageAttachment");
+            }
+            else {
+                videoAttachment = data.getStringExtra("videoAttachment");
+            }
+        }
+    }
+
     @Override
     public void displayMessage(String message) {
 
@@ -118,6 +128,5 @@ public class ComposeMessageActivity extends AppCompatActivity implements Compose
     public void displayCharacterCount(String countMessage) {
         mCharCount.setText(countMessage);
     }
-
 }
 

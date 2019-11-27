@@ -162,8 +162,9 @@ public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View 
     }
 
     @Override
-    public void signUpSuccessful(String message) {
+    public void signUpSuccessful(String s3Pic) {
         User rootUser = new User(mNewHandle.getText().toString(), firstName, lastName, email);
+        rootUser.setProfilePic(s3Pic);
         ModelSingleton.setmUser(rootUser);
 
         Intent intent = new Intent(SignUpActivity.this, MainActivity.class);

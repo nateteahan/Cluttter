@@ -19,6 +19,7 @@ import com.example.clutter.sdk.model.Authorization;
 import com.example.clutter.sdk.model.Empty;
 import com.example.clutter.sdk.model.FollowerList;
 import com.example.clutter.sdk.model.FollowingList;
+import com.example.clutter.sdk.model.Hashtag;
 import com.example.clutter.sdk.model.Message;
 import com.example.clutter.sdk.model.PostPicture;
 import com.example.clutter.sdk.model.RegisterUser;
@@ -264,6 +265,19 @@ public interface CluttterClient {
     StatusList hashtagGet(
             @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "hashtag", location = "path")
                     String hashtag);
+    
+    /**
+     * 
+     * 
+     * @param hashtag 
+     * @param body 
+     * @return Empty
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/{hashtag}", method = "POST")
+    Empty hashtagPost(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "hashtag", location = "path")
+                    String hashtag,
+            Hashtag body);
     
     /**
      * 

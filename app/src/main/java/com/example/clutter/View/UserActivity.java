@@ -15,8 +15,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
 import com.example.clutter.InterfaceMVP.UserMVP;
 import com.example.clutter.Model.Status;
 import com.example.clutter.Model.UserInfo;
@@ -50,7 +50,7 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
         private TextView time;
         private TextView status;
         private ImageView photoAttachment;
-        private VideoView videoAttachment;
+//        private VideoView videoAttachment;
 
         public StatusResultHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.status_layout, parent, false));
@@ -61,7 +61,7 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
             time = itemView.findViewById(R.id.tvStatusTime);
             status = itemView.findViewById(R.id.tvStatusMessage);
             photoAttachment = itemView.findViewById(R.id.ivPhotoAttach);
-            videoAttachment = itemView.findViewById(R.id.vvVideoAttach);
+//            videoAttachment = itemView.findViewById(R.id.vvVideoAttach);
         }
 
         protected void bind(Status currentStatus) throws IOException {
@@ -76,14 +76,15 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
             time.setText(currentStatus.getTime());
             status.setText(currentStatus.getStatus());
             photoAttachment.setVisibility(View.GONE);
-            videoAttachment.setVisibility(View.GONE);
+//            videoAttachment.setVisibility(View.GONE);
 //
             if (currentStatus.getImageAttachment() != null) {
                 photoAttachment.setVisibility(View.VISIBLE);
-                videoAttachment.setVisibility(View.GONE);
+//                videoAttachment.setVisibility(View.GONE);
 
                 Picasso.get().load(currentStatus.getImageAttachment())
                         .centerCrop()
+                        .transform(new RoundedTransformation(12, 12))
                         .fit()
                         .into(photoAttachment);
 
@@ -91,12 +92,16 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
 
             if (currentStatus.getVideoAttachment() != null) {
 
-                photoAttachment.setVisibility(View.GONE);
+                photoAttachment.setVisibility(View.VISIBLE);
+
+                Glide.with(getApplicationContext())
+                        .load(currentStatus.getVideoAttachment())
+                        .into(photoAttachment);
 //                photoAttachment.setImageDrawable(pic);
-                videoAttachment.setVisibility(View.VISIBLE);
-                Uri uri = Uri.parse(currentStatus.getVideoAttachment());
-                videoAttachment.setVideoURI(uri);
-                videoAttachment.start();
+//                videoAttachment.setVisibility(View.VISIBLE);
+//                Uri uri = Uri.parse(currentStatus.getVideoAttachment());
+//                videoAttachment.setVideoURI(uri);
+//                videoAttachment.start();
             }
 
             Pattern usernamePattern = Pattern.compile("@+[a-zA-Z0-9]*");

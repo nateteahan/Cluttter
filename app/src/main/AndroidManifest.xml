@@ -21,10 +21,10 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"
         tools:ignore="GoogleAppIndexingWarning">
+        
 
-        <service android:name="org.eclipse.paho.android.service.MqttService" />
-
-        <activity android:name=".View.FollowActivity" />
+        <activity android:name=".View.FollowActivity"
+            android:theme="@style/AppTheme"/>
         <activity android:name=".View.UserActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -43,17 +43,31 @@
                 <data android:scheme="input.hashtag.scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".View.StatusActivity" />
-        <activity android:name=".View.ComposeMessageActivity" />
-        <activity android:name=".View.CreateAccountActivity" />
-        <activity android:name=".View.SignUpActivity" />
-        <activity android:name=".View.MainActivity" />
-        <activity android:name=".View.SignInActivity">
+        <activity android:name=".View.StatusActivity"
+            android:theme="@style/AppTheme"/>
+
+        <activity android:name=".View.ComposeMessageActivity"
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".View.CreateAccountActivity"
+            android:theme="@style/AppTheme"/>
+
+        <activity android:name=".View.SignUpActivity"
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".View.MainActivity"
+            android:theme="@style/AppTheme.CustomTheme"/>
+
+        <activity android:name=".View.SignInActivity"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+        
+        <activity android:name=".View.PopUpActivity"
+            android:theme="@style/AppTheme.CustomTheme">
+        </activity>
+
     </application>
 
 </manifest>
