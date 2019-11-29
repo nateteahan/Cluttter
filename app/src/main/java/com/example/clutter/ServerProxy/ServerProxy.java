@@ -78,4 +78,8 @@ public class ServerProxy {
     public Empty postHashtag(String hashtag, Hashtag request) {
         return client.hashtagPost(hashtag, request);
     }
+
+    public Message isFollowing(String followerHandle, String followeeHandle) {
+        return client.userUserhandleFollowSecondaryUserGet(followerHandle, followeeHandle);
+    }
 }

@@ -29,8 +29,12 @@ import com.example.clutter.Presenter.StoryPresenter;
 import com.example.clutter.R;
 import com.example.clutter.Transformations.CircleTransform;
 import com.example.clutter.Transformations.RoundedTransformation;
+import com.example.clutter.sdk.model.PostPicture;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -41,9 +45,10 @@ import static android.app.Activity.RESULT_OK;
  */
 public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
     private static final int REQUEST_UPLOAD_IMAGE = 1;
+//    private static final int RESULT_LOAD_IMAGE = -1;
     private StoryAdapter mAdapter;
     private StoryPresenter storyPresenter;
-    private ImageView imageView;
+    private ImageView userPic;
     private TextView mFollowers;
     private RecyclerView mRecyclerView;
     private Button btnSignOut;
@@ -54,64 +59,7 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
 //    private FollowAdapter mAdapter;
     private AccountPresenter presenter;
     private FragmentManager fragmentManager;
-
-//    private class FollowHolder extends RecyclerView.ViewHolder {
-//        private ImageView image;
-//        private TextView name;
-//
-//        public FollowHolder(LayoutInflater inflater, ViewGroup parent) {
-//            super(inflater.inflate(R.layout.follow_list_layout, parent, false));
-//
-//            image = itemView.findViewById(R.id.ivFollower);
-//            name = itemView.findViewById(R.id.tvFollowName);
-//        }
-//
-//        protected void bind (FollowInfo info) {
-//            Drawable drawable = getResources().getDrawable(R.drawable.ic_user);
-//            image.setImageDrawable(drawable);
-//            name.setText(info.getName());
-//
-//            name.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("name", name.getText().toString());
-//                    bundle.putInt("picture", R.drawable.ic_user);
-//
-//                    AccountFragment fragment = new AccountFragment();
-//                    fragment.setArguments(bundle);
-//                    fragmentManager = getFragmentManager();
-//                    fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment);
-//                }
-//            });
-//        }
-//    }
-//
-//    private class FollowAdapter extends RecyclerView.Adapter<FollowHolder> {
-//        private List<FollowInfo> follows;
-//
-//        public FollowAdapter(List<FollowInfo> follows) {
-//            this.follows = follows;
-//        }
-//
-//        @NonNull
-//        @Override
-//        public FollowHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-//            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-//            return new FollowHolder(layoutInflater, viewGroup);
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(@NonNull FollowHolder followHolder, int position) {
-//            FollowInfo followInfo = follows.get(position);
-//            followHolder.bind(followInfo);
-//        }
-//
-//        @Override
-//        public int getItemCount() {
-//            return follows.size();
-//        }
-//    }
+    private String updatePic;
 
     private class StoryResultHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
@@ -132,11 +80,9 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
             status = itemView.findViewById(R.id.tvStatusMessage);
             imageAttachment = itemView.findViewById(R.id.ivPhotoAttach);
             imageAttachment.setVisibility(View.GONE);
-//            videoAttachment = itemView.findViewById(R.id.vvVideoAttach);
-//            videoAttachment.setVisibility(View.GONE);
         }
 
-        protected void bind(Status currentStatus) {
+        protected void bind(final Status currentStatus) {
             String profilePicPath = currentStatus.getProfilePic();
             Picasso.get().load(profilePicPath)
                     .centerCrop()
@@ -152,7 +98,6 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
             // Checks for image and photo attachments
             if (currentStatus.getImageAttachment() != null) {
                 imageAttachment.setVisibility(View.VISIBLE);
-//                videoAttachment.setVisibility(View.GONE);
 
                 Picasso.get().load(currentStatus.getImageAttachment())
                         .centerCrop()
@@ -168,10 +113,6 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
                 Glide.with(getContext())
                         .load(currentStatus.getVideoAttachment())
                         .into(imageAttachment);
-//                videoAttachment.setVisibility(View.VISIBLE);
-//                Uri uri = Uri.parse(currentStatus.getVideoAttachment());
-//                videoAttachment.setVideoURI(uri);
-//                videoAttachment.start();
             }
 
             Pattern usernamePattern = Pattern.compile("@+[a-zA-Z0-9]*");
@@ -179,6 +120,21 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
 
             Pattern hashtagPattern = Pattern.compile("#+[a-zA-Z0-9]*");
             Linkify.addLinks(status, hashtagPattern, "input.hashtag.scheme://");
+
+            status.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), StatusActivity.class);
+                    intent.putExtra("PIC", currentStatus.getProfilePic());
+                    intent.putExtra("STATUS", status.getText().toString());
+                    intent.putExtra("NAME", name.getText().toString());
+                    intent.putExtra("HANDLE", "@" + ModelSingleton.getmUser().getUserHandle());
+                    intent.putExtra("TIME", time.getText().toString());
+                    intent.putExtra("IMAGE", currentStatus.getImageAttachment());
+                    intent.putExtra("VIDEO", currentStatus.getVideoAttachment());
+                    startActivity(intent);
+                }
+            });
         }
     }
 
@@ -230,12 +186,12 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
         tvName = v.findViewById(R.id.tvName);
         tvHandle.setText("@" + handle);
         tvName.setText(name);
-        imageView = v.findViewById(R.id.ivUserAccount);
+        userPic = v.findViewById(R.id.ivUserAccount);
         Picasso.get().load(profilePic)
                 .centerCrop()
                 .transform(new CircleTransform())
                 .fit()
-                .into(imageView);
+                .into(userPic);
 
         mFollowers = v.findViewById(R.id.tvFollowers);
         btnSignOut = v.findViewById(R.id.button3);
@@ -249,13 +205,6 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
         storyPresenter = new StoryPresenter(this);
         storyPresenter.createDummyData(handle);
 
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-//            int image = bundle.getInt("picture");
-//            Drawable drawable = getResources().getDrawable(image);
-//            imageView.setImageDrawable(drawable);
-
-        }
 
         tvChangePic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -296,9 +245,36 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+//        if (requestCode == REQUEST_UPLOAD_IMAGE && resultCode == RESULT_OK && data != null) {
+//            Uri selectedImage = data.getData();
+//            userPic.setImageURI(selectedImage);
+//        }
         if (requestCode == REQUEST_UPLOAD_IMAGE && resultCode == RESULT_OK && data != null) {
+            /* Using Picasso and URI to display in image view immediately */
             Uri selectedImage = data.getData();
-            imageView.setImageURI(selectedImage);
+            updatePic = selectedImage.toString();
+            Picasso.get().load(selectedImage)
+                    .fit()
+                    .centerCrop()
+                    .transform(new CircleTransform())
+                    .into(userPic);
+
+            /* Encode to Base64 */
+            InputStream inputStream;
+            try {
+                inputStream = getActivity().getContentResolver().openInputStream(selectedImage);
+                byte[] inputData = getBytes(inputStream);
+                updatePic = java.util.Base64.getEncoder().encodeToString(inputData);
+                System.out.println("Made it here");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            PostPicture picture = new PostPicture();
+            picture.setUserhandle(ModelSingleton.getmUser().getUserHandle());
+            picture.setProfilePic(updatePic);
+
+            presenter.updatePicture(picture);
         }
     }
 
@@ -315,4 +291,20 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
         mConstraintLayout.setVisibility(View.VISIBLE);
     }
 
+    public byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int length = 0;
+        while ((length = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, length);
+        }
+
+        return byteBuffer.toByteArray();
+    }
+
+    public void updatePicSuccessful(String url) {
+        ModelSingleton.getmUser().setProfilePic(url);
+    }
 }

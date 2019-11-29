@@ -131,7 +131,6 @@ public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View 
                         .into(userImage);
 
             /* Encode to Base64 */
-//            profilePic = Base64.encodeToString(profilePic.getBytes(), Base64.DEFAULT);
             InputStream inputStream;
             try {
                 inputStream = getContentResolver().openInputStream(selectedImage);
@@ -140,14 +139,6 @@ public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-//            try {
-//                final InputStream is = getContentResolver().openInputStream(selectedImage);
-//                Bitmap bit = BitmapFactory.decodeStream(is);
-//                profilePic = BitMapToString(bit);
-//            } catch (FileNotFoundException f) {
-//                f.printStackTrace();
-//            }
         }
     }
 
@@ -183,14 +174,4 @@ public class SignUpActivity extends AppCompatActivity implements SignUpMVP.View 
 
         return byteBuffer.toByteArray();
     }
-
-//    public String BitMapToString(Bitmap bitmap) {
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//
-//
-//        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
-//        byte[] b = baos.toByteArray();
-//        String temp = Base64.encodeToString(b, Base64.DEFAULT);
-//        return temp;
-//    }
 }

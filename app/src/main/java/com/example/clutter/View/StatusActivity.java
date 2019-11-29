@@ -1,7 +1,9 @@
 package com.example.clutter.View;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.util.Linkify;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,6 +13,8 @@ import com.example.clutter.R;
 import com.example.clutter.Transformations.CircleTransform;
 import com.example.clutter.Transformations.RoundedTransformation;
 import com.squareup.picasso.Picasso;
+
+import java.util.regex.Pattern;
 
 public class StatusActivity extends AppCompatActivity {
     private ImageView imageView;
@@ -51,6 +55,12 @@ public class StatusActivity extends AppCompatActivity {
         tvTime.setText(time);
         tvName.setText(name);
 
+        Pattern usernamePattern = Pattern.compile("@+[a-zA-Z0-9]*");
+        Linkify.addLinks(tvStatus, usernamePattern, "input.my.scheme://"); //Goto androidmanifest.xml and look at the scheme of the UserActivity
+
+        Pattern hashtagPattern = Pattern.compile("#+[a-zA-Z0-9]*");
+        Linkify.addLinks(tvStatus, hashtagPattern, "input.hashtag.scheme://");
+
         if (image != null) {
             ivAttachment.setVisibility(View.VISIBLE);
 
@@ -67,5 +77,14 @@ public class StatusActivity extends AppCompatActivity {
                     .load(video)
                     .into(ivAttachment);
         }
+
+        tvHandle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StatusActivity.this, UserActivity.class);
+                intent.putExtra("userHandle", tvHandle.getText().toString());
+                startActivity(intent);
+            }
+        });
     }
 }

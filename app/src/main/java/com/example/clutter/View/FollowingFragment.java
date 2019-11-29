@@ -1,6 +1,7 @@
 package com.example.clutter.View;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -55,14 +56,9 @@ public class FollowingFragment extends Fragment implements FollowMvp.View {
             name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("name", name.getText().toString());
-                    bundle.putInt("picture", R.drawable.ic_user);
-
-                    AccountFragment fragment = new AccountFragment();
-                    fragment.setArguments(bundle);
-                    fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment);
+                    Intent intent = new Intent(getActivity(), UserActivity.class);
+                    intent.putExtra("userHandle", name.getText().toString());
+                    startActivity(intent);
                 }
             });
         }

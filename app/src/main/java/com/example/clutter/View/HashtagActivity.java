@@ -55,7 +55,7 @@ public class HashtagActivity extends AppCompatActivity implements HashtagMVP.Vie
 //            videoAttachment = itemView.findViewById(R.id.vvVideoAttach);
         }
 
-        protected void bind(Status currentStatus) throws IOException {
+        protected void bind(final Status currentStatus) throws IOException {
             String profilePicPath = currentStatus.getProfilePic();
             Picasso.get().load(profilePicPath)
                     .centerCrop()
@@ -118,10 +118,13 @@ public class HashtagActivity extends AppCompatActivity implements HashtagMVP.Vie
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(HashtagActivity.this, StatusActivity.class);
+                    intent.putExtra("PIC", currentStatus.getProfilePic());
                     intent.putExtra("STATUS", status.getText().toString());
                     intent.putExtra("NAME", name.getText().toString());
                     intent.putExtra("HANDLE", handle.getText().toString());
                     intent.putExtra("TIME", time.getText().toString());
+                    intent.putExtra("IMAGE", currentStatus.getImageAttachment());
+                    intent.putExtra("VIDEO", currentStatus.getVideoAttachment());
                     startActivity(intent);
                 }
             });

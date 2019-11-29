@@ -89,13 +89,6 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
                 Glide.with(getContext())
                         .load(currentStatus.getVideoAttachment())
                         .into(photoAttachment);
-//                //MediaController
-//                MediaController mediaController = new MediaController(getContext());
-//                mediaController.setVisibility(View.GONE);
-//                mediaController.setAnchorView(videoAttachment);
-//                Uri video = Uri.parse(currentStatus.getVideoAttachment());
-//                videoAttachment.setVideoURI(video);
-//                videoAttachment.start();
             }
 
             Pattern usernamePattern = Pattern.compile("@+[a-zA-Z0-9]*");

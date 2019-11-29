@@ -129,6 +129,27 @@ public class UserPresenter implements UserMVP.Presenter {
         }
     }
 
+    private class GetFollowState extends AsyncTask<Void, Void, Message> {
+        private String follower;
+        private String followee;
+
+        public GetFollowState(String follower, String followee) {
+            this.follower = follower;
+            this.followee = followee;
+        }
+
+        @Override
+        protected Message doInBackground(Void... voids) {
+            ServerProxy proxy = new ServerProxy();
+            return proxy.isFollowing(follower, followee);
+        }
+
+        @Override
+        protected void onPostExecute(Message message) {
+            view.setButtonState(message.getMessage());
+        }
+    }
+
     public UserPresenter(UserActivity view, String userHandle) {
         // Bug fix for the URL encoding of the "@" symbol
         this.followerHandle = ModelSingleton.getmUser().getUserHandle().replace("@", "");
@@ -151,5 +172,9 @@ public class UserPresenter implements UserMVP.Presenter {
 
     public void unfollowUser() {
         new UnfollowUserAsync().execute();
+    }
+
+    public void isFollowing(String followerHandle, String followeeHandle) {
+        new GetFollowState(followerHandle, followeeHandle).execute();
     }
 }

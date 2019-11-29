@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.clutter.InterfaceMVP.UserMVP;
+import com.example.clutter.Model.ModelSingleton;
 import com.example.clutter.Model.Status;
 import com.example.clutter.Model.UserInfo;
 import com.example.clutter.Presenter.UserPresenter;
@@ -64,7 +65,7 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
 //            videoAttachment = itemView.findViewById(R.id.vvVideoAttach);
         }
 
-        protected void bind(Status currentStatus) throws IOException {
+        protected void bind(final Status currentStatus) throws IOException {
             String profilePicPath = currentStatus.getProfilePic();
             Picasso.get().load(profilePicPath)
                     .centerCrop()
@@ -97,11 +98,6 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
                 Glide.with(getApplicationContext())
                         .load(currentStatus.getVideoAttachment())
                         .into(photoAttachment);
-//                photoAttachment.setImageDrawable(pic);
-//                videoAttachment.setVisibility(View.VISIBLE);
-//                Uri uri = Uri.parse(currentStatus.getVideoAttachment());
-//                videoAttachment.setVideoURI(uri);
-//                videoAttachment.start();
             }
 
             Pattern usernamePattern = Pattern.compile("@+[a-zA-Z0-9]*");
@@ -124,10 +120,13 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplication(), StatusActivity.class);
+                    intent.putExtra("PIC", currentStatus.getProfilePic());
                     intent.putExtra("STATUS", status.getText().toString());
                     intent.putExtra("NAME", name.getText().toString());
-                    intent.putExtra("HANDLE", handle.getText().toString());
+                    intent.putExtra("HANDLE", "@" + userHandle);
                     intent.putExtra("TIME", time.getText().toString());
+                    intent.putExtra("IMAGE", currentStatus.getImageAttachment());
+                    intent.putExtra("VIDEO", currentStatus.getVideoAttachment());
                     startActivity(intent);
                 }
             });
@@ -182,7 +181,7 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
         }
         //UserActivity was launched from a handle click in a view/fragment
         else {
-            userHandle = getIntent().getStringExtra("userHandle");
+            userHandle = getIntent().getStringExtra("userHandle").replace("@", "");
         }
 
         tvFollowers = findViewById(R.id.tvFollowers);
@@ -194,6 +193,14 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
         mRecyclerView = findViewById(R.id.rvStory);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         presenter = new UserPresenter(this, userHandle);
+
+        // If the page we are on is the logged-in user's page, make the follow option go away
+        if (userHandle.equals(ModelSingleton.getmUser().getUserHandle())) {
+            btnFollow.setVisibility(View.GONE);
+        }
+        else {
+            presenter.isFollowing(ModelSingleton.getmUser().getUserHandle(), userHandle);
+        }
 
         presenter.createDummyData();
         presenter.getUserInfo();
@@ -250,4 +257,17 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    public void setButtonState(String message) {
+        switch (message) {
+            default:
+                btnFollow.setText(R.string.error);
+                break;
+            case "False":
+                btnFollow.setText(R.string.followBtn);
+                break;
+            case "True":
+                btnFollow.setText(R.string.unfollowBtn);
+                break;
+        }
+    }
 }
