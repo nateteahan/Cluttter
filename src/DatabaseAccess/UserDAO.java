@@ -180,8 +180,8 @@ public class UserDAO {
      * @param userHandle is name of user
      * @param newPicture uri of the new picture to be uploaded
      */
-    public String updateUser(String userHandle, String newPicture) {
-        String message;
+    public String updateUser(String userHandle, String newPicture, Context context) {
+        LambdaLogger logger = context.getLogger();
         Table table = dynamoDB.getTable(TableName);
         AmazonS3 s3 = AmazonS3ClientBuilder
                 .standard()
@@ -193,32 +193,18 @@ public class UserDAO {
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(decodedPicture.length);
 
-        String url = null;
         try {
             s3.putObject(new PutObjectRequest(Bucket, userHandle, inputStream, metadata));
-            url = s3.getUrl(Bucket, userHandle).toExternalForm();
+            String url = s3.getUrl(Bucket, userHandle).toExternalForm();
+            logger.log("URL of the image has been updated!! : " + url + "\n\n");
+            UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("userHandle", userHandle)
+                    .withUpdateExpression("set profilePic=:p")
+                    .withValueMap(new ValueMap().withString(":p", url));
+            table.updateItem(updateItemSpec);
+            return url;
         } catch (AmazonS3Exception e) {
-            e.printStackTrace();
+            return e.toString();
         }
-
-        UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("userHandle", userHandle)
-                                                            .withUpdateExpression("set profilePic=:p")
-                                                            .withValueMap(new ValueMap().withString(":p", url))
-                                                            .withReturnValues(ReturnValue.UPDATED_NEW);
-
-        try {
-            System.out.println("Updating the user picture...");
-            UpdateItemOutcome outcome = table.updateItem(updateItemSpec);
-            System.out.println("UpdateItem succeeded:\n" + outcome.getItem().toJSONPretty());
-            message = "Success";
-        }
-        catch (Exception e) {
-            System.err.println("Unable to update " + userHandle + "'s profile picture");
-            System.err.println(e.getMessage());
-            message = "Failure";
-        }
-
-        return message;
     }
 
     private String hash(String password, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {

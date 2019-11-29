@@ -5,14 +5,13 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.document.spec.DeleteItemSpec;
+import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
-import request.FollowUserRequest;
-import request.GetFollowersRequest;
-import request.GetFollowingRequest;
-import request.UnfollowUserRequest;
+import request.*;
 import response.GetFollowersResponse;
 import response.GetFollowingResponse;
+import response.IsFollowingResponse;
 
 import java.util.*;
 
@@ -127,5 +126,31 @@ public class FollowDAO {
         }
 
         return result;
+    }
+
+    public IsFollowingResponse isFollowing(IsFollowingRequest request) {
+        Table table = dynamoDB.getTable(TableName);
+
+        try {
+            QuerySpec spec = new QuerySpec()
+                    .withKeyConditionExpression("followerHandle = :f and followeeHandle = :g")
+                    .withValueMap(new ValueMap()
+                            .withString(":f", request.getFollowerHandle())
+                            .withString(":g", request.getFolloweeHandle()));
+
+            ItemCollection<QueryOutcome> items = table.query(spec);
+
+            Iterator<Item> iter = items.iterator();
+            if (iter.hasNext()) {
+                // Is followed
+                return new IsFollowingResponse("True");
+            }
+            else {
+                // Is not followed
+                return new IsFollowingResponse("False");
+            }
+        } catch (Exception e) {
+            return new IsFollowingResponse(e.toString());
+        }
     }
 }
