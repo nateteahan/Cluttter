@@ -34,7 +34,7 @@ public class FollowerPresenter implements FollowMvp.Presenter {
             // FIXME --> if no followers are found, return a message or inflate a TextView
             // For each of the JSON follow items returned from AWS, parse into model FollowInfo object
             if (followerItem != null) {
-                for (int i = 0; i < followerItem.size() ; i++) {
+                for (int i = 0; i < followerItem.size(); i++) {
                     FollowerListFollowersItem currentFollowing = followerItem.get(i);
 
                     String profilePic = proxy.getUser(currentFollowing.getUserHandle()).getProfilePic();
