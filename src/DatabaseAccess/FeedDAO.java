@@ -41,7 +41,7 @@ public class FeedDAO {
                 .withKeyConditionExpression("userHandle = :u")
                 .withValueMap(new ValueMap()
                     .withString(":u", request.getUserhandle()))
-                .withScanIndexForward(false);
+                    .withScanIndexForward(false);
 
         ItemCollection<QueryOutcome> items = table.query(spec);
 

@@ -39,8 +39,8 @@ public class StoryDAO {
         QuerySpec spec = new QuerySpec()
                 .withKeyConditionExpression("userHandle = :u")
                 .withValueMap(new ValueMap()
-                        .withString(":u", request.getUserHandle()))
-                        .withScanIndexForward(false);
+                    .withString(":u", request.getUserHandle()))
+                    .withScanIndexForward(false);
 
         ItemCollection<QueryOutcome> items = table.query(spec);
 

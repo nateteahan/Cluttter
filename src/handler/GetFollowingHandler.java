@@ -19,7 +19,7 @@ public class GetFollowingHandler {
         LambdaLogger logger = context.getLogger();
         logger.log("Getting following");
 
-        GetFollowingResponse response = followDAO.getFollowing(request);
+        GetFollowingResponse response = followDAO.getFollowing(request, context, request.getLastFollowee());
 //        FollowInfo followee = new FollowInfo("https://hips.hearstapps.com/ghk.h-cdn.co/assets/17/30/2560x1280/landscape-1500925839-golden-retriever-puppy.jpg?resize=480:*", "@Dog");
 //        following.add(followee);
 

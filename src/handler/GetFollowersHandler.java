@@ -17,7 +17,7 @@ public class GetFollowersHandler {
 
         FollowDAO followDAO = new FollowDAO();
         logger.log("Entering FollowDAO");
-        GetFollowersResponse response = followDAO.getFollowers(request);
+        GetFollowersResponse response = followDAO.getFollowers(request, context, request.getLastFollower());
 
         return response;
     }

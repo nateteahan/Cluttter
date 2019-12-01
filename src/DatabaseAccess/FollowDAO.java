@@ -8,6 +8,11 @@ import com.amazonaws.services.dynamodbv2.document.spec.DeleteItemSpec;
 import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.QueryRequest;
+import com.amazonaws.services.dynamodbv2.model.QueryResult;
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import request.*;
 import response.GetFollowersResponse;
 import response.GetFollowingResponse;
@@ -60,7 +65,8 @@ public class FollowDAO {
         }
     }
 
-    public GetFollowersResponse getFollowers(GetFollowersRequest request) {
+    public GetFollowersResponse getFollowers(GetFollowersRequest request, Context context, String lastKey) {
+        LambdaLogger logger = context.getLogger();
         GetFollowersResponse result;
         List<FollowInfo> followers = new ArrayList<>();
 
@@ -71,58 +77,174 @@ public class FollowDAO {
         QuerySpec spec = new QuerySpec()
                 .withKeyConditionExpression("followeeHandle = :followee")
                 .withValueMap(new ValueMap()
-                        .withString(":followee", request.getUserhandle()));
+                        .withString(":followee", request.getUserhandle()))
+                        .withMaxPageSize(3);
+
+//        if (isNonEmptyString(lastKey) && !lastKey.equals("GETALL")) {
+//            spec = spec.withExclusiveStartKey(new KeyAttribute(FolloweeHandleAttr, lastKey));
+//        }
 
         ItemCollection<QueryOutcome> items = index.query(spec);
 
-        Iterator<Item> iter = items.iterator();
-        while (iter.hasNext()) {
-            Item item = iter.next();
-            FollowInfo info = new FollowInfo(item.getString(FollowerHandleAttr));
-            followers.add(info);
-            /* FIXME --> I want to have the profile pic in the item as well.
-            *   If that is too much work, add in the name of the follower AND follower in the Feed table */
+
+        //REFERENCE 2
+            Map<String, String> attrNames = new HashMap<String, String>();
+        attrNames.put("#fol", FolloweeHandleAttr);
+
+        Map<String, AttributeValue> attrValues = new HashMap<>();
+        attrValues.put(":followee", new AttributeValue().withS(request.getUserhandle()));
+
+        QueryRequest queryRequest = new QueryRequest()
+                .withTableName(TableName)
+                .withKeyConditionExpression("#fol = :followee")
+                .withExpressionAttributeNames(attrNames)
+                .withExpressionAttributeValues(attrValues)
+                .withIndexName(index.getIndexName())
+                .withLimit(3);
+
+        if (isNonEmptyString(lastKey)) {
+            Map<String, AttributeValue> startKey = new HashMap<>();
+            startKey.put(FollowerHandleAttr, new AttributeValue().withS(lastKey));
+            startKey.put(FolloweeHandleAttr, new AttributeValue().withS(request.getUserhandle()));
+
+            queryRequest = queryRequest.withExclusiveStartKey(startKey);
         }
 
+        QueryResult queryResult = client.query(queryRequest);
+        List<Map<String, AttributeValue>> items1 = queryResult.getItems();
+        if (items1 != null) {
+            for (Map<String, AttributeValue> item : items1){
+                String userHandle = item.get(FollowerHandleAttr).getS();
+                FollowInfo info2 = new FollowInfo(userHandle);
+                followers.add(info2);
+            }
+        }
+
+        Map<String, AttributeValue> lastKey1 = queryResult.getLastEvaluatedKey();
+        String newLastKey = null;
+        if (lastKey1 != null) {
+//            result.setLastKey(lastKey.get(LocationAttr).getS());
+            newLastKey = lastKey1.get(FollowerHandleAttr).getS();
+        }
+        /* REFERENCE */
+//        Map<String, String> attrNames = new HashMap<String, String>();
+//        attrNames.put("#vis", VisitorAttr);
+//
+//        Map<String, AttributeValue> attrValues = new HashMap<>();
+//        attrValues.put(":visitor", new AttributeValue().withS(visitor));
+//
+//        QueryRequest queryRequest = new QueryRequest()
+//                .withTableName(TableName)
+//                .withKeyConditionExpression("#vis = :visitor")
+//                .withExpressionAttributeNames(attrNames)
+//                .withExpressionAttributeValues(attrValues)
+//                .withLimit(pageSize);
+//
+//        if (isNonEmptyString(lastLocation)) {
+//            Map<String, AttributeValue> startKey = new HashMap<>();
+//            startKey.put(VisitorAttr, new AttributeValue().withS(visitor));
+//            startKey.put(LocationAttr, new AttributeValue().withS(lastLocation));
+
+//        /* */
+//        int startPage = 0;
+//        for (Page<Item, QueryOutcome> page : items.pages()) {
+//            logger.log("Page: " + ++startPage);
+//
+//            Iterator<Item> iterator = page.iterator();
+//            while (iterator.hasNext()) {
+//                Item item = iterator.next();
+//                logger.log(item.getString(FollowerHandleAttr) + "\n");
+//                FollowInfo info = new FollowInfo(item.getString(FollowerHandleAttr));
+//                followers.add(info);
+//            }
+//        }
+
+//        Iterator<Item> iter = items.iterator();
+//        while (iter.hasNext()) {
+//            Item item = iter.next();
+//            FollowInfo info = new FollowInfo(item.getString(FollowerHandleAttr));
+//            followers.add(info);
+//            /* FIXME --> I want to have the profile pic in the item as well.
+//             *   If that is too much work, add in the name of the follower AND follower in the Feed table */
+//        }
+
         if (followers.size() > 0) {
-            result = new GetFollowersResponse(followers, null);
+            result = new GetFollowersResponse(followers, null, newLastKey);
         }
         else {
-            result = new GetFollowersResponse(null, "This user has no followers");
+            result = new GetFollowersResponse(null, "This user has no followers", null);
         }
 
 
         return result;
     }
 
-    public GetFollowingResponse getFollowing(GetFollowingRequest request) {
+    public GetFollowingResponse getFollowing(GetFollowingRequest request, Context context, String lastKey) {
         GetFollowingResponse result;
         List<FollowInfo> following = new ArrayList<>();
 
         Table table = dynamoDB.getTable(TableName);
+//
+//        QuerySpec spec = new QuerySpec()
+//                .withKeyConditionExpression("followerHandle = :follower")
+//                .withValueMap(new ValueMap()
+//                    .withString(":follower", request.getUserhandle()));
+//
+//        ItemCollection<QueryOutcome> items = table.query(spec);
 
-        QuerySpec spec = new QuerySpec()
-                .withKeyConditionExpression("followerHandle = :follower")
-                .withValueMap(new ValueMap()
-                    .withString(":follower", request.getUserhandle()));
+        //REFERENCE 2
+        Map<String, String> attrNames = new HashMap<String, String>();
+        attrNames.put("#fol", FollowerHandleAttr);
 
-        ItemCollection<QueryOutcome> items = table.query(spec);
+        Map<String, AttributeValue> attrValues = new HashMap<>();
+        attrValues.put(":follower", new AttributeValue().withS(request.getUserhandle()));
 
-        Iterator<Item> iter = items.iterator();
-        while (iter.hasNext()) {
-            Item item = iter.next();
-            FollowInfo info = new FollowInfo(item.getString(FolloweeHandleAttr));
-            following.add(info);
+        QueryRequest queryRequest = new QueryRequest()
+                .withTableName(TableName)
+                .withKeyConditionExpression("#fol = :follower")
+                .withExpressionAttributeNames(attrNames)
+                .withExpressionAttributeValues(attrValues)
+                .withLimit(3);
 
-            /* FIXME --> I want to have the profile pic in the item as well.
-             *   If that is too much work, add in the name of the follower AND follower in the Feed table */
+        if (isNonEmptyString(lastKey)) {
+            Map<String, AttributeValue> startKey = new HashMap<>();
+            startKey.put(FolloweeHandleAttr, new AttributeValue().withS(lastKey));
+            startKey.put(FollowerHandleAttr, new AttributeValue().withS(request.getUserhandle()));
+
+            queryRequest = queryRequest.withExclusiveStartKey(startKey);
         }
+
+        QueryResult queryResult = client.query(queryRequest);
+        List<Map<String, AttributeValue>> items1 = queryResult.getItems();
+        if (items1 != null) {
+            for (Map<String, AttributeValue> item : items1){
+                String userHandle = item.get(FolloweeHandleAttr).getS();
+                FollowInfo info2 = new FollowInfo(userHandle);
+                following.add(info2);
+            }
+        }
+
+        Map<String, AttributeValue> lastKey1 = queryResult.getLastEvaluatedKey();
+        String newLastKey = null;
+        if (lastKey1 != null) {
+//            result.setLastKey(lastKey.get(LocationAttr).getS());
+            newLastKey = lastKey1.get(FolloweeHandleAttr).getS();
+        }
+//        Iterator<Item> iter = items.iterator();
+//        while (iter.hasNext()) {
+//            Item item = iter.next();
+//            FollowInfo info = new FollowInfo(item.getString(FolloweeHandleAttr));
+//            following.add(info);
+//
+//            /* FIXME --> I want to have the profile pic in the item as well.
+//             *   If that is too much work, add in the name of the follower AND follower in the Feed table */
+//        }
 
         if (following.size() > 0) {
-            result = new GetFollowingResponse(following, null);
+            result = new GetFollowingResponse(following, null, newLastKey);
         }
         else {
-            result = new GetFollowingResponse(null, "This user isn't following anyone");
+            result = new GetFollowingResponse(null, "This user isn't following anyone", null);
         }
 
         return result;
