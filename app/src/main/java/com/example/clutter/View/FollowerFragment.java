@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import com.example.clutter.R;
 import com.example.clutter.Transformations.CircleTransform;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -34,6 +36,9 @@ public class FollowerFragment extends Fragment implements FollowMvp.View {
         private FollowAdapter mAdapter;
         private RecyclerView mRecyclerView;
         private String userHandle;
+        private String lastKey;
+        private Button mLoadButton;
+        private List<FollowInfo> followers;
 
     private class FollowerHolder extends RecyclerView.ViewHolder {
         private ImageView image;
@@ -104,17 +109,37 @@ public class FollowerFragment extends Fragment implements FollowMvp.View {
         View v = inflater.inflate(R.layout.fragment_follow, container, false);
         userHandle = getArguments().getString("handle");
         userHandle = userHandle.replaceAll("@", "");
+        lastKey = null;
+        mLoadButton = v.findViewById(R.id.button8);
+        mLoadButton.setVisibility(View.VISIBLE);
+        followers = new ArrayList<>();
+
         mRecyclerView = v.findViewById(R.id.rvFollowInfo);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         presenter = new FollowerPresenter(this);
-        presenter.getFollowers(userHandle);
+        presenter.getFollowers(followers, userHandle, lastKey);
+
+
+        mLoadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.getFollowers(followers, userHandle, lastKey);
+            }
+        });
 
         return v;
     }
 
     @Override
-    public void displayFollowInfo(List<FollowInfo> followers) {
+    public void displayFollowInfo(List<FollowInfo> followers, String lastKey) {
         //RecyclerView
+        this.lastKey = lastKey;
+        this.followers = followers;
+
+        if (this.lastKey == null) {
+            mLoadButton.setVisibility(View.GONE);
+        }
+
         mAdapter = new FollowAdapter(followers);
         mRecyclerView.setAdapter(mAdapter);
     }

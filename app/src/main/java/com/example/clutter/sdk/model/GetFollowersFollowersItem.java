@@ -16,14 +16,14 @@
 package com.example.clutter.sdk.model;
 
 
-public class FollowerListFollowersItem {
+public class GetFollowersFollowersItem {
     /**
      * URL of profile picture
      */
     @com.google.gson.annotations.SerializedName("profilePic")
     private String profilePic = null;
     /**
-     * The handle of the user who is following
+     * The handle of the user who is being followed
      */
     @com.google.gson.annotations.SerializedName("userHandle")
     private String userHandle = null;
@@ -47,7 +47,7 @@ public class FollowerListFollowersItem {
     }
 
     /**
-     * The handle of the user who is following
+     * The handle of the user who is being followed
      *
      * @return userHandle
      **/

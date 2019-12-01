@@ -10,11 +10,11 @@ public interface FollowMvp {
     }
 
     interface View {
-        void displayFollowInfo(List<FollowInfo> stories);
+        void displayFollowInfo(List<FollowInfo> stories, String lastKey);
     }
 
     interface Presenter {
-        void getFollowers(String handle);
-        void getFollowees(String handle);
+        void getFollowers(List<FollowInfo> followers, String handle, String lastKey);
+        void getFollowees(List<FollowInfo> following, String handle, String lastKey);
     }
 }

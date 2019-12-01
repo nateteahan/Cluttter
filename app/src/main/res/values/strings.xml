@@ -31,4 +31,5 @@
     <string name="followBtn">Follow</string>
     <string name="unfollowBtn">Unfollow</string>
     <string name="error">Error</string>
+    <string name="load">Load</string>
 </resources>

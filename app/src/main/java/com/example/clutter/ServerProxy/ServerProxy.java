@@ -4,8 +4,8 @@ import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.example.clutter.sdk.CluttterClient;
 import com.example.clutter.sdk.model.Authorization;
 import com.example.clutter.sdk.model.Empty;
-import com.example.clutter.sdk.model.FollowerList;
-import com.example.clutter.sdk.model.FollowingList;
+import com.example.clutter.sdk.model.GetFollowers;
+import com.example.clutter.sdk.model.GetFollowing;
 import com.example.clutter.sdk.model.Hashtag;
 import com.example.clutter.sdk.model.Message;
 import com.example.clutter.sdk.model.PostPicture;
@@ -47,12 +47,12 @@ public class ServerProxy {
         return client.userUserhandleStoryGet(handle);
     }
 
-    public FollowingList getFollowing(String userhandle) {
-        return client.userUserhandleFollowingGet(userhandle);
+    public GetFollowing getFollowing(String userhandle, String lastKey) {
+        return client.userUserhandleFollowingLastkeyGet(userhandle, lastKey);
     }
 
-    public FollowerList getFollowers(String userhandle) {
-        return client.userUserhandleFollowersGet(userhandle);
+    public GetFollowers getFollowers(String userhandle, String lastKey) {
+        return client.userUserhandleFollowersLastKeyGet(userhandle, lastKey);
     }
 
     public StatusList getHashtagStatuses(String hashtag) {

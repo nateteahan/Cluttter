@@ -34,6 +34,7 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
     private FeedPresenter presenter;
     private FeedAdapter mAdapter;
     private ConstraintLayout mLayout;
+    private List<Status> statuses;
 
     private class FeedResultHolder extends RecyclerView.ViewHolder {
         private ImageView profilePic;
@@ -172,6 +173,7 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
         mLayout = v.findViewById(R.id.feed_layout);
         mRecyclerView = v.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        statuses = new ArrayList<>();
 
         List<Status> list = new ArrayList<>();
         mAdapter = new FeedAdapter(list);

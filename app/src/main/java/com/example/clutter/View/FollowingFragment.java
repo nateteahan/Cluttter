@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import com.example.clutter.R;
 import com.example.clutter.Transformations.CircleTransform;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,6 +35,9 @@ public class FollowingFragment extends Fragment implements FollowMvp.View {
     private FollowingAdapter mAdapter;
     private RecyclerView mRecyclerView;
     private String handle;
+    private String lastKey;
+    private Button mLoadButton;
+    private List<FollowInfo> following;
 
     private class FollowingHolder extends RecyclerView.ViewHolder {
         private ImageView image;
@@ -101,17 +106,37 @@ public class FollowingFragment extends Fragment implements FollowMvp.View {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_following, container, false);
         handle = getArguments().getString("handle");
+        lastKey = null;
+        mLoadButton = v.findViewById(R.id.button5);
+        mLoadButton.setVisibility(View.VISIBLE);
+        following = new ArrayList<>();
 
         mRecyclerView = v.findViewById(R.id.rvFollowing);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
         presenter = new FollowingPresenter(this);
-        presenter.getFollowees(handle);
+        presenter.getFollowees(following, handle, lastKey);
+
+        mLoadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.getFollowees(following, handle, lastKey);
+            }
+        });
+
+
         return v;
     }
 
     @Override
-    public void displayFollowInfo(List<FollowInfo> following) {
+    public void displayFollowInfo(List<FollowInfo> following, String lastKey) {
+        this.following = following;
+        this.lastKey = lastKey;
+
+        if (this.lastKey == null) {
+            mLoadButton.setVisibility(View.GONE);
+        }
+
         //RecyclerView
         mAdapter = new FollowingAdapter(following);
         mRecyclerView.setAdapter(mAdapter);

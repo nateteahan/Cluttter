@@ -17,10 +17,13 @@ package com.example.clutter.sdk;
 
 import com.example.clutter.sdk.model.Authorization;
 import com.example.clutter.sdk.model.Empty;
-import com.example.clutter.sdk.model.FollowerList;
+import com.example.clutter.sdk.model.FollowerRequest;
 import com.example.clutter.sdk.model.FollowingList;
+import com.example.clutter.sdk.model.GetFollowers;
+import com.example.clutter.sdk.model.GetFollowing;
 import com.example.clutter.sdk.model.Hashtag;
 import com.example.clutter.sdk.model.Message;
+import com.example.clutter.sdk.model.NewStatusList;
 import com.example.clutter.sdk.model.PostPicture;
 import com.example.clutter.sdk.model.RegisterUser;
 import com.example.clutter.sdk.model.SendStatusRequest;
@@ -103,6 +106,28 @@ public interface CluttterClient {
      * 
      * 
      * @param userhandle 
+     * @param lastKey 
+     * @return NewStatusList
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/feed/{lastKey}", method = "GET")
+    NewStatusList userUserhandleFeedLastKeyGet(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")
+                    String userhandle,
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "lastKey", location = "path")
+                    String lastKey);
+    
+    /**
+     * 
+     * 
+     * @return Empty
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/feed/{lastKey}", method = "OPTIONS")
+    Empty userUserhandleFeedLastKeyOptions();
+    
+    /**
+     * 
+     * 
+     * @param userhandle 
      * @param secondaryUser 
      * @return Message
      */
@@ -153,12 +178,14 @@ public interface CluttterClient {
      * 
      * 
      * @param userhandle 
-     * @return FollowerList
+     * @param body 
+     * @return GetFollowers
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/followers", method = "GET")
-    FollowerList userUserhandleFollowersGet(
+    GetFollowers userUserhandleFollowersGet(
             @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")
-                    String userhandle);
+                    String userhandle,
+            FollowerRequest body);
     
     /**
      * 
@@ -167,6 +194,28 @@ public interface CluttterClient {
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/followers", method = "OPTIONS")
     Empty userUserhandleFollowersOptions();
+    
+    /**
+     * 
+     * 
+     * @param userhandle 
+     * @param lastKey 
+     * @return GetFollowers
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/followers/{lastKey}", method = "GET")
+    GetFollowers userUserhandleFollowersLastKeyGet(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")
+                    String userhandle,
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "lastKey", location = "path")
+                    String lastKey);
+    
+    /**
+     * 
+     * 
+     * @return Empty
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/followers/{lastKey}", method = "OPTIONS")
+    Empty userUserhandleFollowersLastKeyOptions();
     
     /**
      * 
@@ -186,6 +235,28 @@ public interface CluttterClient {
      */
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/following", method = "OPTIONS")
     Empty userUserhandleFollowingOptions();
+    
+    /**
+     * 
+     * 
+     * @param userhandle 
+     * @param lastkey 
+     * @return GetFollowing
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/following/{lastkey}", method = "GET")
+    GetFollowing userUserhandleFollowingLastkeyGet(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")
+                    String userhandle,
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "lastkey", location = "path")
+                    String lastkey);
+    
+    /**
+     * 
+     * 
+     * @return Empty
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/following/{lastkey}", method = "OPTIONS")
+    Empty userUserhandleFollowingLastkeyOptions();
     
     /**
      * 
