@@ -101,17 +101,7 @@ public class FeedDAO {
     public GetUserFeedResponse FEED(GetUserFeedRequest request, String lastKey, Context context) {
         LambdaLogger logger = context.getLogger();
         List<Status> feed = new ArrayList<>();
-        String message = null;
-        Table table = dynamoDB.getTable(TableName);
 
-//        QuerySpec spec = new QuerySpec()
-//                .withKeyConditionExpression("userHandle = :u")
-//                .withValueMap(new ValueMap()
-//                        .withString(":u", request.getUserhandle()))
-//                .withScanIndexForward(false);
-//
-//        ItemCollection<QueryOutcome> items = table.query(spec);
-        //REFERENCE 2
         Map<String, String> attrNames = new HashMap<String, String>();
         attrNames.put("#u", UserHandleAttr);
 
