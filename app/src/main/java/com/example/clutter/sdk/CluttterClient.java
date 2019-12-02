@@ -343,6 +343,28 @@ public interface CluttterClient {
     /**
      * 
      * 
+     * @param userhandle 
+     * @param lastKey 
+     * @return NewStatusList
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/story/{lastKey}", method = "GET")
+    NewStatusList userUserhandleStoryLastKeyGet(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "userhandle", location = "path")
+                    String userhandle,
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "lastKey", location = "path")
+                    String lastKey);
+    
+    /**
+     * 
+     * 
+     * @return Empty
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/user/{userhandle}/story/{lastKey}", method = "OPTIONS")
+    Empty userUserhandleStoryLastKeyOptions();
+    
+    /**
+     * 
+     * 
      * @param hashtag 
      * @return StatusList
      */

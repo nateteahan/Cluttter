@@ -8,6 +8,7 @@ import com.example.clutter.sdk.model.GetFollowers;
 import com.example.clutter.sdk.model.GetFollowing;
 import com.example.clutter.sdk.model.Hashtag;
 import com.example.clutter.sdk.model.Message;
+import com.example.clutter.sdk.model.NewStatusList;
 import com.example.clutter.sdk.model.PostPicture;
 import com.example.clutter.sdk.model.RegisterUser;
 import com.example.clutter.sdk.model.SendStatusRequest;
@@ -37,14 +38,13 @@ public class ServerProxy {
         return client.userUserhandleSigninPost(user.getUserhandle(), user);
     }
 
-    public StatusList getFeed(String userhandle) {
-        StatusList statusList = client.userUserhandleFeedGet(userhandle);
-
+    public NewStatusList getFeed(String userhandle, String key) {
+        NewStatusList statusList = client.userUserhandleFeedLastKeyGet(userhandle, key);
         return statusList;
     }
 
-    public StatusList getUserStory(String handle) {
-        return client.userUserhandleStoryGet(handle);
+    public NewStatusList getUserStory(String handle, String key) {
+        return client.userUserhandleStoryLastKeyGet(handle, key);
     }
 
     public GetFollowing getFollowing(String userhandle, String lastKey) {

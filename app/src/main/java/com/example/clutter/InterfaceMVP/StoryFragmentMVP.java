@@ -9,10 +9,10 @@ public interface StoryFragmentMVP {
     }
 
     interface View {
-        void displayStories(List<Status> statuses);
+        void displayStories(List<Status> statuses, String key);
     }
 
     interface Presenter {
-        void createDummyData(String handle);
+        void createDummyData(List<Status> statuses, String handle, String key);
     }
 }

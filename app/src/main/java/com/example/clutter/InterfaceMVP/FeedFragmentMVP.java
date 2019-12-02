@@ -1,8 +1,9 @@
 package com.example.clutter.InterfaceMVP;
 
 
-import java.util.List;
 import com.example.clutter.Model.Status;
+
+import java.util.List;
 
 public interface FeedFragmentMVP {
     interface Model {
@@ -10,10 +11,10 @@ public interface FeedFragmentMVP {
     }
 
     interface View {
-        void displayStatus(List<Status> s);
+        void displayStatus(List<Status> s, String key);
     }
 
     interface Presenter {
-        void createDummyData();
+        void createDummyData(List<Status> statuses, String handle, String lastKey);
     }
 }

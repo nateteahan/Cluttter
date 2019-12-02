@@ -12,11 +12,11 @@ public interface UserMVP {
     }
 
     interface View {
-        void displayStatuses(List<Status> statuses);
+        void displayStatuses(List<Status> statuses, String key);
         void assignUserFields(UserInfo info);
     }
 
     interface Presenter {
-        void createDummyData();
+        void createDummyData(List<Status> statuses, String handle, String key);
     }
 }

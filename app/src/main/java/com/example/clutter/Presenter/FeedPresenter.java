@@ -3,32 +3,38 @@ package com.example.clutter.Presenter;
 import android.os.AsyncTask;
 
 import com.example.clutter.InterfaceMVP.FeedFragmentMVP;
-import com.example.clutter.Model.ModelSingleton;
 import com.example.clutter.Model.Status;
 import com.example.clutter.ServerProxy.ServerProxy;
 import com.example.clutter.View.FeedFragment;
-import com.example.clutter.sdk.model.StatusList;
-import com.example.clutter.sdk.model.StatusListStatusesItem;
+import com.example.clutter.sdk.model.NewStatusList;
+import com.example.clutter.sdk.model.NewStatusListStatusesItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FeedPresenter implements FeedFragmentMVP.Presenter {
     private FeedFragment feedView;
+    private String userHandle;
+    private String lastKey;
+    private List<Status> statusesToPost;
 
     private class GetFeedAsync extends AsyncTask<Void, Void, List<Status>> {
 
-        private GetFeedAsync() {
-            //Blank constructor
+        private GetFeedAsync(String handle, String key) {
+            userHandle = handle;
+            lastKey = key;
         }
 
         @Override
         protected List<com.example.clutter.Model.Status> doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
-            StatusList listOfStatuses = proxy.getFeed(ModelSingleton.getmUser().getUserHandle());
+            if (lastKey == null) {
+                lastKey = "";
+            }
 
-            List<StatusListStatusesItem> statusItems = listOfStatuses.getStatuses();
-            List<com.example.clutter.Model.Status> statusesToPost = new ArrayList<>();
+            NewStatusList listOfStatuses = proxy.getFeed(userHandle, lastKey);
+            lastKey = listOfStatuses.getLastKey();
+
+            List<NewStatusListStatusesItem> statusItems = listOfStatuses.getStatuses();
 
             // For each of the JSON status items returned from AWS, parse into model Status object
             // If there is no feed to see, detect it so we don't call null object reference on statusItems
@@ -38,7 +44,7 @@ public class FeedPresenter implements FeedFragmentMVP.Presenter {
 
             else {
                 for (int i = 0; i < statusItems.size() ; i++) {
-                    StatusListStatusesItem currentStatus = statusItems.get(i);
+                    NewStatusListStatusesItem currentStatus = statusItems.get(i);
 
                     String profilePic = currentStatus.getProfilePic();
                     String firstName = currentStatus.getFirstName();
@@ -63,7 +69,7 @@ public class FeedPresenter implements FeedFragmentMVP.Presenter {
                 feedView.emptyFeed();
             }
             else {
-                feedView.displayStatus(statuses);
+                feedView.displayStatus(statuses, lastKey);
             }
         }
     }
@@ -73,7 +79,26 @@ public class FeedPresenter implements FeedFragmentMVP.Presenter {
     }
 
     @Override
-    public void createDummyData() {
-        new GetFeedAsync().execute();
+    public void createDummyData(List<Status> statuses, String userHandle, String lastKey) {
+        this.userHandle = userHandle;
+
+        if (lastKey != null) {
+            lastKey = parseLastKey(lastKey);
+        }
+
+        this.statusesToPost = statuses;
+        new GetFeedAsync(userHandle, lastKey).execute();
     }
+
+    private String parseLastKey(String key) {
+        if (key != null) {
+            //Remove special characters... Invalid in api gateway
+            key = key.replaceAll(" ", "");
+            key = key.replaceAll("/", "");
+            key = key.replaceAll(":", "");
+        }
+
+        return key;
+    }
+
 }

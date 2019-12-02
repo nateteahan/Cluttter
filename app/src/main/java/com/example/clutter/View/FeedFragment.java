@@ -12,11 +12,13 @@ import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.clutter.InterfaceMVP.FeedFragmentMVP;
+import com.example.clutter.Model.ModelSingleton;
 import com.example.clutter.Model.Status;
 import com.example.clutter.Presenter.FeedPresenter;
 import com.example.clutter.R;
@@ -33,7 +35,10 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
     private RecyclerView mRecyclerView;
     private FeedPresenter presenter;
     private FeedAdapter mAdapter;
-    private ConstraintLayout mLayout;
+    private ConstraintLayout mNoFeedLayout;
+    private ConstraintLayout mFeedLayout;
+    private Button mLoadButton;
+    private String lastkey;
     private List<Status> statuses;
 
     private class FeedResultHolder extends RecyclerView.ViewHolder {
@@ -170,31 +175,48 @@ public class FeedFragment extends Fragment implements FeedFragmentMVP.View {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_feed, container, false);
-        mLayout = v.findViewById(R.id.feed_layout);
+        mNoFeedLayout = v.findViewById(R.id.feed_layout);
+        mFeedLayout = v.findViewById(R.id.boss);
+        mLoadButton = v.findViewById(R.id.button7);
         mRecyclerView = v.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         statuses = new ArrayList<>();
+        lastkey = null;
 
         List<Status> list = new ArrayList<>();
         mAdapter = new FeedAdapter(list);
         mRecyclerView.setAdapter(mAdapter);
 
         presenter = new FeedPresenter(this);
-        presenter.createDummyData();
+        presenter.createDummyData(statuses, ModelSingleton.getmUser().getUserHandle(), lastkey);
 
+        mLoadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.createDummyData(statuses, ModelSingleton.getmUser().getUserHandle(), lastkey);
+            }
+        });
         return v;
     }
 
-    public void displayStatus(List<Status> statuses) {
-        mRecyclerView.setVisibility(View.VISIBLE);
-        mLayout.setVisibility(View.GONE);
+    public void displayStatus(List<Status> statuses, String lastkey) {
+        this.lastkey = lastkey;
+        if (lastkey == null) {
+            //Done fetching statuses
+            mLoadButton.setVisibility(View.GONE);
+        }
+
+        this.statuses = statuses;
+
+        mFeedLayout.setVisibility(View.VISIBLE);
+        mNoFeedLayout.setVisibility(View.GONE);
 
         mAdapter = new FeedAdapter(statuses);
         mRecyclerView.setAdapter(mAdapter);
     }
 
     public void emptyFeed() {
-        mRecyclerView.setVisibility(View.GONE);
-        mLayout.setVisibility(View.VISIBLE);
+        mFeedLayout.setVisibility(View.GONE);
+        mNoFeedLayout.setVisibility(View.VISIBLE);
     }
 }

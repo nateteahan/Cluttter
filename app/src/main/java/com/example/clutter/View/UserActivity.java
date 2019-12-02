@@ -28,6 +28,7 @@ import com.example.clutter.Transformations.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -41,7 +42,10 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
     private TextView tvFirstName;
     private TextView tvLastName;
     private Button btnFollow;
+    private Button btnLoad;
+    private String lastKey;
     private String userHandle;
+    private List<Status> statuses;
 
 
     private class StatusResultHolder extends RecyclerView.ViewHolder {
@@ -184,12 +188,15 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
             userHandle = getIntent().getStringExtra("userHandle").replace("@", "");
         }
 
+        statuses = new ArrayList<>();
         tvFollowers = findViewById(R.id.tvFollowers);
         tvHandle = findViewById(R.id.tvUser);
         ivPic = findViewById(R.id.ivUserAccount);
         tvFirstName = findViewById(R.id.tvFirstName);
         tvLastName = findViewById(R.id.tvLastName);
         btnFollow = findViewById(R.id.btnFollow);
+        btnLoad = findViewById(R.id.button6);
+        lastKey = null;
         mRecyclerView = findViewById(R.id.rvStory);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         presenter = new UserPresenter(this, userHandle);
@@ -202,7 +209,7 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
             presenter.isFollowing(ModelSingleton.getmUser().getUserHandle(), userHandle);
         }
 
-        presenter.createDummyData();
+        presenter.createDummyData(statuses, userHandle, lastKey);
         presenter.getUserInfo();
 
         tvFollowers.setOnClickListener(new View.OnClickListener() {
@@ -225,11 +232,26 @@ public class UserActivity extends AppCompatActivity implements UserMVP.View {
                 }
             }
         });
+
+        btnLoad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //call presenter
+                presenter.createDummyData(statuses, userHandle, lastKey);
+            }
+        });
     }
 
 
     @Override
-    public void displayStatuses(List<Status> statuses) {
+    public void displayStatuses(List<Status> statuses, String key) {
+        this.lastKey = key;
+
+        if (key == null) {
+            //Done fetching statuses
+            btnLoad.setVisibility(View.GONE);
+        }
+
         mAdapter = new StatusAdapter(statuses);
         mRecyclerView.setAdapter(mAdapter);
     }

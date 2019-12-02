@@ -9,17 +9,19 @@ import com.example.clutter.Model.UserInfo;
 import com.example.clutter.ServerProxy.ServerProxy;
 import com.example.clutter.View.UserActivity;
 import com.example.clutter.sdk.model.Message;
-import com.example.clutter.sdk.model.StatusList;
-import com.example.clutter.sdk.model.StatusListStatusesItem;
+import com.example.clutter.sdk.model.NewStatusList;
+import com.example.clutter.sdk.model.NewStatusListStatusesItem;
 import com.example.clutter.sdk.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserPresenter implements UserMVP.Presenter {
     protected String followeeHandle;
     protected String followerHandle;
     private UserActivity view;
+    private String userhandle;
+    private String lastKey;
+    private List<Status> statusesToPost;
 
     private class UnfollowUserAsync extends AsyncTask<Void, Void, Message> {
 
@@ -90,21 +92,28 @@ public class UserPresenter implements UserMVP.Presenter {
 
     private class GetUserStoryAsync extends AsyncTask<Void, Void, List<Status>> {
 
-        private GetUserStoryAsync() {
-            //Blank constructor
+        private GetUserStoryAsync(String handle, String key) {
+            userhandle = handle;
+            lastKey = key;
         }
 
         @Override
         protected List<com.example.clutter.Model.Status> doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
-            StatusList listOfStatuses = proxy.getUserStory(followeeHandle);
 
-            List<StatusListStatusesItem> statusItems = listOfStatuses.getStatuses();
-            List<com.example.clutter.Model.Status> statusesToPost = new ArrayList<>();
+            if (lastKey == null) {
+                lastKey = "";
+            }
+
+            NewStatusList listOfStatuses = proxy.getUserStory(followeeHandle, lastKey);
+            lastKey = listOfStatuses.getLastKey();
+
+            List<NewStatusListStatusesItem> statusItems = listOfStatuses.getStatuses();
+//            List<com.example.clutter.Model.Status> statusesToPost = new ArrayList<>();
 
             // For each of the JSON status items returned from AWS, parse into model Status object
             for (int i = 0; i < statusItems.size() ; i++) {
-                StatusListStatusesItem currentStatus = statusItems.get(i);
+                NewStatusListStatusesItem currentStatus = statusItems.get(i);
 
                 String profilePic = currentStatus.getProfilePic();
                 String firstName = currentStatus.getFirstName();
@@ -125,7 +134,7 @@ public class UserPresenter implements UserMVP.Presenter {
 
         @Override
         protected void onPostExecute(List<com.example.clutter.Model.Status> statuses) {
-            view.displayStatuses(statuses);
+            view.displayStatuses(statuses, lastKey);
         }
     }
 
@@ -158,8 +167,15 @@ public class UserPresenter implements UserMVP.Presenter {
     }
 
     @Override
-    public void createDummyData() {
-        new GetUserStoryAsync().execute();
+    public void createDummyData(List<Status> statuses, String handle, String key) {
+        statusesToPost = statuses;
+        userhandle = handle;
+
+        if (key != null) {
+            key = parseLastKey(key);
+        }
+
+        new GetUserStoryAsync(handle, key).execute();
     }
 
     public void getUserInfo() {
@@ -176,5 +192,14 @@ public class UserPresenter implements UserMVP.Presenter {
 
     public void isFollowing(String followerHandle, String followeeHandle) {
         new GetFollowState(followerHandle, followeeHandle).execute();
+    }
+
+    private String parseLastKey(String key) {
+        //Remove special characters... Invalid in api gateway
+        key = key.replaceAll(" ", "");
+        key = key.replaceAll("/", "");
+        key = key.replaceAll(":", "");
+
+        return key;
     }
 }

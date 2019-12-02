@@ -35,6 +35,7 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -60,6 +61,11 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
     private AccountPresenter presenter;
     private FragmentManager fragmentManager;
     private String updatePic;
+    private String userhandle;
+    private String lastKey;
+    private List<Status> statuses;
+    private Button mLoadButton;
+    private ConstraintLayout storyLayout;
 
     private class StoryResultHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
@@ -197,13 +203,18 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
         btnSignOut = v.findViewById(R.id.button3);
         tvChangePic = v.findViewById(R.id.textView6);
         mConstraintLayout = v.findViewById(R.id.constraintID);
+        mLoadButton = v.findViewById(R.id.button10);
+        storyLayout = v.findViewById(R.id.storyContainer);
+        statuses = new ArrayList<>();
+        lastKey = null;
+
         mRecyclerView= v.findViewById(R.id.rvStory);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
         presenter = new AccountPresenter(this);
 
         storyPresenter = new StoryPresenter(this);
-        storyPresenter.createDummyData(handle);
+        storyPresenter.createDummyData(statuses, handle, lastKey);
 
 
         tvChangePic.setOnClickListener(new View.OnClickListener() {
@@ -235,6 +246,13 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
                                 Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 getActivity().finish();
+            }
+        });
+
+        mLoadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                storyPresenter.createDummyData(statuses, handle, lastKey);
             }
         });
 
@@ -278,16 +296,25 @@ public class AccountFragment extends Fragment implements StoryFragmentMVP.View {
         }
     }
 
-    public void displayStories(List<Status> stories) {
-        mRecyclerView.setVisibility(View.VISIBLE);
+    public void displayStories(List<Status> stories, String key) {
+        storyLayout.setVisibility(View.VISIBLE);
         mConstraintLayout.setVisibility(View.GONE);
+
+        this.statuses = stories;
+        this.lastKey = key;
+
+        if (key == null) {
+            //Done fetching statuses
+            mLoadButton.setVisibility(View.GONE);
+        }
+
         //RecyclerView
         mAdapter = new StoryAdapter(stories);
         mRecyclerView.setAdapter(mAdapter);
     }
 
     public void emptyStories() {
-        mRecyclerView.setVisibility(View.GONE);
+        storyLayout.setVisibility(View.GONE);
         mConstraintLayout.setVisibility(View.VISIBLE);
     }
 

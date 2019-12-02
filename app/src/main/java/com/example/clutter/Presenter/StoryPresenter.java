@@ -6,30 +6,37 @@ import com.example.clutter.InterfaceMVP.StoryFragmentMVP;
 import com.example.clutter.Model.Status;
 import com.example.clutter.ServerProxy.ServerProxy;
 import com.example.clutter.View.AccountFragment;
-import com.example.clutter.sdk.model.StatusList;
-import com.example.clutter.sdk.model.StatusListStatusesItem;
+import com.example.clutter.sdk.model.NewStatusList;
+import com.example.clutter.sdk.model.NewStatusListStatusesItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 //import com.example.clutter.View.StoryFragment;
 
 public class StoryPresenter implements StoryFragmentMVP.Presenter {
     private AccountFragment view;
+    private String userhandle;
+    private String lastKey;
+    private List<Status> statusesToPost;
 
     private class GetStoryAsync extends AsyncTask<Void, Void, List<Status>> {
-        private String handle;
-        public GetStoryAsync(String handle) {
-            this.handle = handle;
+        public GetStoryAsync(String Handle, String key) {
+            userhandle = Handle;
+            lastKey = key;
         }
 
         @Override
         protected List<com.example.clutter.Model.Status> doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
-            StatusList storyStatuses = proxy.getUserStory(handle);
 
-            List<StatusListStatusesItem> statusItems = storyStatuses.getStatuses();
-            List<com.example.clutter.Model.Status> statusesToPost = new ArrayList<>();
+            if (lastKey == null) {
+                lastKey = "";
+            }
+
+            NewStatusList storyStatuses = proxy.getUserStory(userhandle, lastKey);
+            lastKey = storyStatuses.getLastKey();
+
+            List<NewStatusListStatusesItem> statusItems = storyStatuses.getStatuses();
 
             if (statusItems == null) {
                 return null;
@@ -37,7 +44,7 @@ public class StoryPresenter implements StoryFragmentMVP.Presenter {
             else {
                 // For each of the JSON status items returned from AWS, parse into model Status object
                 for (int i = 0; i < statusItems.size() ; i++) {
-                    StatusListStatusesItem currentStatus = statusItems.get(i);
+                    NewStatusListStatusesItem currentStatus = statusItems.get(i);
 
                     String profilePic = currentStatus.getProfilePic();
                     String firstName = currentStatus.getFirstName();
@@ -52,7 +59,6 @@ public class StoryPresenter implements StoryFragmentMVP.Presenter {
                     statusesToPost.add(clientStatus);
                 }
 
-//            statuses = statusesToPost;
                 return statusesToPost;
             }
         }
@@ -64,7 +70,7 @@ public class StoryPresenter implements StoryFragmentMVP.Presenter {
                 view.emptyStories();
             }
             else {
-                view.displayStories(statuses);
+                view.displayStories(statuses, lastKey);
             }
         }
     }
@@ -73,7 +79,22 @@ public class StoryPresenter implements StoryFragmentMVP.Presenter {
         this.view = view;
     }
 
-    public void createDummyData(String handle) {
-        new GetStoryAsync(handle).execute();
+    public void createDummyData(List<Status> statuses, String handle, String key) {
+        this.userhandle = handle;
+
+        if (key != null) {
+            key = parseLastKey(key);
+        }
+        this.statusesToPost = statuses;
+        new GetStoryAsync(handle, key).execute();
+    }
+
+    private String parseLastKey(String key) {
+        //Remove special characters... Invalid in api gateway
+        key = key.replaceAll(" ", "");
+        key = key.replaceAll("/", "");
+        key = key.replaceAll(":", "");
+
+        return key;
     }
 }
