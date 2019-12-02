@@ -184,13 +184,6 @@ public class FollowDAO {
         List<FollowInfo> following = new ArrayList<>();
 
         Table table = dynamoDB.getTable(TableName);
-//
-//        QuerySpec spec = new QuerySpec()
-//                .withKeyConditionExpression("followerHandle = :follower")
-//                .withValueMap(new ValueMap()
-//                    .withString(":follower", request.getUserhandle()));
-//
-//        ItemCollection<QueryOutcome> items = table.query(spec);
 
         //REFERENCE 2
         Map<String, String> attrNames = new HashMap<String, String>();
