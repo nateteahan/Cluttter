@@ -275,4 +275,38 @@ public class FollowDAO {
             return new IsFollowingResponse(e.toString());
         }
     }
+
+    public GetFollowersResponse getAllFollowers(GetFollowersRequest request) {
+        GetFollowersResponse result;
+        List<FollowInfo> followers = new ArrayList<>();
+
+        Table table = dynamoDB.getTable(TableName);
+
+        Index index = table.getIndex("followeeHandle-followerHandle-index");
+
+        QuerySpec spec = new QuerySpec()
+                .withKeyConditionExpression("followeeHandle = :followee")
+                .withValueMap(new ValueMap()
+                        .withString(":followee", request.getUserhandle()))
+                .withMaxPageSize(3);
+
+        ItemCollection<QueryOutcome> items = index.query(spec);
+
+        Iterator<Item> iter = items.iterator();
+        while (iter.hasNext()) {
+            Item item = iter.next();
+            FollowInfo info = new FollowInfo(item.getString(FollowerHandleAttr));
+            followers.add(info);
+        }
+
+        if (followers.size() > 0) {
+            result = new GetFollowersResponse(followers, null, null);
+        }
+        else {
+            result = new GetFollowersResponse(null, "This user has no followers", null);
+        }
+
+
+        return result;
+    }
 }

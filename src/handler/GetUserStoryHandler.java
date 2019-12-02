@@ -2,6 +2,7 @@ package handler;
 
 import DatabaseAccess.StoryDAO;
 import Model.Status;
+import com.amazonaws.services.lambda.runtime.Context;
 import request.GetUserFeedRequest;
 import request.GetUserStoryRequest;
 import response.GetUserResponse;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetUserStoryHandler {
-    public GetUserStoryResponse handleUserStoryRequest(GetUserStoryRequest request) {
+    public GetUserStoryResponse handleUserStoryRequest(GetUserStoryRequest request, Context context) {
 //        List<Status> story = new ArrayList<>();
 //        Status status;
 //
@@ -21,7 +22,7 @@ public class GetUserStoryHandler {
 //        GetUserStoryResponse response = new GetUserStoryResponse(story, null);
 
         StoryDAO storyDAO = new StoryDAO();
-        GetUserStoryResponse response = storyDAO.getUserStory(request);
+        GetUserStoryResponse response = storyDAO.STORY(request, request.getLastKey(), context);
 
         return response;
     }

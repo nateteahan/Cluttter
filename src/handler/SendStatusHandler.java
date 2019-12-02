@@ -25,6 +25,7 @@ public class SendStatusHandler {
             // Set the followersRequest's handle to the handle of the person posting the status
             followersRequest.setUserhandle(request.getUserhandle());
             GetFollowersResponse followersResponse = followDAO.getFollowers(followersRequest, context, "GETALL");
+//            GetFollowersResponse followersResponse1 = followDAO.getAllFollowers(followersRequest);
             List<FollowInfo> followInfo = followersResponse.getFollowers();
             List<String> followers = new ArrayList<>();
 
