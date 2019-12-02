@@ -66,7 +66,7 @@ public class StoryPresenter implements StoryFragmentMVP.Presenter {
         @Override
         protected void onPostExecute(List<com.example.clutter.Model.Status> statuses) {
 //            super.onPostExecute(aVoid);
-            if (statuses == null) {
+            if (statuses.size() == 0) {
                 view.emptyStories();
             }
             else {

@@ -65,7 +65,7 @@ public class FeedPresenter implements FeedFragmentMVP.Presenter {
 
         @Override
         protected void onPostExecute(List<com.example.clutter.Model.Status> statuses) {
-            if (statuses == null) {
+            if (statuses.size() == 0) {
                 feedView.emptyFeed();
             }
             else {
