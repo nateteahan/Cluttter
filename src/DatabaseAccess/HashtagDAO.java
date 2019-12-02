@@ -6,14 +6,17 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.QueryRequest;
+import com.amazonaws.services.dynamodbv2.model.QueryResult;
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import request.GetHashtagsRequest;
 import request.PostHashtagRequest;
 import response.GetHashtagsResponse;
 import response.PostHashtagResponse;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class HashtagDAO {
     // CRUD operations
@@ -39,40 +42,89 @@ public class HashtagDAO {
         return (value != null && value.length() > 0);
     }
 
-    public GetHashtagsResponse getHashtags(GetHashtagsRequest request) {
+    public GetHashtagsResponse getHashtags(GetHashtagsRequest request, Context context, String lastKey) {
+        LambdaLogger logger = context.getLogger();
         List<Status> statuses = new ArrayList<>();
-        String message;
+//        String message;
+//
+//        Table table = dynamoDB.getTable(TableName);
 
-        Table table = dynamoDB.getTable(TableName);
+//        QuerySpec spec = new QuerySpec()
+//                .withKeyConditionExpression("hashtag = :t")
+//                .withValueMap(new ValueMap()
+//                        .withString(":t", request.getHashtag()))
+//                .withScanIndexForward(false);
+//
+//        ItemCollection<QueryOutcome> items = table.query(spec);
+//
+//        Iterator<Item> iter = items.iterator();
 
-        QuerySpec spec = new QuerySpec()
-                .withKeyConditionExpression("hashtag = :t")
-                .withValueMap(new ValueMap()
-                        .withString(":t", request.getHashtag()))
-                .withScanIndexForward(false);
+        Map<String, String> attrNames = new HashMap<String, String>();
+        attrNames.put("#H", HashtagAttr);
 
-        ItemCollection<QueryOutcome> items = table.query(spec);
+        Map<String, AttributeValue> attrValues = new HashMap<>();
+        attrValues.put(":hashtag", new AttributeValue().withS(request.getHashtag()));
 
-        Iterator<Item> iter = items.iterator();
-        while (iter.hasNext()) {
-            Item item = iter.next();
-            String userhandle = item.getString(UserHandleAttr);
-            String profilePic = item.getString(ProfilePicAttr);
-            String firstName = item.getString(FirstNameAttr);
-            String status = item.getString(StatusAttr);
-            String time = item.getString(TimeAttr);
-            String imageAttachment = item.getString(ImageAttr);
-            String videoAttachment = item.getString(VideoAttr);
+        QueryRequest queryRequest = new QueryRequest()
+                .withTableName(TableName)
+                .withKeyConditionExpression("#H = :hashtag")
+                .withExpressionAttributeNames(attrNames)
+                .withExpressionAttributeValues(attrValues)
+                .withScanIndexForward(false)
+                .withLimit(3);
 
-            Status newStatus = new Status(profilePic, firstName, userhandle, time, status, imageAttachment, videoAttachment);
-            statuses.add(newStatus);
+        if (isNonEmptyString(lastKey)) {
+            logger.log("UNPARSED LAST KEY: " + lastKey);
+            StringBuilder sb = new StringBuilder(lastKey);
+            sb.insert(2, "/");
+            sb.insert(5, "/");
+            sb.insert(8, " ");
+            sb.insert(11, ":");
+            sb.insert(14, ":");
+
+            lastKey = sb.toString();
+            logger.log("PARSED LAST KEY: " + lastKey);
+
+            Map<String, AttributeValue> startKey = new HashMap<>();
+            startKey.put(TimeAttr, new AttributeValue().withS(lastKey));
+            startKey.put(HashtagAttr, new AttributeValue().withS(request.getHashtag()));
+
+            queryRequest = queryRequest.withExclusiveStartKey(startKey);
         }
 
-        if (statuses.size() > 0) {
-            return new GetHashtagsResponse(statuses, null);
+        QueryResult queryResult = client.query(queryRequest);
+        List<Map<String, AttributeValue>> items1 = queryResult.getItems();
+        if (items1 != null) {
+            for (Map<String, AttributeValue> item : items1) {
+                String userhandle = item.get(UserHandleAttr).getS();
+                String profilePic = item.get(ProfilePicAttr).getS();
+                String firstName = item.get(FirstNameAttr).getS();
+                String status = item.get(StatusAttr).getS();
+                String time = item.get(TimeAttr).getS();
+                String imageAttachment = null;
+                String videoAttachment = null;
+
+                if (item.get(ImageAttr) != null) {
+                    imageAttachment = item.get(ImageAttr).getS();
+                }
+                else if (item.get(VideoAttr) != null) {
+                    videoAttachment = item.get(VideoAttr).getS();
+                }
+
+                Status newStatus = new Status(profilePic, firstName, userhandle, time, status, imageAttachment, videoAttachment);
+                statuses.add(newStatus);
+            }
+
+            Map<String, AttributeValue> lastKey1 = queryResult.getLastEvaluatedKey();
+            String newLastKey = null;
+            if (lastKey1 != null) {
+                newLastKey = lastKey1.get(TimeAttr).getS();
+            }
+
+            return new GetHashtagsResponse(statuses, null, newLastKey);
         }
         else {
-            return new GetHashtagsResponse(null, "No posts with this hashtag");
+            return new GetHashtagsResponse(null, "No posts with this hashtag", null);
         }
     }
 
