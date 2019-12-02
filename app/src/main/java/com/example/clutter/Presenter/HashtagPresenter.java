@@ -6,33 +6,40 @@ import com.example.clutter.InterfaceMVP.HashtagMVP;
 import com.example.clutter.Model.Status;
 import com.example.clutter.ServerProxy.ServerProxy;
 import com.example.clutter.View.HashtagActivity;
-import com.example.clutter.sdk.model.StatusList;
-import com.example.clutter.sdk.model.StatusListStatusesItem;
+import com.example.clutter.sdk.model.NewStatusList;
+import com.example.clutter.sdk.model.NewStatusListStatusesItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HashtagPresenter implements HashtagMVP.Presenter {
     private HashtagActivity view;
+    private String hashtag;
+    private String lastKey;
+    private List<Status> statusesToPost;
 
     private class GetHashtagAsync extends AsyncTask<Void, Void, List<Status>> {
-        private String hashtag;
 
-        private GetHashtagAsync(String hashtag) {
-            this.hashtag = hashtag;
+        private GetHashtagAsync(String Hashtag, String key) {
+            hashtag = Hashtag;
+            lastKey = key;
         }
 
         @Override
         protected List<com.example.clutter.Model.Status> doInBackground(Void... voids) {
             ServerProxy proxy = new ServerProxy();
-            StatusList listOfStatuses = proxy.getHashtagStatuses(hashtag);
 
-            List<StatusListStatusesItem> statusItems = listOfStatuses.getStatuses();
-            List<com.example.clutter.Model.Status> statusesToPost = new ArrayList<>();
+            if (lastKey == null) {
+                lastKey = "";
+            }
+
+            NewStatusList listOfStatuses = proxy.getHashtagStatuses(hashtag, lastKey);
+            lastKey = listOfStatuses.getLastKey();
+
+            List<NewStatusListStatusesItem> statusItems = listOfStatuses.getStatuses();
 
             // For each of the JSON status items returned from AWS, parse into model Status object
             for (int i = 0; i < statusItems.size(); i++) {
-                StatusListStatusesItem currentStatus = statusItems.get(i);
+                NewStatusListStatusesItem currentStatus = statusItems.get(i);
 
                 String profilePic = currentStatus.getProfilePic();
                 String firstName = currentStatus.getFirstName();
@@ -52,7 +59,7 @@ public class HashtagPresenter implements HashtagMVP.Presenter {
 
         @Override
         protected void onPostExecute(List<com.example.clutter.Model.Status> statuses) {
-            view.displayHashtagStatuses(statuses);
+            view.displayHashtagStatuses(statuses, lastKey);
         }
     }
 
@@ -61,8 +68,26 @@ public class HashtagPresenter implements HashtagMVP.Presenter {
     }
 
     @Override
-    public void createDummyData(String hashtag) {
-        new GetHashtagAsync(hashtag).execute();
+    public void createDummyData(List<Status> statuses, String hashtag, String key) {
+        this.hashtag = hashtag;
+        this.statusesToPost = statuses;
 
+        if (key != null) {
+            key = parseLastKey(key);
+        }
+
+        new GetHashtagAsync(hashtag, key).execute();
+
+    }
+
+    private String parseLastKey(String key) {
+        if (key != null) {
+            //Remove special characters... Invalid in api gateway
+            key = key.replaceAll(" ", "");
+            key = key.replaceAll("/", "");
+            key = key.replaceAll(":", "");
+        }
+
+        return key;
     }
 }

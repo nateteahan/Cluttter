@@ -10,10 +10,10 @@ public interface HashtagMVP {
     }
 
     interface View {
-        void displayHashtagStatuses(List<Status> statuses);
+        void displayHashtagStatuses(List<Status> statuses, String key);
     }
 
     interface Presenter {
-        void createDummyData(String hashtag);
+        void createDummyData(List<Status> statuses, String hashtag, String key);
     }
 }

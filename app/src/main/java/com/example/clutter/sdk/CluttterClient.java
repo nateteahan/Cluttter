@@ -394,5 +394,27 @@ public interface CluttterClient {
     @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/{hashtag}", method = "OPTIONS")
     Empty hashtagOptions();
     
+    /**
+     * 
+     * 
+     * @param lastKey 
+     * @param hashtag 
+     * @return NewStatusList
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/{hashtag}/{lastKey}", method = "GET")
+    NewStatusList hashtagLastKeyGet(
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "lastKey", location = "path")
+                    String lastKey,
+            @com.amazonaws.mobileconnectors.apigateway.annotation.Parameter(name = "hashtag", location = "path")
+                    String hashtag);
+    
+    /**
+     * 
+     * 
+     * @return Empty
+     */
+    @com.amazonaws.mobileconnectors.apigateway.annotation.Operation(path = "/{hashtag}/{lastKey}", method = "OPTIONS")
+    Empty hashtagLastKeyOptions();
+    
 }
 

@@ -7,58 +7,75 @@
     android:orientation="vertical"
     tools:context=".View.HashtagActivity">
 
-     <android.support.constraint.ConstraintLayout
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content">
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="600sp">
 
-         <TextView
-             android:id="@+id/tv1"
-             android:layout_width="wrap_content"
-             android:layout_height="25dp"
-             android:layout_marginStart="8dp"
-             android:layout_marginTop="8dp"
-             android:layout_marginEnd="8dp"
-             android:layout_marginBottom="8dp"
-             android:text="Other statues that contain: #"
-             app:layout_constraintBottom_toBottomOf="parent"
-             app:layout_constraintEnd_toEndOf="parent"
-             app:layout_constraintHorizontal_bias="0.0"
-             app:layout_constraintStart_toStartOf="parent"
-             app:layout_constraintTop_toTopOf="parent"
-             app:layout_constraintVertical_bias="0.0" />
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Other statues that contain: #"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
-         <View
-             android:id="@+id/view2"
-             android:layout_width="match_parent"
-             android:layout_height="1dp"
-             android:background="@android:color/background_dark"
-             app:layout_constraintTop_toBottomOf="@+id/tv1" />
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/background_dark"
+            app:layout_constraintTop_toBottomOf="@+id/tv1" />
 
-         <TextView
-             android:id="@+id/tvHashtag"
-             android:layout_width="wrap_content"
-             android:layout_height="23dp"
-             android:layout_marginStart="8dp"
-             android:layout_marginTop="8dp"
-             android:layout_marginEnd="8dp"
-             android:layout_marginBottom="8dp"
-             app:layout_constraintBottom_toBottomOf="parent"
-             app:layout_constraintEnd_toEndOf="parent"
-             app:layout_constraintHorizontal_bias="0.0"
-             app:layout_constraintStart_toEndOf="@+id/tv1"
-             app:layout_constraintTop_toTopOf="parent"
-             app:layout_constraintVertical_bias="0.0" />
+        <TextView
+            android:id="@+id/tvHashtag"
+            android:layout_width="wrap_content"
+            android:layout_height="23dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/tv1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
-         <android.support.v7.widget.RecyclerView
-             android:id="@+id/rvHashtag"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:layout_marginTop="12dp"
-             android:layout_marginBottom="8dp"
-             app:layout_constraintBottom_toBottomOf="parent"
-             app:layout_constraintTop_toBottomOf="@+id/view2"
-             tools:layout_editor_absoluteX="8dp" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvHashtag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view2"
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_editor_absoluteX="0dp" />
 
-     </android.support.constraint.ConstraintLayout>
+        <Button
+            android:id="@+id/button9"
+            android:layout_width="70dp"
+            android:layout_height="43dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/load"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.975"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.988" />
+
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.LinearLayoutCompat>

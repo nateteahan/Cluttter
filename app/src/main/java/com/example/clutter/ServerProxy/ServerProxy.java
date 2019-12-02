@@ -13,7 +13,6 @@ import com.example.clutter.sdk.model.PostPicture;
 import com.example.clutter.sdk.model.RegisterUser;
 import com.example.clutter.sdk.model.SendStatusRequest;
 import com.example.clutter.sdk.model.SignInUser;
-import com.example.clutter.sdk.model.StatusList;
 import com.example.clutter.sdk.model.User;
 
 public class ServerProxy {
@@ -55,8 +54,8 @@ public class ServerProxy {
         return client.userUserhandleFollowersLastKeyGet(userhandle, lastKey);
     }
 
-    public StatusList getHashtagStatuses(String hashtag) {
-        return client.hashtagGet(hashtag);
+    public NewStatusList getHashtagStatuses(String hashtag, String key) {
+        return client.hashtagLastKeyGet(key, hashtag);
     }
 
     public Message postStatus(String userHandle, SendStatusRequest status) {

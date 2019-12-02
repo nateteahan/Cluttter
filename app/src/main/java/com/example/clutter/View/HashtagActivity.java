@@ -11,6 +11,7 @@ import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +25,7 @@ import com.example.clutter.Transformations.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -32,7 +34,10 @@ public class HashtagActivity extends AppCompatActivity implements HashtagMVP.Vie
     private TextView mHashtag;
     private HashtagPresenter presenter;
     private HashtagAdapter mAdapter;
-
+    private String lastKey;
+    private String Hashtag;
+    private List<Status> statuses;
+    private Button mLoadBtn;
 
     private class HashtagResultHolder extends RecyclerView.ViewHolder {
         private ImageView profilePic;
@@ -173,6 +178,7 @@ public class HashtagActivity extends AppCompatActivity implements HashtagMVP.Vie
         setContentView(R.layout.activity_hashtag);
 
         mHashtag = findViewById(R.id.tvHashtag);
+        mLoadBtn = findViewById(R.id.button9);
 
         String hashtag = "";
         Uri data = getIntent().getData();
@@ -184,17 +190,33 @@ public class HashtagActivity extends AppCompatActivity implements HashtagMVP.Vie
         }
 
         mHashtag.setText(hashtag);
+        Hashtag = mHashtag.getText().toString();
+        lastKey = null;
+        statuses = new ArrayList<>();
 
         mRecyclerView = findViewById(R.id.rvHashtag);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         presenter = new HashtagPresenter(this);
-        presenter.createDummyData(mHashtag.getText().toString());
+        presenter.createDummyData(statuses, Hashtag, lastKey);
 
-
+        mLoadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.createDummyData(statuses, Hashtag, lastKey);
+            }
+        });
     }
 
     @Override
-    public void displayHashtagStatuses(List<Status> statuses) {
+    public void displayHashtagStatuses(List<Status> statuses, String key) {
+        this.lastKey = key;
+        this.statuses = statuses;
+
+        if (key == null) {
+            //Done fetching statuses
+            mLoadBtn.setVisibility(View.GONE);
+        }
+
         mAdapter = new HashtagAdapter(statuses);
         mRecyclerView.setAdapter(mAdapter);
     }
