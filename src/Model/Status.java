@@ -1,7 +1,5 @@
 package Model;
 
-import java.util.UUID;
-
 public class Status {
     public String profilePic;
     public String firstName;

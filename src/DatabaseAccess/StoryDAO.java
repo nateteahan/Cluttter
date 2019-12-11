@@ -35,67 +35,7 @@ public class StoryDAO {
         return (value != null && value.length() > 0);
     }
 
-    public GetUserStoryResponse getUserStory(GetUserStoryRequest request) {
-        List<Status> story = new ArrayList<>();
-        String message = null;
-        Table table = dynamoDB.getTable(TableName);
-
-        QuerySpec spec = new QuerySpec()
-                .withKeyConditionExpression("userHandle = :u")
-                .withValueMap(new ValueMap()
-                    .withString(":u", request.getUserHandle()))
-                    .withScanIndexForward(false);
-
-        ItemCollection<QueryOutcome> items = table.query(spec);
-
-        Iterator<Item> iter = items.iterator();
-        while (iter.hasNext()) {
-            Item item = iter.next();
-
-            if (item.getString("imageAttachment") != null) {
-                String imageAttachment = item.getString("imageAttachment");
-                String time = item.getString("time");
-                String author = item.getString("author");
-                String firstName = item.getString("firstName");
-                String profilePic = item.getString("profilePic");
-                String status = item.getString("status");
-
-                Status statusInfo = new Status(profilePic, firstName, author, time, status, imageAttachment, null);
-                story.add(statusInfo);
-
-            }
-            else if (item.getString("videoAttachment") != null) {
-                String videoAttachment = item.getString("videoAttachment");
-                String time = item.getString("time");
-                String author = item.getString("author");
-                String firstName = item.getString("firstName");
-                String profilePic = item.getString("profilePic");
-                String status = item.getString("status");
-
-                Status statusInfo = new Status(profilePic, firstName, author, time, status, null, videoAttachment);
-                story.add(statusInfo);
-            }
-            else {
-                String time = item.getString("time");
-                String author = item.getString("author");
-                String firstName = item.getString("firstName");
-                String profilePic = item.getString("profilePic");
-                String status = item.getString("status");
-
-                Status statusInfo = new Status(profilePic, firstName, author, time, status, null, null);
-                story.add(statusInfo);
-            }
-        }
-
-        if (story.size() == 0) {
-            story = null;
-            message = "No story to show";
-        }
-
-        return new GetUserStoryResponse(story, message, null);
-    }
-
-    public GetUserStoryResponse STORY(GetUserStoryRequest request, String lastKey, Context context) {
+    public GetUserStoryResponse getUserStory(GetUserStoryRequest request, String lastKey, Context context) {
         LambdaLogger logger = context.getLogger();
         List<Status> feed = new ArrayList<>();
 
@@ -183,4 +123,6 @@ public class StoryDAO {
             return new GetUserStoryResponse(null, "No feed to show", null);
         }
     }
+
+
 }

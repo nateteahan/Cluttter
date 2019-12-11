@@ -11,6 +11,7 @@ import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.QueryRequest;
 import com.amazonaws.services.dynamodbv2.model.QueryResult;
+import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import request.*;
@@ -65,6 +66,7 @@ public class FollowDAO {
         }
     }
 
+    // Paginated list of followers
     public GetFollowersResponse getFollowers(GetFollowersRequest request, Context context, String lastKey) {
         LambdaLogger logger = context.getLogger();
         GetFollowersResponse result;
@@ -80,15 +82,9 @@ public class FollowDAO {
                         .withString(":followee", request.getUserhandle()))
                         .withMaxPageSize(3);
 
-//        if (isNonEmptyString(lastKey) && !lastKey.equals("GETALL")) {
-//            spec = spec.withExclusiveStartKey(new KeyAttribute(FolloweeHandleAttr, lastKey));
-//        }
-
         ItemCollection<QueryOutcome> items = index.query(spec);
 
-
-        //REFERENCE 2
-            Map<String, String> attrNames = new HashMap<String, String>();
+        Map<String, String> attrNames = new HashMap<String, String>();
         attrNames.put("#fol", FolloweeHandleAttr);
 
         Map<String, AttributeValue> attrValues = new HashMap<>();
@@ -123,50 +119,8 @@ public class FollowDAO {
         Map<String, AttributeValue> lastKey1 = queryResult.getLastEvaluatedKey();
         String newLastKey = null;
         if (lastKey1 != null) {
-//            result.setLastKey(lastKey.get(LocationAttr).getS());
             newLastKey = lastKey1.get(FollowerHandleAttr).getS();
         }
-        /* REFERENCE */
-//        Map<String, String> attrNames = new HashMap<String, String>();
-//        attrNames.put("#vis", VisitorAttr);
-//
-//        Map<String, AttributeValue> attrValues = new HashMap<>();
-//        attrValues.put(":visitor", new AttributeValue().withS(visitor));
-//
-//        QueryRequest queryRequest = new QueryRequest()
-//                .withTableName(TableName)
-//                .withKeyConditionExpression("#vis = :visitor")
-//                .withExpressionAttributeNames(attrNames)
-//                .withExpressionAttributeValues(attrValues)
-//                .withLimit(pageSize);
-//
-//        if (isNonEmptyString(lastLocation)) {
-//            Map<String, AttributeValue> startKey = new HashMap<>();
-//            startKey.put(VisitorAttr, new AttributeValue().withS(visitor));
-//            startKey.put(LocationAttr, new AttributeValue().withS(lastLocation));
-
-//        /* */
-//        int startPage = 0;
-//        for (Page<Item, QueryOutcome> page : items.pages()) {
-//            logger.log("Page: " + ++startPage);
-//
-//            Iterator<Item> iterator = page.iterator();
-//            while (iterator.hasNext()) {
-//                Item item = iterator.next();
-//                logger.log(item.getString(FollowerHandleAttr) + "\n");
-//                FollowInfo info = new FollowInfo(item.getString(FollowerHandleAttr));
-//                followers.add(info);
-//            }
-//        }
-
-//        Iterator<Item> iter = items.iterator();
-//        while (iter.hasNext()) {
-//            Item item = iter.next();
-//            FollowInfo info = new FollowInfo(item.getString(FollowerHandleAttr));
-//            followers.add(info);
-//            /* FIXME --> I want to have the profile pic in the item as well.
-//             *   If that is too much work, add in the name of the follower AND follower in the Feed table */
-//        }
 
         if (followers.size() > 0) {
             result = new GetFollowersResponse(followers, null, newLastKey);
@@ -174,7 +128,6 @@ public class FollowDAO {
         else {
             result = new GetFollowersResponse(null, "This user has no followers", null);
         }
-
 
         return result;
     }
@@ -185,7 +138,6 @@ public class FollowDAO {
 
         Table table = dynamoDB.getTable(TableName);
 
-        //REFERENCE 2
         Map<String, String> attrNames = new HashMap<String, String>();
         attrNames.put("#fol", FollowerHandleAttr);
 
@@ -223,15 +175,6 @@ public class FollowDAO {
 //            result.setLastKey(lastKey.get(LocationAttr).getS());
             newLastKey = lastKey1.get(FolloweeHandleAttr).getS();
         }
-//        Iterator<Item> iter = items.iterator();
-//        while (iter.hasNext()) {
-//            Item item = iter.next();
-//            FollowInfo info = new FollowInfo(item.getString(FolloweeHandleAttr));
-//            following.add(info);
-//
-//            /* FIXME --> I want to have the profile pic in the item as well.
-//             *   If that is too much work, add in the name of the follower AND follower in the Feed table */
-//        }
 
         if (following.size() > 0) {
             result = new GetFollowingResponse(following, null, newLastKey);
@@ -280,8 +223,7 @@ public class FollowDAO {
         QuerySpec spec = new QuerySpec()
                 .withKeyConditionExpression("followeeHandle = :followee")
                 .withValueMap(new ValueMap()
-                        .withString(":followee", request.getUserhandle()))
-                .withMaxPageSize(3);
+                        .withString(":followee", request.getUserhandle()));
 
         ItemCollection<QueryOutcome> items = index.query(spec);
 

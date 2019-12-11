@@ -1,14 +1,16 @@
 package DatabaseAccess;
 
+import Model.FollowInfo;
+import Model.PostStatusRequest;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.*;
+import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.LambdaLogger;
+import request.SendStatusRequest;
 
 import java.util.List;
+import java.util.Map;
 
 public class StatusDAO {
     // CRUD operations
@@ -32,90 +34,24 @@ public class StatusDAO {
             .build();
     private static DynamoDB dynamoDB = new DynamoDB(client);
 
-    private static boolean isNonEmptyString(String value) {
-        return (value != null && value.length() > 0);
-    }
-
-    public String postStatus(String profilePic, String firstName, String userHandle, String time, String status, String imageAttachment, String videoAttachment, List<String> followers, Context context) {
+    public String postToStory(SendStatusRequest request) {
         String message = "Successfully posted status!";
-        LambdaLogger logger = context.getLogger();
         boolean picture = false;
         boolean video = false;
-
-        logger.log("\n");
-        logger.log("StatusDAO: imageAttachement = " + imageAttachment + "\n");
-        logger.log("StatusDAO videoAttachment = " + videoAttachment + "\n");
-        logger.log("\n");
 
         // Don't ask. Trust the process.
         // Had to add both conditions so that it worked with lambda and api gateway
         // Api gateway mapping template will replace imageAttachment/videoAttachment with ""
         // Lambda allows for imageAttachment/videoAttachment to be null.
         // This is the workaround both tests
-        if ((imageAttachment != null && !imageAttachment.equals("")) && (videoAttachment != null && !videoAttachment.equals(""))) {
+        if ((request.getImageAttachment() != null && !request.getImageAttachment().equals("")) && (request.getVideoAttachment() != null && !request.getVideoAttachment().equals(""))) {
             return "Only attach a picture OR a video please";
         }
-        if (videoAttachment != null && !videoAttachment.equals("")) {
+        if (request.getVideoAttachment() != null && !request.getVideoAttachment().equals("")) {
             video = true;
         }
-        else if (imageAttachment != null && !imageAttachment.equals("")) {
+        else if (request.getImageAttachment() != null && !request.getImageAttachment().equals("")) {
             picture = true;
-        }
-        // If the user has followers, post the status to the feed table
-        if (followers != null && followers.size() > 0) {
-            /* Add the status to the Feed table */
-            Table feedTable = dynamoDB.getTable(FeedTableName);
-
-            try {
-                // For every follower, insert the status into their feed
-                // If both video and photo attachments are null, leave them out of the scheme
-                if (!picture && !video) {
-                    logger.log("(FEED) No image, no video\n");
-                    for (String follower : followers) {
-                        Item feedItem = new Item().withPrimaryKey(UserHandleAttr, follower)
-                                .withString(TimeAttr, time)
-                                .withString(FirstNameAttr, firstName)
-                                .withString(ProfilePicAttr, profilePic)
-                                .withString(StatusAttr, status)
-                                .withString(AuthorAttr, userHandle);
-
-                        feedTable.putItem(feedItem);
-                    }
-                }
-                // Photo is attached to the status, video is not
-                else if (picture) {
-                    logger.log("(FEED) Image attached\n");
-                    for (String follower : followers) {
-                        Item feedItem = new Item().withPrimaryKey(UserHandleAttr, follower)
-                                .withString(TimeAttr, time)
-                                .withString(FirstNameAttr, firstName)
-                                .withString(ProfilePicAttr, profilePic)
-                                .withString(StatusAttr, status)
-                                .withString(AuthorAttr, userHandle)
-                                .withString(ImageAttr, imageAttachment);
-
-                        feedTable.putItem(feedItem);
-                    }
-                }
-                // Video is attached to the status, photo is not
-                else {
-                    logger.log("(FEED) Video attached\n");
-                    for (String follower : followers) {
-                        Item feedItem = new Item().withPrimaryKey(UserHandleAttr, follower)
-                                .withString(TimeAttr, time)
-                                .withString(FirstNameAttr, firstName)
-                                .withString(ProfilePicAttr, profilePic)
-                                .withString(StatusAttr, status)
-                                .withString(AuthorAttr, userHandle)
-                                .withString(VideoAttr, videoAttachment);
-
-                        feedTable.putItem(feedItem);
-                    }
-                }
-            } catch (Exception e) {
-                message = "Could not post status to feed.";
-                e.printStackTrace();
-            }
         }
 
         /* Add the status to the Story table */
@@ -123,36 +59,33 @@ public class StatusDAO {
         try {
             // If both video and photo attachments are null, leave them out of the scheme
             if (!picture && !video) {
-                logger.log("(STORY) No image, no video\n\n");
-                Item storyItem = new Item().withPrimaryKey(UserHandleAttr, userHandle)
-                            .withString(TimeAttr, time)
-                            .withString(FirstNameAttr, firstName)
-                            .withString(ProfilePicAttr, profilePic)
-                            .withString(StatusAttr, status);
+                Item storyItem = new Item().withPrimaryKey(UserHandleAttr, request.getUserhandle())
+                        .withString(TimeAttr, request.getTime())
+                        .withString(FirstNameAttr, request.getFirstName())
+                        .withString(ProfilePicAttr, request.getProfilePic())
+                        .withString(StatusAttr, request.getStatus());
 
-                    storyTable.putItem(storyItem);
+                storyTable.putItem(storyItem);
             }
             else if (picture) {
-                logger.log("(STORY) Image attached\n\n");
-                Item storyItem = new Item().withPrimaryKey(UserHandleAttr, userHandle)
-                            .withString(TimeAttr, time)
-                            .withString(FirstNameAttr, firstName)
-                            .withString(ProfilePicAttr, profilePic)
-                            .withString(StatusAttr, status)
-                            .withString(ImageAttr, imageAttachment);
+                Item storyItem = new Item().withPrimaryKey(UserHandleAttr, request.getUserhandle())
+                        .withString(TimeAttr, request.getTime())
+                        .withString(FirstNameAttr, request.getFirstName())
+                        .withString(ProfilePicAttr, request.getProfilePic())
+                        .withString(StatusAttr, request.getStatus())
+                        .withString(ImageAttr, request.getImageAttachment());
 
-                    storyTable.putItem(storyItem);
+                storyTable.putItem(storyItem);
             }
             else {
-                logger.log("(STORY) Video attached\n\n");
-                Item storyItem = new Item().withPrimaryKey(UserHandleAttr, userHandle)
-                            .withString(TimeAttr, time)
-                            .withString(FirstNameAttr, firstName)
-                            .withString(ProfilePicAttr, profilePic)
-                            .withString(StatusAttr, status)
-                            .withString(VideoAttr, videoAttachment);
+                Item storyItem = new Item().withPrimaryKey(UserHandleAttr, request.getUserhandle())
+                        .withString(TimeAttr, request.getTime())
+                        .withString(FirstNameAttr, request.getFirstName())
+                        .withString(ProfilePicAttr, request.getProfilePic())
+                        .withString(StatusAttr, request.getStatus())
+                        .withString(VideoAttr, request.getVideoAttachment());
 
-                    storyTable.putItem(storyItem);
+                storyTable.putItem(storyItem);
             }
         } catch (Exception f) {
             message = "Could not post status to story";
@@ -160,5 +93,138 @@ public class StatusDAO {
         }
 
         return message;
+    }
+
+    public String postToFeed(PostStatusRequest request, Context context) {
+        String message = "Successfully posted status to Feed Table";
+        boolean picture = false;
+        boolean video = false;
+        List<FollowInfo> followers = request.getFollowers();
+        // Don't ask. Trust the process.
+        // Had to add both conditions so that it worked with lambda and api gateway
+        // Api gateway mapping template will replace imageAttachment/videoAttachment with ""
+        // Lambda allows for imageAttachment/videoAttachment to be null.
+        // This is the workaround both tests
+        if (followers.size() > 0) {
+//        logger.log("Number of followers is " + followers.size());
+            int attachments = determineAttachments(request.getStatus());
+
+            if (attachments == -1) {
+                return "Only attach a photo OR a gif";
+            }
+
+            if (attachments == 0) {
+                TableWriteItems tableWriter = new TableWriteItems(FeedTableName);
+                for (int i = 0; i < followers.size();) {
+                    for (int j = 0; j < 25 && i < followers.size(); j++) {
+                        Item feedItem = new Item().withPrimaryKey(UserHandleAttr, followers.get(i).getUserHandle())
+                                .withString(TimeAttr, request.getStatus().getTime())
+                                .withString(FirstNameAttr, request.getStatus().getFirstName())
+                                .withString(ProfilePicAttr, request.getStatus().getProfilePic())
+                                .withString(StatusAttr, request.getStatus().getStatus())
+                                .withString(AuthorAttr, request.getStatus().getUserhandle());
+                        i++;
+                        tableWriter.addItemToPut(feedItem);
+                    }
+
+                    try {
+                        BatchWriteItemOutcome outcome = dynamoDB.batchWriteItem(tableWriter);
+
+                        do {
+                            Map<String, List<WriteRequest>> unprocessedItems = outcome.getUnprocessedItems();
+
+                            if (unprocessedItems.size() > 0) {
+                                outcome = dynamoDB.batchWriteItemUnprocessed(unprocessedItems);
+                            }
+                        } while (outcome.getUnprocessedItems().size() > 0);
+                    } catch (Exception e) {
+                        message = "Something went wrong with no attachments";
+                    }
+                }
+            }
+
+            else if (attachments == 1) {
+                TableWriteItems tableWriter = new TableWriteItems(FeedTableName);
+                for (int i = 0; i < followers.size();) {
+                    for (int j = 0; j < 25 && i < followers.size(); j++) {
+                        Item feedItem = new Item().withPrimaryKey(UserHandleAttr, followers.get(i).getUserHandle())
+                                .withString(TimeAttr, request.getStatus().getTime())
+                                .withString(FirstNameAttr, request.getStatus().getFirstName())
+                                .withString(ProfilePicAttr, request.getStatus().getProfilePic())
+                                .withString(StatusAttr, request.getStatus().getStatus())
+                                .withString(AuthorAttr, request.getStatus().getUserhandle())
+                                .withString(VideoAttr, request.getStatus().getVideoAttachment());
+                        i++;
+                        tableWriter.addItemToPut(feedItem);
+                    }
+
+                    try {
+                        BatchWriteItemOutcome outcome = dynamoDB.batchWriteItem(tableWriter);
+
+                        do {
+                            Map<String, List<WriteRequest>> unprocessedItems = outcome.getUnprocessedItems();
+
+                            if (unprocessedItems.size() > 0) {
+                                outcome = dynamoDB.batchWriteItemUnprocessed(unprocessedItems);
+                            }
+                        } while (outcome.getUnprocessedItems().size() > 0);
+                    } catch (Exception e) {
+                        message = "Something went wrong with no attachments";
+                    }
+                }
+            }
+
+            else if (attachments == 2) {
+                TableWriteItems tableWriter = new TableWriteItems(FeedTableName);
+                for (int i = 0; i < followers.size();) {
+                    for (int j = 0; j < 25 && i < followers.size(); j++) {
+                        Item feedItem = new Item().withPrimaryKey(UserHandleAttr, followers.get(i).getUserHandle())
+                                .withString(TimeAttr, request.getStatus().getTime())
+                                .withString(FirstNameAttr, request.getStatus().getFirstName())
+                                .withString(ProfilePicAttr, request.getStatus().getProfilePic())
+                                .withString(StatusAttr, request.getStatus().getStatus())
+                                .withString(AuthorAttr, request.getStatus().getUserhandle())
+                                .withString(ImageAttr, request.getStatus().getImageAttachment());
+                        i++;
+                        tableWriter.addItemToPut(feedItem);
+                    }
+
+                    try {
+                        BatchWriteItemOutcome outcome = dynamoDB.batchWriteItem(tableWriter);
+
+                        do {
+                            Map<String, List<WriteRequest>> unprocessedItems = outcome.getUnprocessedItems();
+
+                            if (unprocessedItems.size() > 0) {
+                                outcome = dynamoDB.batchWriteItemUnprocessed(unprocessedItems);
+                            }
+                        } while (outcome.getUnprocessedItems().size() > 0);
+                    } catch (Exception e) {
+                        message = "Something went wrong with no attachments";
+                    }
+                }
+            }
+
+            return message;
+        }
+        else {
+            // No user's whose feed to post on
+            return null;
+        }
+    }
+
+    private int determineAttachments(SendStatusRequest request) {
+        if ((request.getImageAttachment() != null && !request.getImageAttachment().equals("")) && (request.getVideoAttachment() != null && !request.getVideoAttachment().equals(""))) {
+            return -1;
+        }
+        else if (request.getVideoAttachment() != null && !request.getVideoAttachment().equals("")) {
+            return 1;
+        }
+        else if (request.getImageAttachment() != null && !request.getImageAttachment().equals("")) {
+            return 2;
+        }
+
+        // No attachments
+        return 0;
     }
 }

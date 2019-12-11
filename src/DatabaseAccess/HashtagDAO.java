@@ -45,19 +45,6 @@ public class HashtagDAO {
     public GetHashtagsResponse getHashtags(GetHashtagsRequest request, Context context, String lastKey) {
         LambdaLogger logger = context.getLogger();
         List<Status> statuses = new ArrayList<>();
-//        String message;
-//
-//        Table table = dynamoDB.getTable(TableName);
-
-//        QuerySpec spec = new QuerySpec()
-//                .withKeyConditionExpression("hashtag = :t")
-//                .withValueMap(new ValueMap()
-//                        .withString(":t", request.getHashtag()))
-//                .withScanIndexForward(false);
-//
-//        ItemCollection<QueryOutcome> items = table.query(spec);
-//
-//        Iterator<Item> iter = items.iterator();
 
         Map<String, String> attrNames = new HashMap<String, String>();
         attrNames.put("#H", HashtagAttr);

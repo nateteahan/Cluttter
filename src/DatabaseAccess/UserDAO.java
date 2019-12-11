@@ -10,6 +10,7 @@ import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.GetItemResult;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
+import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 import com.amazonaws.services.dynamodbv2.xspec.B;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
@@ -28,10 +29,7 @@ import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
-import java.util.Base64;
-import java.util.InputMismatchException;
-import java.util.Iterator;
-import java.util.UUID;
+import java.util.*;
 
 public class UserDAO {
     // CRUD operations
