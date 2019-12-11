@@ -14,7 +14,7 @@ public class SignInPresenter implements SignInMVP.Presenter {
     private com.example.clutter.Model.User rootUser;
 
     private class SignInAsync extends AsyncTask<Void, Void, Authorization> {
-        private SignInUser user = new SignInUser();
+        private SignInUser user;
 
         private SignInAsync(SignInUser user) {
             this.user = user;

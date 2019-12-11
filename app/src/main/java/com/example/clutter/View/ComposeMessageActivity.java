@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +27,6 @@ public class ComposeMessageActivity extends AppCompatActivity implements Compose
     private ComposeMessagePresenter presenter;
     private TextInputEditText mInputText;
     private ImageView mAddAttachment;
-    private ImageButton mSendMessage;
     private TextView mCharCount;
     private String status;
     private String handle;
@@ -36,6 +35,7 @@ public class ComposeMessageActivity extends AppCompatActivity implements Compose
     private String videoAttachment;
     private String time;
     private String firstName;
+    private Button mBtnSend;
     private static final int REQUEST_CODE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,7 @@ public class ComposeMessageActivity extends AppCompatActivity implements Compose
         presenter = new ComposeMessagePresenter(this);
         mInputText = findViewById(R.id.textInputEditText);
         mAddAttachment = findViewById(R.id.ivAttach);
-        mSendMessage = findViewById(R.id.ibSend);
+        mBtnSend = findViewById(R.id.btnSend);
         mCharCount = findViewById(R.id.tvCharacterCount);
         handle = ModelSingleton.getmUser().getUserHandle();
         firstName = ModelSingleton.getmUser().getFirstName();
@@ -76,7 +76,7 @@ public class ComposeMessageActivity extends AppCompatActivity implements Compose
             }
         });
 
-        mSendMessage.setOnClickListener(new View.OnClickListener() {
+        mBtnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");

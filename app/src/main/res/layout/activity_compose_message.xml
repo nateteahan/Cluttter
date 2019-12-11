@@ -61,26 +61,6 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputEditText"
         app:layout_constraintVertical_bias="0.093" />
 
-    <ImageButton
-        android:id="@+id/ibSend"
-        android:layout_width="278dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@android:color/background_dark"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.511"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivAttach"
-        app:layout_constraintVertical_bias="0.858"
-        app:srcCompat="@drawable/ic_sendmessage" />
-
     <TextView
         android:id="@+id/tvCharacterCount"
         android:layout_width="wrap_content"
@@ -97,6 +77,21 @@
         app:layout_constraintStart_toEndOf="@+id/ivAttach"
         app:layout_constraintTop_toBottomOf="@+id/textInputEditText"
         app:layout_constraintVertical_bias="0.083" />
+
+    <Button
+        android:id="@+id/btnSend"
+        android:layout_width="285dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Send"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.949" />
 
 
 </android.support.constraint.ConstraintLayout>
