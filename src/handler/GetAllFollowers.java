@@ -4,6 +4,8 @@ import DatabaseAccess.FollowDAO;
 import DatabaseAccess.StatusDAO;
 import Model.FollowInfo;
 import Model.PostStatusRequest;
+import SQS.ISQSQueue;
+import SQS.SQSPostStatus;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.TableWriteItems;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -56,18 +58,20 @@ public class GetAllFollowers implements RequestHandler<SQSEvent, Void> {
             postStatus.setFollowers(follows);
             postStatus.setStatus(request);
 
-            String messageBody = gson.toJson(postStatus);
-
-            String queueUrl = "https://sqs.us-west-2.amazonaws.com/386757273596/PostStatus";
-
-            SendMessageRequest send_msg_request = new SendMessageRequest()
-                    .withQueueUrl(queueUrl)
-                    .withMessageBody(messageBody);
-
-            AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
-            SendMessageResult send_msg_result = sqs.sendMessage(send_msg_request);
-
-            String msgId = send_msg_result.getMessageId();
+            ISQSQueue queue = new SQSPostStatus();
+            queue.PostStatus(postStatus, "https://sqs.us-west-2.amazonaws.com/386757273596/PostStatus");
+//            String messageBody = gson.toJson(postStatus);
+//
+//            String queueUrl = "https://sqs.us-west-2.amazonaws.com/386757273596/PostStatus";
+//
+//            SendMessageRequest send_msg_request = new SendMessageRequest()
+//                    .withQueueUrl(queueUrl)
+//                    .withMessageBody(messageBody);
+//
+//            AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
+//            SendMessageResult send_msg_result = sqs.sendMessage(send_msg_request);
+//
+//            String msgId = send_msg_result.getMessageId();
         }
 
         return null;
